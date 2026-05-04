@@ -46,7 +46,8 @@ jobs:
 
       - name: Skip duplicate DST slot
         if: steps.schedule.outputs.should_run != 'true'
-        run: echo "Skipping run: ${{ steps.schedule.outputs.reason }}"
+        run: |
+          echo "Skipping run: ${{ steps.schedule.outputs.reason }}"
 
       - name: Set up Python
         if: steps.schedule.outputs.should_run == 'true'
