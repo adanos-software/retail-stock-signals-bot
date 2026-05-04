@@ -107,10 +107,14 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
             "takeaway": "2-3 concise sentences focused on buzz/sentiment context",
             "question": "one engagement question comparing 2-3 signals",
         },
+        "style": _style_profile(signals.date_label),
         "constraints": [
             "No buy/sell/hold language",
             "No price predictions",
-            "Avoid trading-framing words such as setup, play, entry, exit, target, trade, conviction, or compelling",
+            "Sound like a professional market desk note, not a hype post and not generic AI copy",
+            "Avoid repeating the same sentence structure across intro, takeaway, and question",
+            "Avoid stale phrases such as today's signal, stands out, cleanest signal, worth watching, and only time will tell",
+            "Avoid trading-framing words such as setup, play, entry, exit, target, conviction, or compelling",
             "Mention that a shared narrative is shared when explanations overlap",
             "Keep wording plain and Reddit-native",
         ],
@@ -124,6 +128,7 @@ def _clean_text(value: Any, *, max_chars: int) -> str:
     cleaned = " ".join(value.strip().split())
     if not cleaned:
         raise DeepSeekError("DeepSeek field is empty")
+    cleaned = _replace_trading_framing(cleaned)
     return cleaned[:max_chars].rstrip()
 
 
@@ -150,3 +155,46 @@ def _loads_json_object(content: str) -> dict[str, Any]:
     if not isinstance(decoded, dict):
         raise DeepSeekError("DeepSeek JSON response is not an object")
     return decoded
+
+
+def _style_profile(date_label: str) -> dict[str, str]:
+    """Rotate prose framing deterministically so daily drafts do not feel templated."""
+    profiles = [
+        {
+            "name": "market_desk",
+            "intro_shape": "Lead with the dominant narrative, then contrast momentum and fade names.",
+            "takeaway_shape": "Explain what is driving attention, where sentiment confirms it, and where it conflicts.",
+            "question_shape": "Ask readers to compare narrative quality rather than predict prices.",
+        },
+        {
+            "name": "signal_brief",
+            "intro_shape": "Start with the highest-buzz ticker, then name the strongest sentiment and fade signals.",
+            "takeaway_shape": "Separate attention from sentiment and call out shared narratives when relevant.",
+            "question_shape": "Ask which data signal looks most meaningful.",
+        },
+        {
+            "name": "flow_context",
+            "intro_shape": "Frame the post around what retail attention is rotating toward and away from.",
+            "takeaway_shape": "Focus on buzz direction, sentiment tilt, and whether context supports the move.",
+            "question_shape": "Ask readers which narrative has the cleaner data behind it.",
+        },
+    ]
+    return profiles[sum(date_label.encode("utf-8")) % len(profiles)]
+
+
+def _replace_trading_framing(text: str) -> str:
+    """Remove common trading-call phrasing from otherwise usable model copy."""
+    replacements = {
+        "M&A play": "M&A narrative",
+        "m&a play": "M&A narrative",
+        "acquisition play": "acquisition narrative",
+        "squeeze setup": "squeeze narrative",
+        "trade setup": "market signal",
+        "trading setup": "market signal",
+        "entry point": "signal point",
+        "price target": "price estimate",
+    }
+    cleaned = text
+    for source, target in replacements.items():
+        cleaned = cleaned.replace(source, target)
+    return cleaned

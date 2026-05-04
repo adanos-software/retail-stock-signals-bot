@@ -3,7 +3,14 @@ from urllib import error
 
 import pytest
 
-from retail_signals.deepseek import DeepSeekClient, DeepSeekError, _loads_json_object
+from retail_signals.deepseek import (
+    DeepSeekClient,
+    DeepSeekError,
+    _loads_json_object,
+    _prompt_payload,
+    _replace_trading_framing,
+    _style_profile,
+)
 from retail_signals.signals import select_daily_signals
 
 
@@ -76,6 +83,32 @@ def test_deepseek_accepts_task_alias_for_intro(monkeypatch):
     copy = DeepSeekClient(api_key="test").generate_copy(_signals())
 
     assert copy.intro == "intro text"
+
+
+def test_prompt_payload_includes_professional_style_guardrails():
+    payload = _prompt_payload(_signals())
+
+    assert payload["style"]["name"] in {"market_desk", "signal_brief", "flow_context"}
+    assert any("professional market desk note" in item for item in payload["constraints"])
+    assert any("Avoid repeating the same sentence structure" in item for item in payload["constraints"])
+    assert "today's signal" in " ".join(payload["constraints"])
+
+
+def test_style_profile_rotates_by_date_label():
+    profiles = {_style_profile(label)["name"] for label in ["May 4, 2026", "May 5, 2026", "May 6, 2026"]}
+
+    assert len(profiles) > 1
+
+
+def test_replace_trading_framing_removes_trade_call_phrases():
+    text = _replace_trading_framing(
+        "Which has more staying power: the M&A play, acquisition play, or squeeze setup?"
+    )
+
+    assert text == (
+        "Which has more staying power: the M&A narrative, "
+        "acquisition narrative, or squeeze narrative?"
+    )
 
 
 class _Body:
