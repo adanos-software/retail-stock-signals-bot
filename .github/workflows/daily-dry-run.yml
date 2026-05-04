@@ -1,0 +1,80 @@
+name: Daily Reddit Post Dry Run
+
+on:
+  schedule:
+    # 09:00 Europe/Berlin => 07:00 UTC during CEST.
+    - cron: "0 7 * * *"
+    # 09:00 Europe/Berlin => 08:00 UTC during CET.
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Resolve Berlin schedule slot
+        id: schedule
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          python3 <<'PY' | tee -a "$GITHUB_OUTPUT"
+          import os
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          event_name = os.environ["EVENT_NAME"]
+          event_schedule = os.environ.get("EVENT_SCHEDULE", "")
+          now = datetime.now(ZoneInfo("Europe/Berlin"))
+          offset_hours = int(now.utcoffset().total_seconds() // 3600)
+          expected_schedule = "0 7 * * *" if offset_hours == 2 else "0 8 * * *"
+          should_run = event_name == "workflow_dispatch" or event_schedule == expected_schedule
+          reason = (
+              "manual dispatch"
+              if event_name == "workflow_dispatch"
+              else f"event_schedule={event_schedule}; expected_schedule={expected_schedule}; berlin_offset=UTC+{offset_hours}"
+          )
+
+          print(f"should_run={str(should_run).lower()}")
+          print(f"reason={reason}")
+          PY
+
+      - name: Skip duplicate DST slot
+        if: steps.schedule.outputs.should_run != 'true'
+        run: echo "Skipping run: ${{ steps.schedule.outputs.reason }}"
+
+      - name: Set up Python
+        if: steps.schedule.outputs.should_run == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install package
+        if: steps.schedule.outputs.should_run == 'true'
+        run: python -m pip install -e ".[dev]"
+
+      - name: Run tests
+        if: steps.schedule.outputs.should_run == 'true'
+        run: python -m pytest
+
+      - name: Generate Markdown draft
+        if: steps.schedule.outputs.should_run == 'true'
+        env:
+          ADANOS_API_KEY: ${{ secrets.ADANOS_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          mkdir -p out
+          retail-stock-signals --output "out/daily-retail-stock-signals.md"
+          sed -n '1,220p' out/daily-retail-stock-signals.md
+
+      - name: Upload draft artifact
+        if: steps.schedule.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: daily-retail-stock-signals
+          path: out/daily-retail-stock-signals.md
