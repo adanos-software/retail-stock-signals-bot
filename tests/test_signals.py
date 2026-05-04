@@ -1,4 +1,8 @@
-from retail_signals.signals import select_daily_signals, tickers_requiring_explanations
+from retail_signals.signals import (
+    resolve_shared_narrative_explanations,
+    select_daily_signals,
+    tickers_requiring_explanations,
+)
 
 
 def _row(ticker, buzz, sentiment, bullish, bearish, history, trend="rising"):
@@ -51,3 +55,27 @@ def test_tickers_requiring_explanations_are_unique_and_ordered():
     )
 
     assert tickers_requiring_explanations(signals) == ["GME", "XRX", "POET"]
+
+
+def test_resolve_shared_narrative_replaces_generic_target_explanation():
+    today = [
+        _row("GME", 82.0, 0.0, 28, 28, [80, 82]),
+        _row("EBAY", 76.0, 0.05, 41, 20, [0, 74]),
+        _row("POET", 62.0, -0.05, 25, 36, [71, 62], trend="falling"),
+    ]
+    signals = select_daily_signals(
+        date_label="May 4, 2026",
+        trending_today=today,
+        trending_7d=today,
+    )
+
+    resolved = resolve_shared_narrative_explanations(
+        signals,
+        {
+            "GME": "GME is trending because GameStop is reportedly offering to buy eBay.",
+            "EBAY": "EBAY shows mixed sentiment without a clear catalyst.",
+        },
+    )
+
+    assert resolved["EBAY"].startswith("EBAY appears tied to the same GME/EBAY narrative")
+    assert "GameStop is reportedly offering to buy eBay" in resolved["EBAY"]

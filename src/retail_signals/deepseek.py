@@ -62,9 +62,9 @@ class DeepSeekClient:
         data = self._post_json("/chat/completions", payload)
         try:
             content = data["choices"][0]["message"]["content"]
-            decoded = json.loads(content)
+            decoded = _loads_json_object(content)
             return AiCopy(
-                intro=_clean_text(decoded["intro"], max_chars=360),
+                intro=_clean_text(decoded.get("intro", decoded.get("task")), max_chars=360),
                 takeaway=_clean_text(decoded["takeaway"], max_chars=520),
                 question=_clean_text(decoded["question"], max_chars=180),
             )
@@ -102,7 +102,7 @@ class DeepSeekClient:
 
 def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
     return {
-        "task": {
+        "output_schema": {
             "intro": "one sentence: top buzz, cleanest sentiment breakout, biggest breakout, biggest fade",
             "takeaway": "2-3 concise sentences focused on buzz/sentiment context",
             "question": "one engagement question comparing 2-3 signals",
@@ -110,6 +110,7 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
         "constraints": [
             "No buy/sell/hold language",
             "No price predictions",
+            "Avoid trading-framing words such as setup, play, entry, exit, target, trade, conviction, or compelling",
             "Mention that a shared narrative is shared when explanations overlap",
             "Keep wording plain and Reddit-native",
         ],
@@ -124,3 +125,28 @@ def _clean_text(value: Any, *, max_chars: int) -> str:
     if not cleaned:
         raise DeepSeekError("DeepSeek field is empty")
     return cleaned[:max_chars].rstrip()
+
+
+def _loads_json_object(content: str) -> dict[str, Any]:
+    """Parse model JSON, tolerating fenced or prefixed JSON output."""
+    stripped = content.strip()
+    if stripped.startswith("```"):
+        lines = stripped.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        stripped = "\n".join(lines).strip()
+
+    try:
+        decoded = json.loads(stripped)
+    except json.JSONDecodeError:
+        start = stripped.find("{")
+        end = stripped.rfind("}")
+        if start == -1 or end == -1 or end <= start:
+            raise
+        decoded = json.loads(stripped[start : end + 1])
+
+    if not isinstance(decoded, dict):
+        raise DeepSeekError("DeepSeek JSON response is not an object")
+    return decoded

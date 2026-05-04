@@ -3,7 +3,7 @@ from urllib import error
 
 import pytest
 
-from retail_signals.deepseek import DeepSeekClient, DeepSeekError
+from retail_signals.deepseek import DeepSeekClient, DeepSeekError, _loads_json_object
 from retail_signals.signals import select_daily_signals
 
 
@@ -39,6 +39,43 @@ def test_deepseek_reports_http_error(monkeypatch):
 
     with pytest.raises(DeepSeekError, match="HTTP 401"):
         DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+
+def test_loads_json_object_tolerates_markdown_fence():
+    decoded = _loads_json_object(
+        """```json
+        {"intro": "a", "takeaway": "b", "question": "c"}
+        ```"""
+    )
+
+    assert decoded == {"intro": "a", "takeaway": "b", "question": "c"}
+
+
+def test_deepseek_accepts_task_alias_for_intro(monkeypatch):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        return _FakeResponse(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps(
+                                {
+                                    "task": "intro text",
+                                    "takeaway": "takeaway text",
+                                    "question": "question text?",
+                                }
+                            )
+                        }
+                    }
+                ]
+            }
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    copy = DeepSeekClient(api_key="test").generate_copy(_signals())
+
+    assert copy.intro == "intro text"
 
 
 class _Body:

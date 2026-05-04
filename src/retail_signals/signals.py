@@ -125,6 +125,37 @@ def tickers_requiring_explanations(signals: DailySignals) -> list[str]:
     return result
 
 
+def resolve_shared_narrative_explanations(
+    signals: DailySignals,
+    explanations: dict[str, str],
+) -> dict[str, str]:
+    """Replace generic explanations when another selected ticker explains the shared narrative."""
+    resolved = dict(explanations)
+    selected = _selected_context_signals(signals)
+
+    for target in selected:
+        target_explanation = resolved.get(target.ticker, "")
+        if target_explanation and "without a clear catalyst" not in target_explanation.lower():
+            continue
+
+        target_aliases = _explanation_aliases(target)
+        for source in selected:
+            if source.ticker == target.ticker:
+                continue
+            source_explanation = resolved.get(source.ticker, "")
+            if not source_explanation:
+                continue
+            source_lower = source_explanation.lower()
+            if any(alias in source_lower for alias in target_aliases):
+                resolved[target.ticker] = (
+                    f"{target.ticker} appears tied to the same {source.ticker}/{target.ticker} "
+                    f"narrative: {source_explanation}"
+                )
+                break
+
+    return resolved
+
+
 def _from_row(
     row: dict[str, Any],
     *,
@@ -171,3 +202,37 @@ def _optional_int(value: Any) -> int | None:
     if value is None:
         return None
     return int(value)
+
+
+def _selected_context_signals(signals: DailySignals) -> list[StockSignal]:
+    ordered = [
+        signals.top_buzz,
+        signals.cleanest_breakout,
+        signals.biggest_breakout,
+        signals.biggest_fade,
+        *signals.top_buzz_list[:3],
+    ]
+    seen: set[str] = set()
+    result: list[StockSignal] = []
+    for signal in ordered:
+        if signal.ticker not in seen:
+            result.append(signal)
+            seen.add(signal.ticker)
+    return result
+
+
+def _explanation_aliases(signal: StockSignal) -> list[str]:
+    aliases = {signal.ticker.lower()}
+    cleaned_name = (
+        signal.company_name.lower()
+        .replace(" corporation", "")
+        .replace(" corp", "")
+        .replace(" company", "")
+        .replace(" inc", "")
+        .replace(" class a", "")
+        .replace(".", "")
+    )
+    first_token = cleaned_name.split()[0] if cleaned_name.split() else ""
+    if len(first_token) >= 3:
+        aliases.add(first_token)
+    return sorted(aliases)

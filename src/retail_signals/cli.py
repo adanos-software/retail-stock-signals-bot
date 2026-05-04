@@ -12,7 +12,11 @@ from zoneinfo import ZoneInfo
 from retail_signals.adanos import AdanosClient
 from retail_signals.deepseek import DeepSeekClient, DeepSeekError
 from retail_signals.render import render_post, render_title
-from retail_signals.signals import select_daily_signals, tickers_requiring_explanations
+from retail_signals.signals import (
+    resolve_shared_narrative_explanations,
+    select_daily_signals,
+    tickers_requiring_explanations,
+)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -43,6 +47,7 @@ def main(argv: list[str] | None = None) -> int:
         ticker: client.get_explanation(ticker)
         for ticker in tickers_requiring_explanations(provisional)
     }
+    explanations = resolve_shared_narrative_explanations(provisional, explanations)
     signals = select_daily_signals(
         date_label=date_label,
         trending_today=trending_today,
