@@ -1,12 +1,12 @@
 name: Daily Reddit Post Dry Run
 
-on:
+"on":
+  workflow_dispatch: {}
   schedule:
     # 09:00 Europe/Berlin => 07:00 UTC during CEST.
     - cron: "0 7 * * *"
     # 09:00 Europe/Berlin => 08:00 UTC during CET.
     - cron: "0 8 * * *"
-  workflow_dispatch:
 
 permissions:
   contents: read
