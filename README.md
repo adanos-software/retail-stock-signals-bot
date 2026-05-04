@@ -1,8 +1,8 @@
 # Retail Stock Signals Bot
 
-Dry-run publisher for daily `r/RetailStockSignals` posts powered by the Adanos Reddit stock sentiment API.
+Draft generator for daily `r/RetailStockSignals` posts powered by the Adanos Reddit stock sentiment API.
 
-Phase 1 generates a Markdown draft only. It does not post to Reddit.
+This repo generates and versions the Reddit draft. Posting is handled separately by the Devvit app.
 
 ## What It Does
 
@@ -12,7 +12,7 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 - Optionally asks DeepSeek to polish only the intro, takeaway, and engagement question.
 - Falls back to deterministic prose when DeepSeek is unavailable.
 - Uses deterministic guardrails for shared narratives, such as `GME` and `EBAY` moving on the same explanation.
-- Uploads the generated `.md` draft as a GitHub Actions artifact.
+- Commits dated Markdown and JSON drafts for the Devvit posting app.
 
 ## GitHub Secrets
 
@@ -32,7 +32,10 @@ DEEPSEEK_API_KEY
 
 ```bash
 python -m pip install -e ".[dev]"
-retail-stock-signals --output out/daily-retail-stock-signals.md
+retail-stock-signals \
+  --output out/daily-retail-stock-signals.md \
+  --posts-dir posts \
+  --drafts-dir drafts
 python -m pytest
 ```
 
@@ -42,11 +45,32 @@ To disable DeepSeek even when `DEEPSEEK_API_KEY` is set:
 retail-stock-signals --no-ai --output out/daily-retail-stock-signals.md
 ```
 
+## Draft Files
+
+The generator writes:
+
+- `posts/YYYY-MM-DD.md`: human-readable Markdown archive
+- `drafts/YYYY-MM-DD.json`: dated machine-readable draft
+- `drafts/latest-post.json`: current draft consumed by Devvit
+
+The JSON shape is:
+
+```json
+{
+  "date": "2026-05-04",
+  "subreddit": "RetailStockSignals",
+  "title": "Daily Retail Stock Signals - May 4, 2026",
+  "body": "### Signal Summary\n...",
+  "checksum": "sha256...",
+  "generated_at": "2026-05-04T20:00:00+02:00"
+}
+```
+
 ## Workflow
 
 `.github/workflows/daily-dry-run.yml` runs at 20:00 Europe/Berlin using two UTC cron slots plus a DST guard. It can also be run manually with `workflow_dispatch`.
 
-The workflow is dry-run only. It prints and uploads the Markdown draft; it does not submit anything to Reddit.
+The workflow runs tests, generates the daily draft, uploads an artifact, and commits changed `drafts/` and `posts/` files back to `main`.
 
 ## AI Guardrails
 
@@ -64,6 +88,6 @@ If DeepSeek returns invalid JSON, times out, or omits required fields, the CLI l
 
 ## Next Phases
 
-Phase 2: review daily artifacts for several days and tune format.
+Phase 2: review daily drafts for several days and tune format.
 
-Phase 3: add Reddit/PRAW submit mode with duplicate protection.
+Phase 3: let the Devvit app publish `drafts/latest-post.json` after moderator review.

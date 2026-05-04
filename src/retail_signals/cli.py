@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 from datetime import datetime
 import os
 from pathlib import Path
@@ -27,7 +29,9 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: ADANOS_API_KEY is required.", file=sys.stderr)
         return 2
 
-    date_label = args.date_label or datetime.now(ZoneInfo(args.timezone)).strftime("%B %-d, %Y")
+    now = datetime.now(ZoneInfo(args.timezone))
+    date_label = args.date_label or now.strftime("%B %-d, %Y")
+    date_slug = args.date or now.date().isoformat()
     client = AdanosClient(
         api_key=api_key,
         base_url=args.adanos_base_url,
@@ -71,13 +75,34 @@ def main(argv: list[str] | None = None) -> int:
     title = render_title(signals)
     post = render_post(signals, ai_copy=ai_copy)
     output = f"Title: {title}\n\n{post}"
+    draft = _build_draft(
+        title=title,
+        body=post,
+        date=date_slug,
+        generated_at=now.isoformat(),
+    )
 
     if args.output:
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(output, encoding="utf-8")
         print(f"Wrote {output_path}")
-    else:
+    if args.posts_dir:
+        posts_path = Path(args.posts_dir) / f"{date_slug}.md"
+        posts_path.parent.mkdir(parents=True, exist_ok=True)
+        posts_path.write_text(output, encoding="utf-8")
+        print(f"Wrote {posts_path}")
+    if args.drafts_dir:
+        drafts_dir = Path(args.drafts_dir)
+        daily_path = drafts_dir / f"{date_slug}.json"
+        latest_path = drafts_dir / "latest-post.json"
+        encoded = json.dumps(draft, ensure_ascii=False, indent=2) + "\n"
+        drafts_dir.mkdir(parents=True, exist_ok=True)
+        daily_path.write_text(encoded, encoding="utf-8")
+        latest_path.write_text(encoded, encoding="utf-8")
+        print(f"Wrote {daily_path}")
+        print(f"Wrote {latest_path}")
+    if not args.output and not args.posts_dir and not args.drafts_dir:
         print(output)
 
     return 0
@@ -86,6 +111,9 @@ def main(argv: list[str] | None = None) -> int:
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate a Reddit daily stock signals post.")
     parser.add_argument("--output", help="Path to write the generated Markdown draft.")
+    parser.add_argument("--posts-dir", help="Directory for dated Markdown post archives.")
+    parser.add_argument("--drafts-dir", help="Directory for dated and latest JSON drafts.")
+    parser.add_argument("--date", help="Machine date for archive files, e.g. 2026-05-04.")
     parser.add_argument("--date-label", help="Display date, e.g. 'May 4, 2026'.")
     parser.add_argument("--timezone", default="Europe/Berlin")
     parser.add_argument("--limit", type=int, default=50)
@@ -98,6 +126,18 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--deepseek-model", default="deepseek-chat")
     parser.add_argument("--no-ai", action="store_true", help="Disable DeepSeek polish.")
     return parser.parse_args(argv)
+
+
+def _build_draft(*, title: str, body: str, date: str, generated_at: str) -> dict[str, str]:
+    checksum = hashlib.sha256(f"{title}\n\n{body}".encode("utf-8")).hexdigest()
+    return {
+        "date": date,
+        "subreddit": "RetailStockSignals",
+        "title": title,
+        "body": body,
+        "checksum": checksum,
+        "generated_at": generated_at,
+    }
 
 
 if __name__ == "__main__":
