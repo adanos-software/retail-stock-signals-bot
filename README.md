@@ -44,7 +44,7 @@ retail-stock-signals --no-ai --output out/daily-retail-stock-signals.md
 
 ## Workflow
 
-`.github/workflows/daily-dry-run.yml` runs at 09:00 Europe/Berlin using two UTC cron slots plus a DST guard. It can also be run manually with `workflow_dispatch`.
+`.github/workflows/daily-dry-run.yml` runs at 20:00 Europe/Berlin using two UTC cron slots plus a DST guard. It can also be run manually with `workflow_dispatch`.
 
 The workflow is dry-run only. It prints and uploads the Markdown draft; it does not submit anything to Reddit.
 
