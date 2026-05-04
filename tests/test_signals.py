@@ -1,3 +1,5 @@
+import pytest
+
 from retail_signals.signals import (
     resolve_shared_narrative_explanations,
     select_daily_signals,
@@ -40,6 +42,34 @@ def test_select_daily_signals_prefers_buzz_and_quality_breakout():
     assert signals.biggest_breakout.ticker == "BIG"
     assert signals.cleanest_breakout.ticker == "CLEAN"
     assert signals.biggest_fade.ticker == "FADE"
+
+
+def test_select_daily_signals_falls_back_to_biggest_gainer_when_no_quality_candidate():
+    today = [_row("TOP", 82.0, 0.00, 28, 28, [80, 82])]
+    seven_day = [
+        _row("BIG", 74.0, -0.04, 20, 40, [0, 74]),
+        _row("LOW", 55.0, 0.20, 60, 10, [20, 55]),
+    ]
+
+    signals = select_daily_signals(
+        date_label="May 4, 2026",
+        trending_today=today,
+        trending_7d=seven_day,
+    )
+
+    assert signals.biggest_breakout.ticker == "BIG"
+    assert signals.cleanest_breakout.ticker == "BIG"
+
+
+def test_select_daily_signals_rejects_missing_7d_history():
+    rows = [_row("GME", 82.0, 0.0, 28, 28, [])]
+
+    with pytest.raises(ValueError, match="trending_7d rows must include trend_history"):
+        select_daily_signals(
+            date_label="May 4, 2026",
+            trending_today=rows,
+            trending_7d=rows,
+        )
 
 
 def test_tickers_requiring_explanations_are_unique_and_ordered():

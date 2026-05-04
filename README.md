@@ -11,6 +11,7 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 - Fetches Adanos explain context for the selected tickers.
 - Optionally asks DeepSeek to polish only the intro, takeaway, and engagement question.
 - Falls back to deterministic prose when DeepSeek is unavailable.
+- Uses deterministic guardrails for shared narratives, such as `GME` and `EBAY` moving on the same explanation.
 - Uploads the generated `.md` draft as a GitHub Actions artifact.
 
 ## GitHub Secrets
@@ -44,6 +45,22 @@ retail-stock-signals --no-ai --output out/daily-retail-stock-signals.md
 ## Workflow
 
 `.github/workflows/daily-dry-run.yml` runs at 09:00 Europe/Berlin using two UTC cron slots plus a DST guard. It can also be run manually with `workflow_dispatch`.
+
+The workflow is dry-run only. It prints and uploads the Markdown draft; it does not submit anything to Reddit.
+
+## AI Guardrails
+
+DeepSeek receives the already-selected Adanos facts and explain text. It is only allowed to rewrite the intro, takeaway, and engagement question.
+
+The deterministic renderer still owns:
+
+- ticker selection
+- buzz and sentiment numbers
+- 7-day mover ordering
+- explain-endpoint context
+- disclaimer text
+
+If DeepSeek returns invalid JSON, times out, or omits required fields, the CLI logs a warning and uses deterministic fallback copy.
 
 ## Next Phases
 

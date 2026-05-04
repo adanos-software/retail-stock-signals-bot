@@ -109,20 +109,7 @@ def select_daily_signals(
 
 def tickers_requiring_explanations(signals: DailySignals) -> list[str]:
     """Return the unique tickers that should get context from the explain endpoint."""
-    ordered = [
-        signals.top_buzz.ticker,
-        signals.cleanest_breakout.ticker,
-        signals.biggest_breakout.ticker,
-        signals.biggest_fade.ticker,
-        *[signal.ticker for signal in signals.top_buzz_list[:3]],
-    ]
-    seen: set[str] = set()
-    result: list[str] = []
-    for ticker in ordered:
-        if ticker not in seen:
-            result.append(ticker)
-            seen.add(ticker)
-    return result
+    return [signal.ticker for signal in _selected_context_signals(signals)]
 
 
 def resolve_shared_narrative_explanations(
