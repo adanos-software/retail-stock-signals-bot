@@ -78,7 +78,7 @@ jobs:
 
       - name: Upload draft artifact
         if: steps.schedule.outputs.should_run == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: daily-retail-stock-signals
           path: out/daily-retail-stock-signals.md
