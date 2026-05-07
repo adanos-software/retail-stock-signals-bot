@@ -12,6 +12,8 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 - Optionally asks DeepSeek to polish only the intro, takeaway, and engagement question.
 - Falls back to deterministic prose when DeepSeek is unavailable.
 - Uses deterministic guardrails for shared narratives, such as `GME` and `EBAY` moving on the same explanation.
+- Adds data-only signal reads for top buzz, sentiment breakout, 7-day breakout, and fade picks.
+- Sanitizes explain context so unverified or messy narrative claims do not appear as facts.
 - Uploads the generated `.md` draft as a GitHub Actions artifact.
 
 ## GitHub Secrets
@@ -50,17 +52,20 @@ The workflow is dry-run only. It prints and uploads the Markdown draft; it does 
 
 ## AI Guardrails
 
-DeepSeek receives the already-selected Adanos facts and explain text. It is only allowed to rewrite the intro, takeaway, and engagement question.
+DeepSeek receives structured `hard_facts`, deterministic `allowed_interpretations`, and optional `unverified_context`. It is only allowed to rewrite the intro, takeaway, and engagement question.
 
 The deterministic renderer still owns:
 
 - ticker selection
 - buzz and sentiment numbers
 - 7-day mover ordering
-- explain-endpoint context
+- signal-quality interpretation
+- explain-context sanitization
 - disclaimer text
 
-If DeepSeek returns invalid JSON, times out, or omits required fields, the CLI logs a warning and uses deterministic fallback copy.
+If DeepSeek returns invalid JSON, times out, omits required fields, or adds blocked claim language such as hard causal/news/trading claims, the CLI logs a warning and uses deterministic fallback copy.
+
+Explain endpoint text is treated as Reddit discussion context, not verified fact. Unsafe context is dropped rather than rewritten into the post.
 
 ## Next Phases
 

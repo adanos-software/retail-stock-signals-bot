@@ -143,6 +143,21 @@ def resolve_shared_narrative_explanations(
     return resolved
 
 
+def sanitize_explanation(ticker: str, explanation: str) -> str:
+    """Return a conservative Reddit-context sentence or empty string."""
+    cleaned = " ".join(explanation.strip().split())
+    if not cleaned or _is_unsafe_explanation(cleaned):
+        return ""
+
+    prefix = f"{ticker.upper()} is trending because "
+    if cleaned.lower().startswith(prefix.lower()):
+        cleaned = f"Reddit discussion appears tied to: {cleaned[len(prefix):]}"
+    elif cleaned.lower().startswith("is trending because "):
+        cleaned = f"Reddit discussion appears tied to: {cleaned[len('is trending because '):]}"
+
+    return cleaned[:260].rstrip()
+
+
 def _from_row(
     row: dict[str, Any],
     *,
@@ -175,7 +190,7 @@ def _from_row(
         buzz_delta_7d=buzz_delta,
         buzz_start_7d=buzz_start,
         buzz_end_7d=buzz_end,
-        explanation=explanations.get(ticker, ""),
+        explanation=sanitize_explanation(ticker, explanations.get(ticker, "")),
     )
 
 
@@ -223,3 +238,24 @@ def _explanation_aliases(signal: StockSignal) -> list[str]:
     if len(first_token) >= 3:
         aliases.add(first_token)
     return sorted(aliases)
+
+
+def _is_unsafe_explanation(explanation: str) -> bool:
+    lowered = explanation.lower()
+    if "without a clear catalyst" in lowered:
+        return True
+    unsafe_fragments = [
+        '"that stupid"',
+        "passed nvidia",
+        "market cap",
+        "settlement",
+        "lawsuit",
+        "deal",
+        "diluted",
+        "dilution",
+        "earnings",
+        "offering to buy",
+        "price target",
+        "acquisition",
+    ]
+    return any(fragment in lowered for fragment in unsafe_fragments)

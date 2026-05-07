@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Any
 from urllib import error, request
 
-from retail_signals.signals import DailySignals
+from retail_signals.signals import DailySignals, StockSignal
 
 
 DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
@@ -48,9 +48,11 @@ class DeepSeekClient:
                 {
                     "role": "system",
                     "content": (
-                        "You write concise Reddit market-sentiment briefs. "
-                        "Use only the supplied facts. Do not invent causes, prices, "
-                        "recommendations, or financial advice. Return valid JSON only."
+                        "You edit concise Reddit market-sentiment briefs. Use only "
+                        "hard_facts and allowed_interpretations. Treat unverified_context "
+                        "as optional Reddit discussion context, not truth. Do not add "
+                        "causes, news, deals, lawsuits, prices, recommendations, or "
+                        "financial advice. Return valid JSON only."
                     ),
                 },
                 {
@@ -111,6 +113,10 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
         "constraints": [
             "No buy/sell/hold language",
             "No price predictions",
+            "Use only hard_facts and allowed_interpretations",
+            "Treat unverified_context as optional context, not verified truth",
+            "Do not state causal claims as fact",
+            "Do not mention external news, deals, lawsuits, earnings, market-cap milestones, or partnerships",
             "Sound like a professional market desk note, not a hype post and not generic AI copy",
             "Avoid repeating the same sentence structure across intro, takeaway, and question",
             "Avoid stale phrases such as today's signal, stands out, cleanest signal, worth watching, and only time will tell",
@@ -118,7 +124,9 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
             "Mention that a shared narrative is shared when explanations overlap",
             "Keep wording plain and Reddit-native",
         ],
-        "signals": asdict(signals),
+        "hard_facts": _hard_facts(signals),
+        "allowed_interpretations": _allowed_interpretations(signals),
+        "unverified_context": _unverified_context(signals),
     }
 
 
@@ -129,7 +137,63 @@ def _clean_text(value: Any, *, max_chars: int) -> str:
     if not cleaned:
         raise DeepSeekError("DeepSeek field is empty")
     cleaned = _replace_trading_framing(cleaned)
+    if _contains_blocked_claim_language(cleaned):
+        raise DeepSeekError("DeepSeek field contains blocked claim language")
     return cleaned[:max_chars].rstrip()
+
+
+def _hard_facts(signals: DailySignals) -> dict[str, Any]:
+    selected = {
+        "top_buzz": signals.top_buzz,
+        "cleanest_breakout": signals.cleanest_breakout,
+        "biggest_breakout": signals.biggest_breakout,
+        "biggest_fade": signals.biggest_fade,
+    }
+    return {
+        "date_label": signals.date_label,
+        "selected": {name: _signal_facts(signal) for name, signal in selected.items()},
+        "top_buzz_list": [_signal_facts(signal) for signal in signals.top_buzz_list],
+        "movers": [_signal_facts(signal) for signal in signals.movers],
+    }
+
+
+def _signal_facts(signal: StockSignal) -> dict[str, Any]:
+    return {
+        "ticker": signal.ticker,
+        "buzz_score": signal.buzz_score,
+        "sentiment_label": signal.sentiment_label,
+        "sentiment_score": signal.sentiment_score,
+        "bullish_pct": signal.bullish_pct,
+        "bearish_pct": signal.bearish_pct,
+        "trend": signal.trend,
+        "buzz_delta_7d": signal.buzz_delta_7d,
+        "buzz_start_7d": signal.buzz_start_7d,
+        "buzz_end_7d": signal.buzz_end_7d,
+    }
+
+
+def _allowed_interpretations(signals: DailySignals) -> list[str]:
+    interpretations = [
+        f"{signals.top_buzz.ticker} leads on absolute buzz score.",
+        f"{signals.cleanest_breakout.ticker} has the cleanest sentiment profile.",
+        f"{signals.biggest_breakout.ticker} has the largest 7-day buzz expansion.",
+        f"{signals.biggest_fade.ticker} is the main 7-day fade.",
+    ]
+    if signals.top_buzz.trend == "falling":
+        interpretations.append(
+            f"{signals.top_buzz.ticker} is sustained attention rather than fresh acceleration."
+        )
+    return interpretations
+
+
+def _unverified_context(signals: DailySignals) -> dict[str, str]:
+    selected = [
+        signals.top_buzz,
+        signals.cleanest_breakout,
+        signals.biggest_breakout,
+        signals.biggest_fade,
+    ]
+    return {signal.ticker: signal.explanation for signal in selected if signal.explanation}
 
 
 def _loads_json_object(content: str) -> dict[str, Any]:
@@ -198,3 +262,26 @@ def _replace_trading_framing(text: str) -> str:
     for source, target in replacements.items():
         cleaned = cleaned.replace(source, target)
     return cleaned
+
+
+def _contains_blocked_claim_language(text: str) -> bool:
+    lowered = text.lower()
+    blocked = [
+        " because ",
+        " after ",
+        " following ",
+        " driven by ",
+        " fueled by ",
+        " sparked by ",
+        " deal",
+        " settlement",
+        " lawsuit",
+        " earnings",
+        " market cap",
+        " passed nvidia",
+        " will ",
+        " buy ",
+        " sell ",
+        " target",
+    ]
+    return any(fragment in lowered for fragment in blocked)

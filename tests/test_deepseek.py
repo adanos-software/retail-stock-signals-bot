@@ -89,7 +89,12 @@ def test_prompt_payload_includes_professional_style_guardrails():
     payload = _prompt_payload(_signals())
 
     assert payload["style"]["name"] in {"market_desk", "signal_brief", "flow_context"}
+    assert "hard_facts" in payload
+    assert "allowed_interpretations" in payload
+    assert "unverified_context" in payload
+    assert "signals" not in payload
     assert any("professional market desk note" in item for item in payload["constraints"])
+    assert any("Do not state causal claims as fact" in item for item in payload["constraints"])
     assert any("Avoid repeating the same sentence structure" in item for item in payload["constraints"])
     assert "today's signal" in " ".join(payload["constraints"])
 
@@ -109,6 +114,32 @@ def test_replace_trading_framing_removes_trade_call_phrases():
         "Which has more staying power: the M&A narrative, "
         "acquisition narrative, or squeeze narrative?"
     )
+
+
+def test_deepseek_rejects_causal_claim_language(monkeypatch):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        return _FakeResponse(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps(
+                                {
+                                    "intro": "GOOGL leads because it passed Nvidia.",
+                                    "takeaway": "takeaway text",
+                                    "question": "question text?",
+                                }
+                            )
+                        }
+                    }
+                ]
+            }
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    with pytest.raises(DeepSeekError, match="blocked claim language"):
+        DeepSeekClient(api_key="test").generate_copy(_signals())
 
 
 class _Body:

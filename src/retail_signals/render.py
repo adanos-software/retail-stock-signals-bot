@@ -11,8 +11,8 @@ def render_title(signals: DailySignals) -> str:
     return (
         f"Daily Retail Stock Signals - {signals.date_label}: "
         f"{signals.top_buzz.ticker} Leads Buzz, "
-        f"{signals.cleanest_breakout.ticker} Shows Strong Sentiment, "
-        f"{signals.biggest_fade.ticker} Fades"
+        f"{signals.cleanest_breakout.ticker} Sentiment Improves, "
+        f"{signals.biggest_breakout.ticker} Moves Most"
     )
 
 
@@ -60,6 +60,7 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
 
 def _summary_block(label: str, signal: StockSignal) -> list[str]:
     metric_sentence = _summary_metric_sentence(label, signal)
+    metric_sentence = f"{metric_sentence} {_signal_read(label, signal)}"
     if signal.explanation:
         metric_sentence = f"{metric_sentence} {_ensure_sentence(signal.explanation)}"
     return [f"**{label}:** {signal.ticker}  ", metric_sentence]
@@ -80,6 +81,44 @@ def _summary_metric_sentence(label: str, signal: StockSignal) -> str:
             f"bullish vs. {_pct(signal.bearish_pct)} bearish** discussion."
         )
     return f"Buzz **{signal.buzz_score:.1f}**, sentiment **{signal.sentiment_label}**."
+
+
+def _signal_read(label: str, signal: StockSignal) -> str:
+    """Return a data-only interpretation of the signal."""
+    if label == "Top Buzz" and signal.trend == "falling":
+        return (
+            "This is sustained attention rather than fresh acceleration because "
+            "the trend label is **falling**."
+        )
+    if label == "Cleanest Sentiment Breakout":
+        if _has_bullish_confirmation(signal):
+            return (
+                "This is the cleanest sentiment breakout because buzz rose while "
+                "bullish discussion stayed clearly above bearish discussion."
+            )
+        return "This is a buzz breakout, but sentiment confirmation is mixed."
+    if label == "Biggest 7-Day Breakout":
+        if signal.sentiment_score is not None and signal.sentiment_score < 0.03:
+            return "The buzz move is large, but sentiment does not strongly confirm it."
+        return "This is the largest 7-day buzz increase in today's top set."
+    if label == "Biggest Fade":
+        if signal.sentiment_score is not None and signal.sentiment_score < -0.03:
+            return (
+                "This is the clearest caution signal because buzz moved lower "
+                "while sentiment is negative."
+            )
+        return (
+            "This is a fade in 7-day buzz, even though absolute attention may still be elevated."
+        )
+    return ""
+
+
+def _has_bullish_confirmation(signal: StockSignal) -> bool:
+    if signal.buzz_delta_7d is None or signal.buzz_delta_7d <= 0:
+        return False
+    if signal.sentiment_score is None or signal.sentiment_score < 0.05:
+        return False
+    return (signal.bullish_pct or 0) > (signal.bearish_pct or 0)
 
 
 def _top_buzz_line(index: int, signal: StockSignal) -> str:

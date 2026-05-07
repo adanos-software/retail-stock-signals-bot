@@ -2,6 +2,7 @@ import pytest
 
 from retail_signals.signals import (
     resolve_shared_narrative_explanations,
+    sanitize_explanation,
     select_daily_signals,
     tickers_requiring_explanations,
 )
@@ -102,10 +103,20 @@ def test_resolve_shared_narrative_replaces_generic_target_explanation():
     resolved = resolve_shared_narrative_explanations(
         signals,
         {
-            "GME": "GME is trending because GameStop is reportedly offering to buy eBay.",
+            "GME": "GME is trending because GameStop and eBay are being discussed together.",
             "EBAY": "EBAY shows mixed sentiment without a clear catalyst.",
         },
     )
 
     assert resolved["EBAY"].startswith("EBAY appears tied to the same GME/EBAY narrative")
-    assert "GameStop is reportedly offering to buy eBay" in resolved["EBAY"]
+    assert "GameStop and eBay are being discussed together" in resolved["EBAY"]
+
+
+def test_sanitize_explanation_reframes_safe_context_and_drops_unsafe_claims():
+    assert sanitize_explanation(
+        "GME",
+        "GME is trending because GameStop and eBay are being discussed together.",
+    ) == "Reddit discussion appears tied to: GameStop and eBay are being discussed together."
+    assert sanitize_explanation("GOOGL", "GOOGL is trending because Google passed Nvidia.") == ""
+    assert sanitize_explanation("JPM", "JPM is trending because a settlement was rejected.") == ""
+    assert sanitize_explanation("EBAY", "EBAY shows mixed sentiment without a clear catalyst.") == ""
