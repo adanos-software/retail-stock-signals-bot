@@ -66,12 +66,19 @@ def select_daily_signals(
         raise ValueError("trending_7d must not be empty")
 
     explanations = explanations or {}
-    today_signals = [_from_row(row, explanations=explanations) for row in trending_today]
+    today_signals = [
+        signal
+        for row in trending_today
+        if (signal := _from_row(row, explanations=explanations)) is not None
+    ]
     seven_day_signals = [
-        _from_row(row, explanations=explanations, include_delta=True)
+        signal
         for row in trending_7d
+        if (signal := _from_row(row, explanations=explanations, include_delta=True)) is not None
     ]
     seven_day_signals = [signal for signal in seven_day_signals if signal.buzz_delta_7d is not None]
+    if not today_signals:
+        raise ValueError("trending_today must include at least one valid ticker")
     if not seven_day_signals:
         raise ValueError("trending_7d rows must include trend_history")
 
@@ -163,10 +170,12 @@ def _from_row(
     *,
     explanations: dict[str, str],
     include_delta: bool = False,
-) -> StockSignal:
+) -> StockSignal | None:
     ticker = str(row.get("ticker") or "").strip().upper()
     if not ticker:
         raise ValueError("row missing ticker")
+    if not _is_public_stock_ticker(ticker):
+        return None
 
     buzz_delta = None
     buzz_start = None
@@ -204,6 +213,10 @@ def _optional_int(value: Any) -> int | None:
     if value is None:
         return None
     return int(value)
+
+
+def _is_public_stock_ticker(ticker: str) -> bool:
+    return not ticker.isdigit()
 
 
 def _selected_context_signals(signals: DailySignals) -> list[StockSignal]:

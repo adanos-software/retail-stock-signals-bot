@@ -91,7 +91,7 @@ def test_prompt_payload_includes_professional_style_guardrails():
     assert payload["style"]["name"] in {"market_desk", "signal_brief", "flow_context"}
     assert "hard_facts" in payload
     assert "allowed_interpretations" in payload
-    assert "unverified_context" in payload
+    assert payload["unverified_context"] == {}
     assert "signals" not in payload
     assert any("professional market desk note" in item for item in payload["constraints"])
     assert any("Do not state causal claims as fact" in item for item in payload["constraints"])

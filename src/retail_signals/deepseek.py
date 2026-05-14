@@ -126,7 +126,7 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
         ],
         "hard_facts": _hard_facts(signals),
         "allowed_interpretations": _allowed_interpretations(signals),
-        "unverified_context": _unverified_context(signals),
+        "unverified_context": {},
     }
 
 
@@ -184,16 +184,6 @@ def _allowed_interpretations(signals: DailySignals) -> list[str]:
             f"{signals.top_buzz.ticker} is sustained attention rather than fresh acceleration."
         )
     return interpretations
-
-
-def _unverified_context(signals: DailySignals) -> dict[str, str]:
-    selected = [
-        signals.top_buzz,
-        signals.cleanest_breakout,
-        signals.biggest_breakout,
-        signals.biggest_fade,
-    ]
-    return {signal.ticker: signal.explanation for signal in selected if signal.explanation}
 
 
 def _loads_json_object(content: str) -> dict[str, Any]:

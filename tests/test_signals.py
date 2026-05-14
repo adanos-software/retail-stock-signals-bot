@@ -73,6 +73,34 @@ def test_select_daily_signals_rejects_missing_7d_history():
         )
 
 
+def test_select_daily_signals_filters_numeric_tickers():
+    today = [
+        _row("7974", 90.0, 0.04, 31, 22, [91, 90]),
+        _row("NVDA", 82.0, 0.05, 35, 18, [80, 82]),
+    ]
+    seven_day = [
+        _row("7974", 90.0, 0.04, 31, 22, [95, 90]),
+        _row("BABA", 68.0, 0.05, 35, 18, [30, 68]),
+        _row("NKE", 61.0, -0.02, 20, 22, [66, 61], trend="falling"),
+    ]
+
+    signals = select_daily_signals(
+        date_label="May 14, 2026",
+        trending_today=today,
+        trending_7d=seven_day,
+    )
+
+    selected = [
+        signals.top_buzz.ticker,
+        signals.biggest_breakout.ticker,
+        signals.biggest_fade.ticker,
+        *[signal.ticker for signal in signals.movers],
+    ]
+    assert "7974" not in selected
+    assert signals.top_buzz.ticker == "NVDA"
+    assert signals.biggest_breakout.ticker == "BABA"
+
+
 def test_tickers_requiring_explanations_are_unique_and_ordered():
     rows = [
         _row("GME", 82, 0, 28, 28, [80, 82]),

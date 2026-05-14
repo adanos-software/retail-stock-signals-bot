@@ -16,7 +16,7 @@ def _row(ticker, buzz, sentiment, bullish, bearish, history, trend="rising"):
     }
 
 
-def test_render_post_uses_mobile_first_sections_and_explanations():
+def test_render_post_uses_mobile_first_sections_without_raw_explanations():
     rows = [
         _row("GME", 82.2, 0.007, 28, 28, [79.8, 82.2]),
         _row("XRX", 72.3, 0.161, 50, 16, [20.8, 71.0]),
@@ -34,7 +34,7 @@ def test_render_post_uses_mobile_first_sections_and_explanations():
     assert "### Signal Summary" in post
     assert "### 7-Day Movers" in post
     assert "| Ticker |" not in post
-    assert "GME is moving on a shared eBay narrative." in post
+    assert "GME is moving on a shared eBay narrative." not in post
     assert "Data-driven sentiment signal, not financial advice." in post
 
 

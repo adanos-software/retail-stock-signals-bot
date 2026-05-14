@@ -61,8 +61,6 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
 def _summary_block(label: str, signal: StockSignal) -> list[str]:
     metric_sentence = _summary_metric_sentence(label, signal)
     metric_sentence = f"{metric_sentence} {_signal_read(label, signal)}"
-    if signal.explanation:
-        metric_sentence = f"{metric_sentence} {_ensure_sentence(signal.explanation)}"
     return [f"**{label}:** {signal.ticker}  ", metric_sentence]
 
 
@@ -183,10 +181,3 @@ def _signed(value: float | None, *, decimals: int = 3) -> str:
     if value is None:
         return "n/a"
     return f"{value:+.{decimals}f}"
-
-
-def _ensure_sentence(text: str) -> str:
-    stripped = text.strip()
-    if not stripped:
-        return ""
-    return stripped if stripped.endswith((".", "!", "?")) else f"{stripped}."

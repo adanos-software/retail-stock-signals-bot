@@ -42,7 +42,7 @@ def test_cli_falls_back_when_deepseek_fails(monkeypatch, tmp_path, capsys):
     draft = output_path.read_text(encoding="utf-8")
     assert "Title: Daily Retail Stock Signals - May 4, 2026" in draft
     assert "Today's signal:" in draft
-    assert "Reddit discussion appears tied to: a shared eBay narrative is being discussed." in draft
+    assert "Reddit discussion appears tied to:" not in draft
 
 
 class _FakeAdanosClient:
