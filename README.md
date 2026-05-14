@@ -14,7 +14,8 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 - Uses deterministic guardrails for shared narratives, such as `GME` and `EBAY` moving on the same explanation.
 - Adds data-only signal reads for top buzz, sentiment breakout, 7-day breakout, and fade picks.
 - Sanitizes explain context so unverified or messy narrative claims do not appear as facts.
-- Uploads the generated `.md` draft as a GitHub Actions artifact.
+- Commits the generated `.md` draft under `public/` so Devvit can fetch it from `raw.githubusercontent.com`.
+- Uploads the generated `.md` draft as a GitHub Actions artifact for review.
 
 ## GitHub Secrets
 
@@ -48,7 +49,16 @@ retail-stock-signals --no-ai --output out/daily-retail-stock-signals.md
 
 `.github/workflows/daily-dry-run.yml` runs at 20:00 Europe/Berlin using two UTC cron slots plus a DST guard. It can also be run manually with `workflow_dispatch`.
 
-The workflow is dry-run only. It prints and uploads the Markdown draft; it does not submit anything to Reddit.
+The workflow generates the draft with the private Adanos and DeepSeek secrets, writes:
+
+```text
+public/daily-retail-stock-signals-YYYY-MM-DD.md
+public/daily-retail-stock-signals-latest.md
+```
+
+and commits those files back to `main`. The Devvit app then reads the dated file through `raw.githubusercontent.com` and submits it to Reddit. The workflow itself does not submit anything to Reddit.
+
+Important: Reddit Devvit can only fetch the Raw URL when the target file is publicly reachable. If this repository remains private, publish the `public/` drafts through a public mirror repository and configure the Devvit `draft_raw_base_url` setting to that mirror's Raw URL.
 
 ## AI Guardrails
 

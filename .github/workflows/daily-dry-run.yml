@@ -9,7 +9,7 @@ name: Daily Reddit Post Dry Run
     - cron: "0 19 * * *"
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -73,12 +73,30 @@ jobs:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           mkdir -p out
+          DATE_SLUG="$(TZ=Europe/Berlin date +%F)"
           retail-stock-signals --output "out/daily-retail-stock-signals.md"
-          sed -n '1,220p' out/daily-retail-stock-signals.md
+          mkdir -p public
+          cp out/daily-retail-stock-signals.md "public/daily-retail-stock-signals-${DATE_SLUG}.md"
+          cp out/daily-retail-stock-signals.md "public/daily-retail-stock-signals-latest.md"
+          sed -n '1,220p' "public/daily-retail-stock-signals-${DATE_SLUG}.md"
+
+      - name: Commit public draft
+        if: steps.schedule.outputs.should_run == 'true'
+        run: |
+          DATE_SLUG="$(TZ=Europe/Berlin date +%F)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "public/daily-retail-stock-signals-${DATE_SLUG}.md" "public/daily-retail-stock-signals-latest.md"
+          if git diff --cached --quiet; then
+            echo "No draft changes to commit."
+          else
+            git commit -m "Publish daily Reddit draft ${DATE_SLUG}"
+            git push
+          fi
 
       - name: Upload draft artifact
         if: steps.schedule.outputs.should_run == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: daily-retail-stock-signals
-          path: out/daily-retail-stock-signals.md
+          path: public/daily-retail-stock-signals-latest.md
