@@ -8,19 +8,25 @@ from retail_signals.signals import DailySignals, StockSignal
 
 def render_title(signals: DailySignals) -> str:
     """Render the Reddit post title."""
-    return (
-        f"Daily Retail Stock Signals - {signals.date_label}: "
-        f"{signals.top_buzz.ticker} Leads Buzz, "
-        f"{signals.cleanest_breakout.ticker} Sentiment Improves, "
-        f"{signals.biggest_breakout.ticker} Moves Most"
+    templates = [
+        "{top} Leads Buzz, {clean} Has Stronger Sentiment",
+        "{top} Buzz Leads, {clean} Sentiment Improves",
+        "{top} Leads Buzz, {big} Moves Most",
+    ]
+    template = templates[_rotation_index(signals.date_label, len(templates))]
+    suffix = template.format(
+        top=signals.top_buzz.ticker,
+        clean=signals.cleanest_breakout.ticker,
+        big=signals.biggest_breakout.ticker,
     )
+    return f"Daily Retail Stock Signals - {signals.date_label}: {suffix}"
 
 
 def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
     """Render mobile-first Reddit Markdown."""
-    intro = ai_copy.intro if ai_copy else _fallback_intro(signals)
+    intro = _contrast_intro(signals)
     takeaway = ai_copy.takeaway if ai_copy else _fallback_takeaway(signals)
-    question = ai_copy.question if ai_copy else _fallback_question(signals)
+    question = _engagement_question(signals)
 
     lines = [
         f"# Daily Retail Stock Signals - {signals.date_label}",
@@ -31,11 +37,11 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
         "",
         *_summary_block("Top Buzz", signals.top_buzz),
         "",
-        *_summary_block("Cleanest Sentiment Breakout", signals.cleanest_breakout),
+        *_summary_block("Best Sentiment Read", signals.cleanest_breakout),
         "",
-        *_summary_block("Biggest 7-Day Breakout", signals.biggest_breakout),
+        *_summary_block("Largest 7-Day Buzz Move", signals.biggest_breakout),
         "",
-        *_summary_block("Biggest Fade", signals.biggest_fade),
+        *_summary_block("7-Day Buzz Fade", signals.biggest_fade),
         "",
         "### Top Buzz",
         "",
@@ -59,55 +65,47 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
 
 
 def _summary_block(label: str, signal: StockSignal) -> list[str]:
-    metric_sentence = _summary_metric_sentence(label, signal)
-    metric_sentence = f"{metric_sentence} {_signal_read(label, signal)}"
-    return [f"**{label}:** {signal.ticker}  ", metric_sentence]
+    return [
+        f"**{label}: {signal.ticker}**  ",
+        _summary_metric_line(label, signal),
+        _signal_read(label, signal),
+    ]
 
 
-def _summary_metric_sentence(label: str, signal: StockSignal) -> str:
+def _summary_metric_line(label: str, signal: StockSignal) -> str:
     if label == "Top Buzz":
         return (
-            f"Buzz **{signal.buzz_score:.1f}**, sentiment **{signal.sentiment_label}**, "
-            f"bullish/bearish split **{_pct(signal.bullish_pct)} / {_pct(signal.bearish_pct)}**."
+            f"Buzz **{signal.buzz_score:.1f}** | Sentiment **{signal.sentiment_label}** | "
+            f"Bull/Bear **{_pct(signal.bullish_pct)} / {_pct(signal.bearish_pct)}**  "
         )
     if signal.buzz_delta_7d is not None:
-        direction = "moved" if signal.buzz_delta_7d >= 0 else "dropped"
         return (
-            f"7-day buzz {direction} from **{signal.buzz_start_7d:.1f} to "
-            f"{signal.buzz_end_7d:.1f}**. Sentiment is **{signal.sentiment_label}** "
-            f"at **{_signed(signal.sentiment_score)}**, with **{_pct(signal.bullish_pct)} "
-            f"bullish vs. {_pct(signal.bearish_pct)} bearish** discussion."
+            f"7D Buzz **{_signed(signal.buzz_delta_7d, decimals=1)}** "
+            f"({_fmt(signal.buzz_start_7d)} -> {_fmt(signal.buzz_end_7d)}) | "
+            f"Sentiment **{signal.sentiment_label}** ({_signed(signal.sentiment_score)}) | "
+            f"Bull/Bear **{_pct(signal.bullish_pct)} / {_pct(signal.bearish_pct)}**  "
         )
-    return f"Buzz **{signal.buzz_score:.1f}**, sentiment **{signal.sentiment_label}**."
+    return f"Buzz **{signal.buzz_score:.1f}** | Sentiment **{signal.sentiment_label}**  "
 
 
 def _signal_read(label: str, signal: StockSignal) -> str:
     """Return a data-only interpretation of the signal."""
     if label == "Top Buzz" and signal.trend == "falling":
-        return (
-            "This is sustained attention rather than fresh acceleration because "
-            "the trend label is **falling**."
-        )
-    if label == "Cleanest Sentiment Breakout":
+        return "High absolute attention, but the falling trend label makes it look more like sustained buzz than fresh acceleration."
+    if label == "Top Buzz":
+        return "The broadest attention signal in today's Reddit data."
+    if label == "Best Sentiment Read":
         if _has_bullish_confirmation(signal):
-            return (
-                "This is the cleanest sentiment breakout because buzz rose while "
-                "bullish discussion stayed clearly above bearish discussion."
-            )
-        return "This is a buzz breakout, but sentiment confirmation is mixed."
-    if label == "Biggest 7-Day Breakout":
+            return "The best-confirmed sentiment read: buzz rose and bullish discussion stayed clearly ahead of bearish discussion."
+        return "A buzz mover with mixed sentiment confirmation."
+    if label == "Largest 7-Day Buzz Move":
         if signal.sentiment_score is not None and signal.sentiment_score < 0.03:
-            return "The buzz move is large, but sentiment does not strongly confirm it."
-        return "This is the largest 7-day buzz increase in today's top set."
-    if label == "Biggest Fade":
+            return "The largest attention jump, but sentiment does not strongly confirm it."
+        return "The fastest 7-day attention expansion in today's top set."
+    if label == "7-Day Buzz Fade":
         if signal.sentiment_score is not None and signal.sentiment_score < -0.03:
-            return (
-                "This is the clearest caution signal because buzz moved lower "
-                "while sentiment is negative."
-            )
-        return (
-            "This is a fade in 7-day buzz, even though absolute attention may still be elevated."
-        )
+            return "Attention cooled while sentiment was negative, making it the clearest caution read."
+        return "Attention cooled over 7 days, but the sentiment read is not strongly negative."
     return ""
 
 
@@ -148,28 +146,52 @@ def _mover_descriptor(signal: StockSignal) -> str:
     return "buzz up, sentiment neutral"
 
 
-def _fallback_intro(signals: DailySignals) -> str:
+def _contrast_intro(signals: DailySignals) -> str:
+    if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
+        return (
+            f"Today's split: **{signals.top_buzz.ticker}** had the attention, "
+            f"**{signals.cleanest_breakout.ticker}** had the cleaner sentiment read, "
+            f"and **{signals.biggest_breakout.ticker}** drew the largest 7-day buzz jump with negative sentiment."
+        )
+    if signals.top_buzz.ticker != signals.cleanest_breakout.ticker:
+        return (
+            f"Today's split: **{signals.top_buzz.ticker}** led raw buzz, but "
+            f"**{signals.cleanest_breakout.ticker}** had the cleaner sentiment profile."
+        )
     return (
-        f"Today's signal: **{signals.top_buzz.ticker}** has the strongest Reddit buzz, "
-        f"**{signals.cleanest_breakout.ticker}** is the cleanest sentiment breakout, "
-        f"and **{signals.biggest_fade.ticker}** is the clearest 7-day fade."
+        f"Today's signal is more aligned: **{signals.top_buzz.ticker}** led buzz and also carried "
+        f"the strongest sentiment profile in today's top set."
     )
 
 
 def _fallback_takeaway(signals: DailySignals) -> str:
+    if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
+        return (
+            f"Raw attention and sentiment quality split today: **{signals.top_buzz.ticker}** led buzz, "
+            f"while **{signals.cleanest_breakout.ticker}** had the cleaner sentiment read. "
+            f"**{signals.biggest_breakout.ticker}** had the largest 7-day buzz jump, but sentiment was negative."
+        )
     return (
-        f"**{signals.top_buzz.ticker}** is today's attention leader, but the cleaner "
-        f"sentiment signal is **{signals.cleanest_breakout.ticker}**. "
-        f"**{signals.biggest_breakout.ticker}** has the biggest 7-day buzz move, while "
-        f"**{signals.biggest_fade.ticker}** is the main caution signal."
+        f"**{signals.top_buzz.ticker}** led attention, while **{signals.cleanest_breakout.ticker}** "
+        f"had the cleaner sentiment profile. **{signals.biggest_breakout.ticker}** was the main "
+        f"7-day buzz mover and **{signals.biggest_fade.ticker}** showed the clearest attention fade."
     )
 
 
-def _fallback_question(signals: DailySignals) -> str:
+def _engagement_question(signals: DailySignals) -> str:
+    if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
+        return (
+            f"Which would you weigh more today: **{signals.cleanest_breakout.ticker}'s cleaner sentiment** "
+            f"or **{signals.biggest_breakout.ticker}'s larger but negative buzz spike**?"
+        )
+    if signals.top_buzz.ticker != signals.cleanest_breakout.ticker:
+        return (
+            f"Would you trust **{signals.top_buzz.ticker}'s broad attention** or "
+            f"**{signals.cleanest_breakout.ticker}'s cleaner sentiment read** more here?"
+        )
     return (
-        f"Which signal looks more meaningful today: **{signals.top_buzz.ticker} attention**, "
-        f"**{signals.cleanest_breakout.ticker} sentiment**, or "
-        f"**{signals.biggest_fade.ticker} fade**?"
+        f"Is **{signals.top_buzz.ticker}** more interesting here as a buzz leader, "
+        f"a sentiment signal, or both?"
     )
 
 
@@ -181,3 +203,11 @@ def _signed(value: float | None, *, decimals: int = 3) -> str:
     if value is None:
         return "n/a"
     return f"{value:+.{decimals}f}"
+
+
+def _fmt(value: float | None) -> str:
+    return "n/a" if value is None else f"{value:.1f}"
+
+
+def _rotation_index(seed: str, count: int) -> int:
+    return sum(seed.encode("utf-8")) % count

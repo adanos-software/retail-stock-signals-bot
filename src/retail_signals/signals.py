@@ -110,7 +110,7 @@ def select_daily_signals(
         biggest_breakout=gainers[0],
         biggest_fade=faders[0],
         top_buzz_list=sorted(today_signals, key=lambda signal: signal.buzz_score, reverse=True)[:5],
-        movers=[*gainers[:5], *faders[:3]],
+        movers=_unique_signals([*gainers[:5], *faders[:3]]),
     )
 
 
@@ -217,6 +217,16 @@ def _optional_int(value: Any) -> int | None:
 
 def _is_public_stock_ticker(ticker: str) -> bool:
     return not ticker.isdigit()
+
+
+def _unique_signals(signals: list[StockSignal]) -> list[StockSignal]:
+    seen: set[str] = set()
+    result: list[StockSignal] = []
+    for signal in signals:
+        if signal.ticker not in seen:
+            result.append(signal)
+            seen.add(signal.ticker)
+    return result
 
 
 def _selected_context_signals(signals: DailySignals) -> list[StockSignal]:

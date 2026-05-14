@@ -101,6 +101,22 @@ def test_select_daily_signals_filters_numeric_tickers():
     assert signals.biggest_breakout.ticker == "BABA"
 
 
+def test_select_daily_signals_deduplicates_movers():
+    rows = [
+        _row("AAA", 80.0, 0.05, 35, 20, [70, 80]),
+        _row("BBB", 70.0, 0.02, 25, 20, [75, 70], trend="falling"),
+    ]
+
+    signals = select_daily_signals(
+        date_label="May 14, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+
+    mover_tickers = [signal.ticker for signal in signals.movers]
+    assert mover_tickers == ["AAA", "BBB"]
+
+
 def test_tickers_requiring_explanations_are_unique_and_ordered():
     rows = [
         _row("GME", 82, 0, 28, 28, [80, 82]),

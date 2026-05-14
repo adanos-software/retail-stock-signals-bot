@@ -41,7 +41,7 @@ def test_cli_falls_back_when_deepseek_fails(monkeypatch, tmp_path, capsys):
     assert "DeepSeek disabled for this run: unit failure" in captured.err
     draft = output_path.read_text(encoding="utf-8")
     assert "Title: Daily Retail Stock Signals - May 4, 2026" in draft
-    assert "Today's signal:" in draft
+    assert "Today's split:" in draft
     assert "Reddit discussion appears tied to:" not in draft
 
 

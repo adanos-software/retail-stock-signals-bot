@@ -58,7 +58,7 @@ def test_loads_json_object_tolerates_markdown_fence():
     assert decoded == {"intro": "a", "takeaway": "b", "question": "c"}
 
 
-def test_deepseek_accepts_task_alias_for_intro(monkeypatch):
+def test_deepseek_accepts_valid_takeaway(monkeypatch):
     def fake_urlopen(request, timeout):  # noqa: ARG001
         return _FakeResponse(
             {
@@ -67,9 +67,7 @@ def test_deepseek_accepts_task_alias_for_intro(monkeypatch):
                         "message": {
                             "content": json.dumps(
                                 {
-                                    "task": "intro text",
                                     "takeaway": "takeaway text",
-                                    "question": "question text?",
                                 }
                             )
                         }
@@ -82,7 +80,7 @@ def test_deepseek_accepts_task_alias_for_intro(monkeypatch):
 
     copy = DeepSeekClient(api_key="test").generate_copy(_signals())
 
-    assert copy.intro == "intro text"
+    assert copy.takeaway == "takeaway text"
 
 
 def test_prompt_payload_includes_professional_style_guardrails():
@@ -95,7 +93,7 @@ def test_prompt_payload_includes_professional_style_guardrails():
     assert "signals" not in payload
     assert any("professional market desk note" in item for item in payload["constraints"])
     assert any("Do not state causal claims as fact" in item for item in payload["constraints"])
-    assert any("Avoid repeating the same sentence structure" in item for item in payload["constraints"])
+    assert any("avoid generic AI phrasing" in item for item in payload["constraints"])
     assert "today's signal" in " ".join(payload["constraints"])
 
 
@@ -125,9 +123,31 @@ def test_deepseek_rejects_causal_claim_language(monkeypatch):
                         "message": {
                             "content": json.dumps(
                                 {
-                                    "intro": "GOOGL leads because it passed Nvidia.",
-                                    "takeaway": "takeaway text",
-                                    "question": "question text?",
+                                    "takeaway": "GOOGL leads because it passed Nvidia.",
+                                }
+                            )
+                        }
+                    }
+                ]
+            }
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    with pytest.raises(DeepSeekError, match="blocked claim language"):
+        DeepSeekClient(api_key="test").generate_copy(_signals())
+
+
+def test_deepseek_rejects_internal_filtering_language(monkeypatch):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        return _FakeResponse(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps(
+                                {
+                                    "takeaway": "After filtering an ambiguous ticker, the cleaned list looks better.",
                                 }
                             )
                         }

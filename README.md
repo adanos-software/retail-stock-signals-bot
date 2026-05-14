@@ -9,10 +9,10 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 - Fetches stock-only Reddit trending data from Adanos.
 - Selects top buzz, cleanest sentiment breakout, biggest 7-day breakout, and biggest fade.
 - Fetches Adanos explain context for selected tickers, but does not print raw explain text directly.
-- Optionally asks DeepSeek to polish only the intro, takeaway, and engagement question.
+- Optionally asks DeepSeek to polish the takeaway while deterministic templates own the hook, facts, and engagement question.
 - Falls back to deterministic prose when DeepSeek is unavailable.
 - Uses deterministic guardrails for shared narratives, such as `GME` and `EBAY` moving on the same explanation.
-- Adds data-only signal reads for top buzz, sentiment breakout, 7-day breakout, and fade picks.
+- Adds contrast-first hooks, rotating SEO-safe titles, compact mobile metric lines, and data-only signal reads.
 - Sanitizes generated content so unverified or messy narrative claims do not appear as facts.
 - Filters numeric non-US ticker symbols from the Reddit post.
 - Commits the generated `.md` draft under `public/` so Devvit can fetch it from `raw.githubusercontent.com`.
@@ -63,15 +63,18 @@ Important: Reddit Devvit can only fetch the Raw URL when the target file is publ
 
 ## AI Guardrails
 
-DeepSeek receives structured `hard_facts` and deterministic `allowed_interpretations`. It is only allowed to rewrite the intro, takeaway, and engagement question.
+DeepSeek receives structured `hard_facts` and deterministic `allowed_interpretations`. The renderer owns the title, first-line hook, facts, signal summary, final question, and disclaimer. DeepSeek output is limited to non-factual prose polish and falls back to deterministic copy when it fails guardrails.
 
 The deterministic renderer still owns:
 
 - ticker selection
+- contrast-first intro
+- SEO-safe title variation
 - buzz and sentiment numbers
 - 7-day mover ordering
 - signal-quality interpretation
 - raw explain-context exclusion from the public body
+- final engagement question
 - disclaimer text
 
 If DeepSeek returns invalid JSON, times out, omits required fields, or adds blocked claim language such as hard causal/news/trading claims, the CLI logs a warning and uses deterministic fallback copy.

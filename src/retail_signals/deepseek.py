@@ -22,9 +22,7 @@ class DeepSeekError(RuntimeError):
 class AiCopy:
     """Structured prose that can safely be inserted into the renderer."""
 
-    intro: str
     takeaway: str
-    question: str
 
 
 @dataclass(frozen=True)
@@ -49,10 +47,9 @@ class DeepSeekClient:
                     "role": "system",
                     "content": (
                         "You edit concise Reddit market-sentiment briefs. Use only "
-                        "hard_facts and allowed_interpretations. Treat unverified_context "
-                        "as optional Reddit discussion context, not truth. Do not add "
-                        "causes, news, deals, lawsuits, prices, recommendations, or "
-                        "financial advice. Return valid JSON only."
+                        "hard_facts and allowed_interpretations. Do not add causes, "
+                        "news, deals, lawsuits, prices, recommendations, or financial "
+                        "advice. Return valid JSON only."
                     ),
                 },
                 {
@@ -66,9 +63,7 @@ class DeepSeekClient:
             content = data["choices"][0]["message"]["content"]
             decoded = _loads_json_object(content)
             return AiCopy(
-                intro=_clean_text(decoded.get("intro", decoded.get("task")), max_chars=360),
                 takeaway=_clean_text(decoded["takeaway"], max_chars=520),
-                question=_clean_text(decoded["question"], max_chars=180),
             )
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             raise DeepSeekError("DeepSeek returned an invalid JSON response") from exc
@@ -105,23 +100,19 @@ class DeepSeekClient:
 def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
     return {
         "output_schema": {
-            "intro": "one sentence: top buzz, cleanest sentiment breakout, biggest breakout, biggest fade",
             "takeaway": "2-3 concise sentences focused on buzz/sentiment context",
-            "question": "one engagement question comparing 2-3 signals",
         },
         "style": _style_profile(signals.date_label),
         "constraints": [
             "No buy/sell/hold language",
             "No price predictions",
             "Use only hard_facts and allowed_interpretations",
-            "Treat unverified_context as optional context, not verified truth",
             "Do not state causal claims as fact",
             "Do not mention external news, deals, lawsuits, earnings, market-cap milestones, or partnerships",
             "Sound like a professional market desk note, not a hype post and not generic AI copy",
-            "Avoid repeating the same sentence structure across intro, takeaway, and question",
+            "Use compact sentence structure and avoid generic AI phrasing",
             "Avoid stale phrases such as today's signal, stands out, cleanest signal, worth watching, and only time will tell",
             "Avoid trading-framing words such as setup, play, entry, exit, target, conviction, or compelling",
-            "Mention that a shared narrative is shared when explanations overlap",
             "Keep wording plain and Reddit-native",
         ],
         "hard_facts": _hard_facts(signals),
@@ -216,21 +207,15 @@ def _style_profile(date_label: str) -> dict[str, str]:
     profiles = [
         {
             "name": "market_desk",
-            "intro_shape": "Lead with the dominant narrative, then contrast momentum and fade names.",
             "takeaway_shape": "Explain what is driving attention, where sentiment confirms it, and where it conflicts.",
-            "question_shape": "Ask readers to compare narrative quality rather than predict prices.",
         },
         {
             "name": "signal_brief",
-            "intro_shape": "Start with the highest-buzz ticker, then name the strongest sentiment and fade signals.",
             "takeaway_shape": "Separate attention from sentiment and call out shared narratives when relevant.",
-            "question_shape": "Ask which data signal looks most meaningful.",
         },
         {
             "name": "flow_context",
-            "intro_shape": "Frame the post around what retail attention is rotating toward and away from.",
             "takeaway_shape": "Focus on buzz direction, sentiment tilt, and whether context supports the move.",
-            "question_shape": "Ask readers which narrative has the cleaner data behind it.",
         },
     ]
     return profiles[sum(date_label.encode("utf-8")) % len(profiles)]
@@ -269,6 +254,11 @@ def _contains_blocked_claim_language(text: str) -> bool:
         " earnings",
         " market cap",
         " passed nvidia",
+        " ambiguous",
+        " cleanup",
+        " cleaned",
+        " filter",
+        " filtered",
         " will ",
         " buy ",
         " sell ",
