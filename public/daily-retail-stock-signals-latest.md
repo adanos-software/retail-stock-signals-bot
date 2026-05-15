@@ -7,7 +7,7 @@ Today's split: **NVDA** led raw buzz, but **TTM** had the cleaner sentiment prof
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **82.0** | Sentiment **positive** | Bull/Bear **30% / 21%**  
+Buzz **82.0** | Sentiment **positive** | Bull/Bear **30% / 20%**  
 The broadest attention signal in today's Reddit data.
 
 **Best Sentiment Read: TTM**  
@@ -26,9 +26,9 @@ Attention cooled over 7 days, but the sentiment read is not strongly negative.
 
 **1. NVDA** - Buzz **82.0**, sentiment **positive**, rising  
 **2. MSFT** - Buzz **80.8**, sentiment **positive**, rising  
-**3. AMZN** - Buzz **78.1**, sentiment **strong positive**, stable  
-**4. GOOGL** - Buzz **77.8**, sentiment **strong positive**, rising  
-**5. INTC** - Buzz **77.8**, sentiment **neutral**, falling  
+**3. AMZN** - Buzz **78.2**, sentiment **strong positive**, stable  
+**4. AAPL** - Buzz **78.0**, sentiment **neutral**, rising  
+**5. INTC** - Buzz **77.9**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
@@ -43,7 +43,7 @@ Attention cooled over 7 days, but the sentiment read is not strongly negative.
 
 ### Takeaway
 
-NVDA leads on absolute buzz, but sentiment is only mildly positive with a wide bull-bear gap. TTM shows the cleanest sentiment profile with strong positive tilt and low bearish chatter. SHOP's buzz surged sharply over the week, though sentiment remains neutral, suggesting volume-driven attention rather than conviction.
+NVDA leads absolute buzz, but sentiment is only mildly positive. TTM shows the cleanest bullish tilt with a strong positive score and high bull/bear ratio. SHOP's buzz surged sharply but sentiment remains neutral, suggesting volume without conviction.
 
 Would you trust **NVDA's broad attention** or **TTM's cleaner sentiment read** more here?
 
