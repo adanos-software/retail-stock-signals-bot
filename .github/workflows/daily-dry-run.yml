@@ -3,10 +3,10 @@ name: Daily Reddit Post Dry Run
 "on":
   workflow_dispatch: {}
   schedule:
-    # 20:00 Europe/Berlin => 18:00 UTC during CEST.
-    - cron: "0 18 * * *"
-    # 20:00 Europe/Berlin => 19:00 UTC during CET.
-    - cron: "0 19 * * *"
+    # 19:55 Europe/Berlin => 17:55 UTC during CEST.
+    - cron: "55 17 * * *"
+    # 19:55 Europe/Berlin => 18:55 UTC during CET.
+    - cron: "55 18 * * *"
 
 permissions:
   contents: write
@@ -35,7 +35,7 @@ jobs:
           event_schedule = os.environ.get("EVENT_SCHEDULE", "")
           now = datetime.now(ZoneInfo("Europe/Berlin"))
           offset_hours = int(now.utcoffset().total_seconds() // 3600)
-          expected_schedule = "0 18 * * *" if offset_hours == 2 else "0 19 * * *"
+          expected_schedule = "55 17 * * *" if offset_hours == 2 else "55 18 * * *"
           should_run = event_name == "workflow_dispatch" or event_schedule == expected_schedule
           reason = (
               "manual dispatch"
@@ -86,12 +86,21 @@ jobs:
           DATE_SLUG="$(TZ=Europe/Berlin date +%F)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash origin main
           git add "public/daily-retail-stock-signals-${DATE_SLUG}.md" "public/daily-retail-stock-signals-latest.md"
           if git diff --cached --quiet; then
             echo "No draft changes to commit."
           else
             git commit -m "Publish daily Reddit draft ${DATE_SLUG}"
-            git push
+            for attempt in 1 2 3; do
+              if git push; then
+                exit 0
+              fi
+              if [ "$attempt" -eq 3 ]; then
+                exit 1
+              fi
+              git pull --rebase --autostash origin main
+            done
           fi
 
       - name: Upload draft artifact
