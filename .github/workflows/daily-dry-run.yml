@@ -3,10 +3,10 @@ name: Daily Reddit Post Dry Run
 "on":
   workflow_dispatch: {}
   schedule:
-    # 19:55 Europe/Berlin => 17:55 UTC during CEST.
-    - cron: "55 17 * * *"
-    # 19:55 Europe/Berlin => 18:55 UTC during CET.
-    - cron: "55 18 * * *"
+    # 17:55 Europe/Berlin => 15:55 UTC during CEST.
+    - cron: "55 15 * * *"
+    # 17:55 Europe/Berlin => 16:55 UTC during CET.
+    - cron: "55 16 * * *"
 
 permissions:
   contents: write
@@ -35,7 +35,7 @@ jobs:
           event_schedule = os.environ.get("EVENT_SCHEDULE", "")
           now = datetime.now(ZoneInfo("Europe/Berlin"))
           offset_hours = int(now.utcoffset().total_seconds() // 3600)
-          expected_schedule = "55 17 * * *" if offset_hours == 2 else "55 18 * * *"
+          expected_schedule = "55 15 * * *" if offset_hours == 2 else "55 16 * * *"
           should_run = event_name == "workflow_dispatch" or event_schedule == expected_schedule
           reason = (
               "manual dispatch"
