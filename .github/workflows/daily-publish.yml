@@ -1,4 +1,4 @@
-name: Daily Reddit Post Dry Run
+name: Daily Reddit Post Publish
 
 "on":
   workflow_dispatch: {}

@@ -48,7 +48,7 @@ retail-stock-signals --no-ai --output out/daily-retail-stock-signals.md
 
 ## Workflow
 
-`.github/workflows/daily-dry-run.yml` runs at 17:55 Europe/Berlin using two
+`.github/workflows/daily-publish.yml` runs at 17:55 Europe/Berlin using two
 UTC cron slots plus a DST guard. The `:55` schedule avoids GitHub Actions'
 high-load `:00` cron window and keeps the dated draft ready before Devvit's
 publisher. It can also be run manually with `workflow_dispatch`.
