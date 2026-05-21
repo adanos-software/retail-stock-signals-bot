@@ -6,19 +6,19 @@ Today's split: **NVDA** led raw buzz, but **GRPN** had the cleaner sentiment pro
 
 **Top Buzz: NVDA**  
 Buzz **83.7** | Sentiment **neutral** | Bull/Bear **24% / 19%**  
-NVDA has the widest attention, while Reddit discussion points to a sharp increase in quarterly revenue, with major demand driven by the arrival of agentic AI; neutral sentiment keeps it from reading like broad bullish confirmation.
+**NVDA** still owns the widest attention, but the neutral sentiment and narrow bull/bear spread make this look more like an AI-demand/revenue attention story than broad bullish confirmation.
 
 **Best Sentiment Read: GRPN**  
 7D Buzz **+13.9** (52.0 -> 65.9) | Sentiment **strong positive** (+0.155) | Bull/Bear **40% / 11%**  
-GRPN is the cleaner sentiment read: buzz rose, bulls led bears, and Reddit discussion points to a sharp increase in short interest and optimism around buybacks, offset by concern about the potential for a short squeeze.
+**GRPN** is the cleaner sentiment read: buzz rose, bulls led bears by a wide margin, and Reddit context centers on short interest plus buyback optimism rather than generic market-wide attention.
 
 **Largest 7-Day Buzz Move: WDC**  
 7D Buzz **+29.2** (38.4 -> 67.6) | Sentiment **positive** (+0.069) | Bull/Bear **28% / 10%**  
-WDC had the fastest 7-day attention expansion, with Reddit discussion pointing to sharp growth in the memory sector, driven by AI data centers' massive demand for high-bandwidth memory, with optimism around this trend offset by concern about market competition.
+**WDC** is the real acceleration signal: buzz jumped the most, sentiment is positive, and the discussion is centered on AI data-center demand for memory rather than a one-off ticker mention spike.
 
 **7-Day Buzz Fade: BA**  
 7D Buzz **-5.3** (77.7 -> 72.4) | Sentiment **negative** (-0.037) | Bull/Bear **19% / 27%**  
-BA cooled while sentiment was negative, and Reddit discussion points to china agreed to buy a major number of Boeing jets, offset by concern that the deal may not be as significant as initially thought.
+**BA** is the caution read: attention faded while sentiment skewed negative, so the Boeing jet-order discussion did not translate into stronger retail confidence.
 
 ### Top Buzz
 
@@ -41,9 +41,9 @@ BA cooled while sentiment was negative, and Reddit discussion points to china ag
 
 ### Takeaway
 
-**NVDA** led attention, while **GRPN** had the cleaner sentiment profile. **WDC** was the main 7-day buzz mover and **BA** showed the clearest attention fade. Reddit context adds another split: **NVDA** points to a sharp increase in quarterly revenue, with major demand driven by the arrival of agentic AI, while **GRPN** points to a sharp increase in short interest and optimism around buybacks, offset by concern about the potential for a short squeeze
+The useful split today is not just buzz versus sentiment. **NVDA** remains the attention anchor, **GRPN** has the cleanest sentiment skew, and **WDC** is the strongest fresh acceleration because its buzz jump comes with positive sentiment. **BA** sits on the other side of the board: fading attention plus negative sentiment, even with a newsy Reddit narrative in the background.
 
-Which part matters more here: **GRPN's sentiment quality** or the context behind **WDC's buzz spike**?
+Which signal matters more here: **NVDA's durable attention**, **GRPN's cleaner sentiment**, or **WDC's faster acceleration**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.

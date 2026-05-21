@@ -80,7 +80,7 @@ The deterministic renderer still owns:
 - final engagement question
 - disclaimer text
 
-If DeepSeek returns invalid JSON, times out, omits required fields, or adds blocked claim language such as hard causal/news/trading claims, the CLI logs a warning and uses deterministic fallback copy.
+If DeepSeek returns invalid JSON, times out, or produces no usable fields, the CLI logs a warning and uses deterministic fallback copy. Individual DeepSeek fields that fail guardrails are discarded without throwing away otherwise usable signal analysis.
 
 Explain endpoint text is treated as unverified context, not verified fact. The public Reddit body frames it as Reddit discussion context and strips trading-call phrasing before rendering.
 

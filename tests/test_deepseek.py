@@ -147,7 +147,7 @@ def test_replace_trading_framing_removes_trade_call_phrases():
     )
 
 
-def test_deepseek_rejects_causal_claim_language(monkeypatch):
+def test_deepseek_softens_causal_claim_language(monkeypatch):
     def fake_urlopen(request, timeout):  # noqa: ARG001
         return _FakeResponse(
             {
@@ -156,7 +156,7 @@ def test_deepseek_rejects_causal_claim_language(monkeypatch):
                         "message": {
                             "content": json.dumps(
                                 {
-                                    "takeaway": "GOOGL leads because it passed Nvidia.",
+                                    "takeaway": "GOOGL leads because attention is tied to AI demand.",
                                 }
                             )
                         }
@@ -167,8 +167,9 @@ def test_deepseek_rejects_causal_claim_language(monkeypatch):
 
     monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
 
-    with pytest.raises(DeepSeekError, match="blocked claim language"):
-        DeepSeekClient(api_key="test").generate_copy(_signals())
+    copy = DeepSeekClient(api_key="test").generate_copy(_signals())
+
+    assert copy.takeaway == "GOOGL leads as attention is tied to AI demand."
 
 
 def test_deepseek_rejects_internal_filtering_language(monkeypatch):
@@ -191,8 +192,42 @@ def test_deepseek_rejects_internal_filtering_language(monkeypatch):
 
     monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
 
-    with pytest.raises(DeepSeekError, match="blocked claim language"):
+    with pytest.raises(DeepSeekError, match="no usable copy"):
         DeepSeekClient(api_key="test").generate_copy(_signals())
+
+
+def test_deepseek_keeps_valid_signal_reads_when_takeaway_is_rejected(monkeypatch):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        return _FakeResponse(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": json.dumps(
+                                {
+                                    "takeaway": "After filtering an ambiguous ticker, the cleaned list looks better.",
+                                    "signal_reads": {
+                                        "top_buzz": "NVDA leads attention because AI demand is the main Reddit context.",
+                                        "cleanest_breakout": "After filtering, this should be rejected.",
+                                        "biggest_breakout": "WDC shows stronger buzz tied to AI memory demand.",
+                                    },
+                                }
+                            )
+                        }
+                    }
+                ]
+            }
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    copy = DeepSeekClient(api_key="test").generate_copy(_signals())
+
+    assert copy.takeaway == ""
+    assert copy.signal_reads == {
+        "top_buzz": "NVDA leads attention as AI demand is the main Reddit context.",
+        "biggest_breakout": "WDC shows stronger buzz tied to AI memory demand.",
+    }
 
 
 class _Body:

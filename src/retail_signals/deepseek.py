@@ -64,10 +64,11 @@ class DeepSeekClient:
         try:
             content = data["choices"][0]["message"]["content"]
             decoded = _loads_json_object(content)
-            return AiCopy(
-                takeaway=_clean_text(decoded["takeaway"], max_chars=520),
-                signal_reads=_clean_signal_reads(decoded.get("signal_reads")),
-            )
+            takeaway = _clean_optional_text(decoded.get("takeaway"), max_chars=520)
+            signal_reads = _clean_signal_reads(decoded.get("signal_reads"))
+            if not takeaway and not signal_reads:
+                raise DeepSeekError("DeepSeek returned no usable copy")
+            return AiCopy(takeaway=takeaway, signal_reads=signal_reads)
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             raise DeepSeekError("DeepSeek returned an invalid JSON response") from exc
 
@@ -139,19 +140,29 @@ def _clean_text(value: Any, *, max_chars: int) -> str:
     if not cleaned:
         raise DeepSeekError("DeepSeek field is empty")
     cleaned = _replace_trading_framing(cleaned)
+    cleaned = _soften_claim_language(cleaned)
     if _contains_blocked_claim_language(cleaned):
         raise DeepSeekError("DeepSeek field contains blocked claim language")
     return cleaned[:max_chars].rstrip()
 
 
+def _clean_optional_text(value: Any, *, max_chars: int) -> str:
+    try:
+        return _clean_text(value, max_chars=max_chars)
+    except DeepSeekError:
+        return ""
+
+
 def _clean_signal_reads(value: Any) -> dict[str, str]:
     if not isinstance(value, dict):
-        raise DeepSeekError("DeepSeek signal_reads field is not an object")
+        return {}
 
     expected = ["top_buzz", "cleanest_breakout", "biggest_breakout", "biggest_fade"]
     cleaned: dict[str, str] = {}
     for key in expected:
-        cleaned[key] = _clean_text(value.get(key), max_chars=260)
+        field = _clean_optional_text(value.get(key), max_chars=260)
+        if field:
+            cleaned[key] = field
     return cleaned
 
 
@@ -272,15 +283,25 @@ def _replace_trading_framing(text: str) -> str:
     return cleaned
 
 
+def _soften_claim_language(text: str) -> str:
+    """Convert hard causal phrasing into softer Reddit-context phrasing."""
+    replacements = {
+        " because ": " as ",
+        " after ": " around ",
+        " following ": " around ",
+        " driven by ": " tied to ",
+        " fueled by ": " tied to ",
+        " sparked by ": " tied to ",
+    }
+    cleaned = text
+    for source, target in replacements.items():
+        cleaned = cleaned.replace(source, target)
+    return cleaned
+
+
 def _contains_blocked_claim_language(text: str) -> bool:
     lowered = text.lower()
     blocked = [
-        " because ",
-        " after ",
-        " following ",
-        " driven by ",
-        " fueled by ",
-        " sparked by ",
         " market cap",
         " passed nvidia",
         " ambiguous",

@@ -177,3 +177,10 @@ def test_sanitize_explanation_removes_trading_call_language():
         "Reddit discussion points to low float, major short interest, and "
         "short-squeeze discussion."
     )
+    assert sanitize_explanation(
+        "BA",
+        "BA is trending because china agreed to buy Boeing jets, offset by concern about the potential for a short squeeze.",
+    ) == (
+        "Reddit discussion points to China agreed to buy Boeing jets, offset by "
+        "concern about volatility."
+    )

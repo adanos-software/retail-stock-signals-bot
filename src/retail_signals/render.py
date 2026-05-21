@@ -25,7 +25,7 @@ def render_title(signals: DailySignals) -> str:
 def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
     """Render mobile-first Reddit Markdown."""
     intro = _contrast_intro(signals)
-    takeaway = ai_copy.takeaway if ai_copy else _fallback_takeaway(signals)
+    takeaway = ai_copy.takeaway if ai_copy and ai_copy.takeaway else _fallback_takeaway(signals)
     signal_reads = ai_copy.signal_reads if ai_copy else {}
     question = _engagement_question(signals)
 
@@ -213,19 +213,26 @@ def _contrast_intro(signals: DailySignals) -> str:
 
 
 def _fallback_takeaway(signals: DailySignals) -> str:
-    context = _takeaway_context(signals)
+    top_context = _context_clause(signals.top_buzz) if signals.top_buzz.explanation else ""
+    clean_context = _context_clause(signals.cleanest_breakout) if signals.cleanest_breakout.explanation else ""
+    breakout_context = _context_clause(signals.biggest_breakout) if signals.biggest_breakout.explanation else ""
+
     if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
         return (
-            f"Raw attention and sentiment quality split today: **{signals.top_buzz.ticker}** led buzz, "
-            f"while **{signals.cleanest_breakout.ticker}** had the cleaner sentiment read. "
-            f"**{signals.biggest_breakout.ticker}** had the largest 7-day buzz jump, but sentiment was negative."
-            f"{context}"
+            f"The board is split between attention, sentiment quality, and risk. "
+            f"**{signals.top_buzz.ticker}** owns raw buzz"
+            f"{_context_fragment(top_context)}, while **{signals.cleanest_breakout.ticker}** has the cleaner "
+            f"sentiment profile{_context_fragment(clean_context)}. **{signals.biggest_breakout.ticker}** had "
+            f"the biggest 7-day buzz jump, but its negative sentiment makes the move look contested"
+            f"{_context_fragment(breakout_context)}."
         )
     return (
-        f"**{signals.top_buzz.ticker}** led attention, while **{signals.cleanest_breakout.ticker}** "
-        f"had the cleaner sentiment profile. **{signals.biggest_breakout.ticker}** was the main "
-        f"7-day buzz mover and **{signals.biggest_fade.ticker}** showed the clearest attention fade."
-        f"{context}"
+        f"The board is split between raw attention, sentiment quality, and fresh acceleration. "
+        f"**{signals.top_buzz.ticker}** owns the buzz lead{_context_fragment(top_context)}, while "
+        f"**{signals.cleanest_breakout.ticker}** has the cleaner sentiment read"
+        f"{_context_fragment(clean_context)}. **{signals.biggest_breakout.ticker}** is the real 7-day "
+        f"acceleration signal{_context_fragment(breakout_context)}, with **{signals.biggest_fade.ticker}** "
+        "showing where attention cooled."
     )
 
 
@@ -265,27 +272,6 @@ def _fmt(value: float | None) -> str:
     return "n/a" if value is None else f"{value:.1f}"
 
 
-def _takeaway_context(signals: DailySignals) -> str:
-    context_signals = [
-        signals.top_buzz,
-        signals.cleanest_breakout,
-        signals.biggest_breakout,
-        signals.biggest_fade,
-    ]
-    context = [signal for signal in context_signals if signal.explanation]
-    if not context:
-        return ""
-
-    selected = context[:2]
-    if len(selected) == 1:
-        return f" Reddit context for **{selected[0].ticker}** points to {_context_clause(selected[0])}"
-    return (
-        f" Reddit context adds another split: **{selected[0].ticker}** points to "
-        f"{_context_clause(selected[0])}, while **{selected[1].ticker}** points to "
-        f"{_context_clause(selected[1])}"
-    )
-
-
 def _context_clause(signal: StockSignal) -> str:
     prefix = "Reddit discussion points to "
     explanation = signal.explanation
@@ -293,6 +279,12 @@ def _context_clause(signal: StockSignal) -> str:
         explanation = explanation[len(prefix) :]
     explanation = explanation.rstrip(".")
     return explanation[:1].lower() + explanation[1:]
+
+
+def _context_fragment(context: str) -> str:
+    if not context:
+        return ""
+    return f", with Reddit context around {context}"
 
 
 def _rotation_index(seed: str, count: int) -> int:

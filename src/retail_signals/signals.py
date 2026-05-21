@@ -282,17 +282,22 @@ def _soften_explanation_claims(explanation: str) -> str:
     """Keep useful explain context while removing trading-call phrasing."""
     replacements = {
         "demand going parabolic": "surging demand",
+        "major demand driven by": "major demand tied to",
+        "driven by": "tied to",
         "low float and major short interest are creating a sharp buying opportunity": (
             "low float, major short interest, and short-squeeze discussion"
         ),
         "low float and major short interest are creating short-squeeze interest": (
             "low float, major short interest, and short-squeeze discussion"
         ),
+        "concern about the potential for a short squeeze": "concern about volatility",
+        "potential for a short squeeze": "short-squeeze potential",
         "a sharp buying opportunity": "short-squeeze interest",
         "buying opportunity": "retail interest",
         "potential for higher capital gains": "upside speculation",
         "long positions": "long-side interest",
         "loading up on the stock": "adding exposure",
+        "china agreed": "China agreed",
     }
     cleaned = explanation
     for source, target in replacements.items():

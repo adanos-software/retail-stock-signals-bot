@@ -169,7 +169,7 @@ def test_render_post_surfaces_sanitized_explain_context_in_summary_and_takeaway(
     assert "NVDA has the widest attention" in post
     assert "short-squeeze discussion" in post
     assert "buying opportunity" not in post
-    assert "Reddit context adds another split" in post
+    assert "The board is split between raw attention, sentiment quality, and fresh acceleration." in post
 
 
 def test_render_post_uses_deepseek_signal_reads_when_available():
@@ -201,3 +201,23 @@ def test_render_post_uses_deepseek_signal_reads_when_available():
     assert "SBUX analysis from DeepSeek." in post
     assert "F analysis from DeepSeek." in post
     assert "AI takeaway." in post
+
+
+def test_render_post_falls_back_when_deepseek_takeaway_is_empty():
+    rows = [
+        _row("NVDA", 82.6, 0.01, 26, 21, [80, 82.6]),
+        _row("GRPN", 67.0, 0.148, 36, 11, [55.6, 67.0]),
+        _row("SBUX", 67.0, 0.013, 23, 18, [50.7, 67.0]),
+        _row("F", 66.6, 0.021, 32, 23, [75.1, 66.6], trend="falling"),
+    ]
+    signals = select_daily_signals(
+        date_label="May 20, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+    ai_copy = AiCopy(takeaway="", signal_reads={"top_buzz": "NVDA analysis from DeepSeek."})
+
+    post = render_post(signals, ai_copy=ai_copy)
+
+    assert "NVDA analysis from DeepSeek." in post
+    assert "**NVDA** owns the buzz lead" in post
