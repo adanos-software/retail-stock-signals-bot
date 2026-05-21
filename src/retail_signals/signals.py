@@ -158,9 +158,16 @@ def sanitize_explanation(ticker: str, explanation: str) -> str:
 
     prefix = f"{ticker.upper()} is trending because "
     if cleaned.lower().startswith(prefix.lower()):
-        cleaned = f"Reddit discussion appears tied to: {cleaned[len(prefix):]}"
+        cleaned = cleaned[len(prefix) :]
     elif cleaned.lower().startswith("is trending because "):
-        cleaned = f"Reddit discussion appears tied to: {cleaned[len('is trending because '):]}"
+        cleaned = cleaned[len("is trending because ") :]
+    if cleaned.lower().startswith("of "):
+        cleaned = cleaned[3:]
+
+    cleaned = _soften_explanation_claims(cleaned)
+    if not cleaned:
+        return ""
+    cleaned = f"Reddit discussion points to {cleaned}"
 
     return cleaned[:260].rstrip()
 
@@ -267,18 +274,27 @@ def _is_unsafe_explanation(explanation: str) -> bool:
     lowered = explanation.lower()
     if "without a clear catalyst" in lowered:
         return True
-    unsafe_fragments = [
-        '"that stupid"',
-        "passed nvidia",
-        "market cap",
-        "settlement",
-        "lawsuit",
-        "deal",
-        "diluted",
-        "dilution",
-        "earnings",
-        "offering to buy",
-        "price target",
-        "acquisition",
-    ]
+    unsafe_fragments = ['"that stupid"', "passed nvidia", "price target"]
     return any(fragment in lowered for fragment in unsafe_fragments)
+
+
+def _soften_explanation_claims(explanation: str) -> str:
+    """Keep useful explain context while removing trading-call phrasing."""
+    replacements = {
+        "demand going parabolic": "surging demand",
+        "low float and major short interest are creating a sharp buying opportunity": (
+            "low float, major short interest, and short-squeeze discussion"
+        ),
+        "low float and major short interest are creating short-squeeze interest": (
+            "low float, major short interest, and short-squeeze discussion"
+        ),
+        "a sharp buying opportunity": "short-squeeze interest",
+        "buying opportunity": "retail interest",
+        "potential for higher capital gains": "upside speculation",
+        "long positions": "long-side interest",
+        "loading up on the stock": "adding exposure",
+    }
+    cleaned = explanation
+    for source, target in replacements.items():
+        cleaned = cleaned.replace(source, target)
+    return cleaned.strip()

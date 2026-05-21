@@ -8,8 +8,8 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 
 - Fetches stock-only Reddit trending data from Adanos.
 - Selects top buzz, cleanest sentiment breakout, biggest 7-day breakout, and biggest fade.
-- Fetches Adanos explain context for selected tickers, but does not print raw explain text directly.
-- Optionally asks DeepSeek to polish the takeaway while deterministic templates own the hook, facts, and engagement question.
+- Fetches Adanos explain context for selected tickers and prints sanitized Reddit-context lines.
+- Optionally asks DeepSeek to write per-signal analysis sentences and polish the takeaway while deterministic templates own the hook, facts, and engagement question.
 - Falls back to deterministic prose when DeepSeek is unavailable.
 - Uses deterministic guardrails for shared narratives, such as `GME` and `EBAY` moving on the same explanation.
 - Adds contrast-first hooks, rotating SEO-safe titles, compact mobile metric lines, and data-only signal reads.
@@ -66,7 +66,7 @@ Important: Reddit Devvit can only fetch the Raw URL when the target file is publ
 
 ## AI Guardrails
 
-DeepSeek receives structured `hard_facts` and deterministic `allowed_interpretations`. The renderer owns the title, first-line hook, facts, signal summary, final question, and disclaimer. DeepSeek output is limited to non-factual prose polish and falls back to deterministic copy when it fails guardrails.
+DeepSeek receives structured `hard_facts`, deterministic `allowed_interpretations`, and sanitized `unverified_context`. The renderer owns the title, first-line hook, metric lines, final question, and disclaimer. DeepSeek output is limited to per-signal analysis sentences and non-factual prose polish, and falls back to deterministic copy when it fails guardrails.
 
 The deterministic renderer still owns:
 
@@ -75,14 +75,14 @@ The deterministic renderer still owns:
 - SEO-safe title variation
 - buzz and sentiment numbers
 - 7-day mover ordering
-- signal-quality interpretation
-- raw explain-context exclusion from the public body
+- fallback signal-quality interpretation
+- sanitized explain-context framing in the public body
 - final engagement question
 - disclaimer text
 
 If DeepSeek returns invalid JSON, times out, omits required fields, or adds blocked claim language such as hard causal/news/trading claims, the CLI logs a warning and uses deterministic fallback copy.
 
-Explain endpoint text is treated as unverified context, not verified fact. It is not printed directly into the public Reddit body.
+Explain endpoint text is treated as unverified context, not verified fact. The public Reddit body frames it as Reddit discussion context and strips trading-call phrasing before rendering.
 
 ## Next Phases
 

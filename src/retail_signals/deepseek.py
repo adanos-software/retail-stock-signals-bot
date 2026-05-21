@@ -23,6 +23,7 @@ class AiCopy:
     """Structured prose that can safely be inserted into the renderer."""
 
     takeaway: str
+    signal_reads: dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -47,9 +48,10 @@ class DeepSeekClient:
                     "role": "system",
                     "content": (
                         "You edit concise Reddit market-sentiment briefs. Use only "
-                        "hard_facts and allowed_interpretations. Do not add causes, "
-                        "news, deals, lawsuits, prices, recommendations, or financial "
-                        "advice. Return valid JSON only."
+                        "hard_facts, allowed_interpretations, and unverified_context. "
+                        "Treat unverified_context as Reddit discussion context, not verified "
+                        "fact. Do not add causes, prices, recommendations, or financial advice. "
+                        "Return valid JSON only."
                     ),
                 },
                 {
@@ -64,6 +66,7 @@ class DeepSeekClient:
             decoded = _loads_json_object(content)
             return AiCopy(
                 takeaway=_clean_text(decoded["takeaway"], max_chars=520),
+                signal_reads=_clean_signal_reads(decoded.get("signal_reads")),
             )
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             raise DeepSeekError("DeepSeek returned an invalid JSON response") from exc
@@ -101,14 +104,22 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
     return {
         "output_schema": {
             "takeaway": "2-3 concise sentences focused on buzz/sentiment context",
+            "signal_reads": {
+                "top_buzz": "1 sentence analyzing top_buzz using metrics and Reddit context",
+                "cleanest_breakout": "1 sentence analyzing cleanest_breakout using metrics and Reddit context",
+                "biggest_breakout": "1 sentence analyzing biggest_breakout using metrics and Reddit context",
+                "biggest_fade": "1 sentence analyzing biggest_fade using metrics and Reddit context",
+            },
         },
         "style": _style_profile(signals.date_label),
         "constraints": [
             "No buy/sell/hold language",
             "No price predictions",
             "Use only hard_facts and allowed_interpretations",
+            "You may use unverified_context only with soft framing such as Reddit discussion points to",
             "Do not state causal claims as fact",
-            "Do not mention external news, deals, lawsuits, earnings, market-cap milestones, or partnerships",
+            "For signal_reads, synthesize the metrics and Reddit context into one readable analysis sentence",
+            "Do not repeat the metric line or start signal_reads with Context:",
             "Sound like a professional market desk note, not a hype post and not generic AI copy",
             "Use compact sentence structure and avoid generic AI phrasing",
             "Avoid stale phrases such as today's signal, stands out, cleanest signal, worth watching, and only time will tell",
@@ -117,7 +128,7 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
         ],
         "hard_facts": _hard_facts(signals),
         "allowed_interpretations": _allowed_interpretations(signals),
-        "unverified_context": {},
+        "unverified_context": _unverified_context(signals),
     }
 
 
@@ -131,6 +142,17 @@ def _clean_text(value: Any, *, max_chars: int) -> str:
     if _contains_blocked_claim_language(cleaned):
         raise DeepSeekError("DeepSeek field contains blocked claim language")
     return cleaned[:max_chars].rstrip()
+
+
+def _clean_signal_reads(value: Any) -> dict[str, str]:
+    if not isinstance(value, dict):
+        raise DeepSeekError("DeepSeek signal_reads field is not an object")
+
+    expected = ["top_buzz", "cleanest_breakout", "biggest_breakout", "biggest_fade"]
+    cleaned: dict[str, str] = {}
+    for key in expected:
+        cleaned[key] = _clean_text(value.get(key), max_chars=260)
+    return cleaned
 
 
 def _hard_facts(signals: DailySignals) -> dict[str, Any]:
@@ -160,6 +182,7 @@ def _signal_facts(signal: StockSignal) -> dict[str, Any]:
         "buzz_delta_7d": signal.buzz_delta_7d,
         "buzz_start_7d": signal.buzz_start_7d,
         "buzz_end_7d": signal.buzz_end_7d,
+        "reddit_context": signal.explanation,
     }
 
 
@@ -175,6 +198,16 @@ def _allowed_interpretations(signals: DailySignals) -> list[str]:
             f"{signals.top_buzz.ticker} is sustained attention rather than fresh acceleration."
         )
     return interpretations
+
+
+def _unverified_context(signals: DailySignals) -> dict[str, str]:
+    selected = [
+        signals.top_buzz,
+        signals.cleanest_breakout,
+        signals.biggest_breakout,
+        signals.biggest_fade,
+    ]
+    return {signal.ticker: signal.explanation for signal in selected if signal.explanation}
 
 
 def _loads_json_object(content: str) -> dict[str, Any]:
@@ -248,10 +281,6 @@ def _contains_blocked_claim_language(text: str) -> bool:
         " driven by ",
         " fueled by ",
         " sparked by ",
-        " deal",
-        " settlement",
-        " lawsuit",
-        " earnings",
         " market cap",
         " passed nvidia",
         " ambiguous",

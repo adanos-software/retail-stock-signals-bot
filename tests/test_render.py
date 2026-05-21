@@ -1,3 +1,4 @@
+from retail_signals.deepseek import AiCopy
 from retail_signals.render import render_post, render_title
 from retail_signals.signals import select_daily_signals
 
@@ -16,7 +17,7 @@ def _row(ticker, buzz, sentiment, bullish, bearish, history, trend="rising"):
     }
 
 
-def test_render_post_uses_mobile_first_sections_without_raw_explanations():
+def test_render_post_uses_mobile_first_sections_with_explain_context():
     rows = [
         _row("GME", 82.2, 0.007, 28, 28, [79.8, 82.2]),
         _row("XRX", 72.3, 0.161, 50, 16, [20.8, 71.0]),
@@ -36,7 +37,9 @@ def test_render_post_uses_mobile_first_sections_without_raw_explanations():
     assert "**Top Buzz: GME**" in post
     assert "Buzz **82.2** | Sentiment **neutral** | Bull/Bear **28% / 28%**" in post
     assert "| Ticker |" not in post
-    assert "GME is moving on a shared eBay narrative." not in post
+    assert "GME has the widest attention" in post
+    assert "shared eBay narrative" in post
+    assert "Context:" not in post
     assert "Data-driven sentiment signal, not financial advice." in post
 
 
@@ -54,7 +57,7 @@ def test_render_post_adds_contrast_first_intro_and_data_only_reads():
 
     post = render_post(signals)
 
-    assert post.splitlines()[2] == (
+    assert post.splitlines()[0] == (
         "Today's split: **GOOGL** led raw buzz, but **CHWY** had the cleaner sentiment profile."
     )
     assert "High absolute attention" in post
@@ -137,7 +140,64 @@ def test_render_post_keeps_question_specific_and_filters_numeric_tickers():
     combined = f"{title}\n{post}"
 
     assert "7974" not in combined
-    assert "news claim should not print" not in combined
-    assert "Which would you weigh more today" in post
-    assert "TTM's cleaner sentiment" in post
-    assert "BABA's larger but negative buzz spike" in post
+    assert "news claim should not print" in combined
+    assert "Which part matters more here" in post
+    assert "TTM's sentiment quality" in post
+    assert "BABA's buzz spike" in post
+
+
+def test_render_post_surfaces_sanitized_explain_context_in_summary_and_takeaway():
+    rows = [
+        _row("NVDA", 82.6, 0.01, 26, 21, [80, 82.6]),
+        _row("GRPN", 67.0, 0.148, 36, 11, [55.6, 67.0]),
+        _row("SBUX", 67.0, 0.013, 23, 18, [50.7, 67.0]),
+        _row("F", 66.6, 0.021, 32, 23, [75.1, 66.6], trend="falling"),
+    ]
+    signals = select_daily_signals(
+        date_label="May 20, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+        explanations={
+            "NVDA": "NVDA is trending because demand is rising around agentic AI.",
+            "GRPN": "GRPN is trending because low float and major short interest are creating a sharp buying opportunity.",
+            "SBUX": "SBUX is trending because major layoffs sparked concern.",
+        },
+    )
+
+    post = render_post(signals)
+
+    assert "NVDA has the widest attention" in post
+    assert "short-squeeze discussion" in post
+    assert "buying opportunity" not in post
+    assert "Reddit context adds another split" in post
+
+
+def test_render_post_uses_deepseek_signal_reads_when_available():
+    rows = [
+        _row("NVDA", 82.6, 0.01, 26, 21, [80, 82.6]),
+        _row("GRPN", 67.0, 0.148, 36, 11, [55.6, 67.0]),
+        _row("SBUX", 67.0, 0.013, 23, 18, [50.7, 67.0]),
+        _row("F", 66.6, 0.021, 32, 23, [75.1, 66.6], trend="falling"),
+    ]
+    signals = select_daily_signals(
+        date_label="May 20, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+    ai_copy = AiCopy(
+        takeaway="AI takeaway.",
+        signal_reads={
+            "top_buzz": "NVDA analysis from DeepSeek.",
+            "cleanest_breakout": "GRPN analysis from DeepSeek.",
+            "biggest_breakout": "SBUX analysis from DeepSeek.",
+            "biggest_fade": "F analysis from DeepSeek.",
+        },
+    )
+
+    post = render_post(signals, ai_copy=ai_copy)
+
+    assert "NVDA analysis from DeepSeek." in post
+    assert "GRPN analysis from DeepSeek." in post
+    assert "SBUX analysis from DeepSeek." in post
+    assert "F analysis from DeepSeek." in post
+    assert "AI takeaway." in post

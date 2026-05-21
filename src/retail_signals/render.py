@@ -26,22 +26,29 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
     """Render mobile-first Reddit Markdown."""
     intro = _contrast_intro(signals)
     takeaway = ai_copy.takeaway if ai_copy else _fallback_takeaway(signals)
+    signal_reads = ai_copy.signal_reads if ai_copy else {}
     question = _engagement_question(signals)
 
     lines = [
-        f"# Daily Retail Stock Signals - {signals.date_label}",
-        "",
         intro,
         "",
         "### Signal Summary",
         "",
-        *_summary_block("Top Buzz", signals.top_buzz),
+        *_summary_block("Top Buzz", signals.top_buzz, signal_reads.get("top_buzz")),
         "",
-        *_summary_block("Best Sentiment Read", signals.cleanest_breakout),
+        *_summary_block(
+            "Best Sentiment Read",
+            signals.cleanest_breakout,
+            signal_reads.get("cleanest_breakout"),
+        ),
         "",
-        *_summary_block("Largest 7-Day Buzz Move", signals.biggest_breakout),
+        *_summary_block(
+            "Largest 7-Day Buzz Move",
+            signals.biggest_breakout,
+            signal_reads.get("biggest_breakout"),
+        ),
         "",
-        *_summary_block("7-Day Buzz Fade", signals.biggest_fade),
+        *_summary_block("7-Day Buzz Fade", signals.biggest_fade, signal_reads.get("biggest_fade")),
         "",
         "### Top Buzz",
         "",
@@ -64,11 +71,11 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
     return "\n".join(lines)
 
 
-def _summary_block(label: str, signal: StockSignal) -> list[str]:
+def _summary_block(label: str, signal: StockSignal, analysis: str | None = None) -> list[str]:
     return [
         f"**{label}: {signal.ticker}**  ",
         _summary_metric_line(label, signal),
-        _signal_read(label, signal),
+        analysis or _signal_read(label, signal),
     ]
 
 
@@ -90,21 +97,62 @@ def _summary_metric_line(label: str, signal: StockSignal) -> str:
 
 def _signal_read(label: str, signal: StockSignal) -> str:
     """Return a data-only interpretation of the signal."""
+    context = _context_clause(signal) if signal.explanation else ""
     if label == "Top Buzz" and signal.trend == "falling":
+        if context:
+            return (
+                f"Reddit discussion points to {context}, but the falling trend label makes this look "
+                "more like sustained attention than fresh acceleration."
+            )
         return "High absolute attention, but the falling trend label makes it look more like sustained buzz than fresh acceleration."
     if label == "Top Buzz":
+        if context:
+            return (
+                f"{signal.ticker} has the widest attention, while Reddit discussion points to "
+                f"{context}; neutral sentiment keeps it from reading like broad bullish confirmation."
+            )
         return "The broadest attention signal in today's Reddit data."
     if label == "Best Sentiment Read":
         if _has_bullish_confirmation(signal):
+            if context:
+                return (
+                    f"{signal.ticker} is the cleaner sentiment read: buzz rose, bulls led bears, "
+                    f"and Reddit discussion points to {context}."
+                )
             return "The best-confirmed sentiment read: buzz rose and bullish discussion stayed clearly ahead of bearish discussion."
+        if context:
+            return (
+                f"{signal.ticker} has the better sentiment profile, but Reddit discussion points to "
+                f"{context}, so the read is not purely metric-driven."
+            )
         return "A buzz mover with mixed sentiment confirmation."
     if label == "Largest 7-Day Buzz Move":
         if signal.sentiment_score is not None and signal.sentiment_score < 0.03:
+            if context:
+                return (
+                    f"{signal.ticker} had the biggest attention jump, but sentiment stayed muted; "
+                    f"Reddit discussion points to {context}."
+                )
             return "The largest attention jump, but sentiment does not strongly confirm it."
+        if context:
+            return (
+                f"{signal.ticker} had the fastest 7-day attention expansion, with Reddit discussion "
+                f"pointing to {context}."
+            )
         return "The fastest 7-day attention expansion in today's top set."
     if label == "7-Day Buzz Fade":
         if signal.sentiment_score is not None and signal.sentiment_score < -0.03:
+            if context:
+                return (
+                    f"{signal.ticker} cooled while sentiment was negative, and Reddit discussion "
+                    f"points to {context}."
+                )
             return "Attention cooled while sentiment was negative, making it the clearest caution read."
+        if context:
+            return (
+                f"{signal.ticker} lost attention over 7 days, but Reddit discussion points to "
+                f"{context}, so the fade is not a clean negative sentiment read."
+            )
         return "Attention cooled over 7 days, but the sentiment read is not strongly negative."
     return ""
 
@@ -165,20 +213,28 @@ def _contrast_intro(signals: DailySignals) -> str:
 
 
 def _fallback_takeaway(signals: DailySignals) -> str:
+    context = _takeaway_context(signals)
     if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
         return (
             f"Raw attention and sentiment quality split today: **{signals.top_buzz.ticker}** led buzz, "
             f"while **{signals.cleanest_breakout.ticker}** had the cleaner sentiment read. "
             f"**{signals.biggest_breakout.ticker}** had the largest 7-day buzz jump, but sentiment was negative."
+            f"{context}"
         )
     return (
         f"**{signals.top_buzz.ticker}** led attention, while **{signals.cleanest_breakout.ticker}** "
         f"had the cleaner sentiment profile. **{signals.biggest_breakout.ticker}** was the main "
         f"7-day buzz mover and **{signals.biggest_fade.ticker}** showed the clearest attention fade."
+        f"{context}"
     )
 
 
 def _engagement_question(signals: DailySignals) -> str:
+    if signals.biggest_breakout.explanation and signals.biggest_breakout.ticker != signals.cleanest_breakout.ticker:
+        return (
+            f"Which part matters more here: **{signals.cleanest_breakout.ticker}'s sentiment quality** "
+            f"or the context behind **{signals.biggest_breakout.ticker}'s buzz spike**?"
+        )
     if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
         return (
             f"Which would you weigh more today: **{signals.cleanest_breakout.ticker}'s cleaner sentiment** "
@@ -207,6 +263,36 @@ def _signed(value: float | None, *, decimals: int = 3) -> str:
 
 def _fmt(value: float | None) -> str:
     return "n/a" if value is None else f"{value:.1f}"
+
+
+def _takeaway_context(signals: DailySignals) -> str:
+    context_signals = [
+        signals.top_buzz,
+        signals.cleanest_breakout,
+        signals.biggest_breakout,
+        signals.biggest_fade,
+    ]
+    context = [signal for signal in context_signals if signal.explanation]
+    if not context:
+        return ""
+
+    selected = context[:2]
+    if len(selected) == 1:
+        return f" Reddit context for **{selected[0].ticker}** points to {_context_clause(selected[0])}"
+    return (
+        f" Reddit context adds another split: **{selected[0].ticker}** points to "
+        f"{_context_clause(selected[0])}, while **{selected[1].ticker}** points to "
+        f"{_context_clause(selected[1])}"
+    )
+
+
+def _context_clause(signal: StockSignal) -> str:
+    prefix = "Reddit discussion points to "
+    explanation = signal.explanation
+    if explanation.startswith(prefix):
+        explanation = explanation[len(prefix) :]
+    explanation = explanation.rstrip(".")
+    return explanation[:1].lower() + explanation[1:]
 
 
 def _rotation_index(seed: str, count: int) -> int:

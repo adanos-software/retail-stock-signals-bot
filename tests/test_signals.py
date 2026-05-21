@@ -160,7 +160,20 @@ def test_sanitize_explanation_reframes_safe_context_and_drops_unsafe_claims():
     assert sanitize_explanation(
         "GME",
         "GME is trending because GameStop and eBay are being discussed together.",
-    ) == "Reddit discussion appears tied to: GameStop and eBay are being discussed together."
+    ) == "Reddit discussion points to GameStop and eBay are being discussed together."
     assert sanitize_explanation("GOOGL", "GOOGL is trending because Google passed Nvidia.") == ""
-    assert sanitize_explanation("JPM", "JPM is trending because a settlement was rejected.") == ""
+    assert sanitize_explanation(
+        "JPM",
+        "JPM is trending because a settlement was rejected.",
+    ) == "Reddit discussion points to a settlement was rejected."
     assert sanitize_explanation("EBAY", "EBAY shows mixed sentiment without a clear catalyst.") == ""
+
+
+def test_sanitize_explanation_removes_trading_call_language():
+    assert sanitize_explanation(
+        "GRPN",
+        "GRPN is trending because low float and major short interest are creating a sharp buying opportunity.",
+    ) == (
+        "Reddit discussion points to low float, major short interest, and "
+        "short-squeeze discussion."
+    )

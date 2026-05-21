@@ -1,26 +1,24 @@
 Title: Daily Retail Stock Signals - May 20, 2026: NVDA Buzz Leads, GRPN Sentiment Improves
 
-# Daily Retail Stock Signals - May 20, 2026
-
 Today's split: **NVDA** led raw buzz, but **GRPN** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
 Buzz **82.6** | Sentiment **neutral** | Bull/Bear **26% / 21%**  
-The broadest attention signal in today's Reddit data.
+**NVDA** still has the widest attention, but neutral sentiment keeps the AI-demand and revenue narrative from reading like broad bullish confirmation.
 
 **Best Sentiment Read: GRPN**  
 7D Buzz **+11.4** (55.6 -> 67.0) | Sentiment **strong positive** (+0.148) | Bull/Bear **36% / 11%**  
-The best-confirmed sentiment read: buzz rose and bullish discussion stayed clearly ahead of bearish discussion.
+**GRPN** is the cleaner sentiment read because buzz rose while bulls led bears by a wide margin; the context, though, is short-interest chatter with volatility still attached.
 
 **Largest 7-Day Buzz Move: SBUX**  
 7D Buzz **+16.3** (50.7 -> 67.0) | Sentiment **neutral** (+0.013) | Bull/Bear **23% / 18%**  
-The largest attention jump, but sentiment does not strongly confirm it.
+**SBUX** had the biggest attention jump, but the layoff-versus-brand narrative explains why the sentiment read stayed neutral instead of confirming the move.
 
 **7-Day Buzz Fade: F**  
 7D Buzz **-8.5** (75.1 -> 66.6) | Sentiment **neutral** (+0.021) | Bull/Bear **32% / 23%**  
-Attention cooled over 7 days, but the sentiment read is not strongly negative.
+**F** lost attention over the week, but the sentiment read is not clearly bearish; discussion looks more like a split between range-bound upside speculation and AI-pressure concerns.
 
 ### Top Buzz
 
@@ -43,9 +41,9 @@ Attention cooled over 7 days, but the sentiment read is not strongly negative.
 
 ### Takeaway
 
-NVDA leads on absolute buzz score, but sentiment remains neutral with a narrow bullish edge. GRPN shows the cleanest sentiment profile with strong positive sentiment and low bearish pressure. SBUX has the largest 7-day buzz expansion, while F is the main 7-day fade.
+The board is split three ways today. **NVDA** still owns raw attention, but its sentiment is only neutral and the Reddit context is mostly an AI-demand/revenue story. **GRPN** is the cleaner sentiment read, though its context is high-beta short-interest chatter rather than broad quality. **SBUX** had the biggest 7-day buzz jump, but the layoff/brand mix explains why sentiment did not confirm the move more strongly.
 
-Would you trust **NVDA's broad attention** or **GRPN's cleaner sentiment read** more here?
+Which part matters more here: **NVDA's broad attention**, **GRPN's cleaner sentiment**, or **SBUX's context-heavy buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.

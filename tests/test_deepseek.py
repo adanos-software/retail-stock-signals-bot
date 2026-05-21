@@ -68,6 +68,12 @@ def test_deepseek_accepts_valid_takeaway(monkeypatch):
                             "content": json.dumps(
                                 {
                                     "takeaway": "takeaway text",
+                                    "signal_reads": {
+                                        "top_buzz": "top read",
+                                        "cleanest_breakout": "clean read",
+                                        "biggest_breakout": "breakout read",
+                                        "biggest_fade": "fade read",
+                                    },
                                 }
                             )
                         }
@@ -81,6 +87,7 @@ def test_deepseek_accepts_valid_takeaway(monkeypatch):
     copy = DeepSeekClient(api_key="test").generate_copy(_signals())
 
     assert copy.takeaway == "takeaway text"
+    assert copy.signal_reads["top_buzz"] == "top read"
 
 
 def test_prompt_payload_includes_professional_style_guardrails():
@@ -93,8 +100,34 @@ def test_prompt_payload_includes_professional_style_guardrails():
     assert "signals" not in payload
     assert any("professional market desk note" in item for item in payload["constraints"])
     assert any("Do not state causal claims as fact" in item for item in payload["constraints"])
+    assert any("unverified_context" in item for item in payload["constraints"])
     assert any("avoid generic AI phrasing" in item for item in payload["constraints"])
     assert "today's signal" in " ".join(payload["constraints"])
+    assert "signal_reads" in payload["output_schema"]
+
+
+def test_prompt_payload_includes_explain_context_when_available():
+    signals = select_daily_signals(
+        date_label="May 20, 2026",
+        trending_today=[
+            _row("NVDA", 82.6, 0.01, 26, 21, [80, 82.6]),
+            _row("GRPN", 67.0, 0.148, 36, 11, [55.6, 67.0]),
+        ],
+        trending_7d=[
+            _row("NVDA", 82.6, 0.01, 26, 21, [80, 82.6]),
+            _row("GRPN", 67.0, 0.148, 36, 11, [55.6, 67.0]),
+        ],
+        explanations={"NVDA": "NVDA is trending because demand is rising around agentic AI."},
+    )
+
+    payload = _prompt_payload(signals)
+
+    assert payload["unverified_context"] == {
+        "NVDA": "Reddit discussion points to demand is rising around agentic AI."
+    }
+    assert payload["hard_facts"]["selected"]["top_buzz"]["reddit_context"].startswith(
+        "Reddit discussion points to"
+    )
 
 
 def test_style_profile_rotates_by_date_label():
