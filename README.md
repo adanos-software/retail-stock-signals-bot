@@ -66,7 +66,7 @@ Important: Reddit Devvit can only fetch the Raw URL when the target file is publ
 
 ## AI Guardrails
 
-DeepSeek receives structured `hard_facts`, deterministic `allowed_interpretations`, and sanitized `unverified_context`. The renderer owns the title, first-line hook, metric lines, final question, and disclaimer. DeepSeek output is limited to per-signal analysis sentences and non-factual prose polish, and falls back to deterministic copy when it fails guardrails.
+DeepSeek receives structured `hard_facts`, deterministic `allowed_interpretations`, and sanitized `unverified_context`. The renderer owns the title, first-line hook, metric lines, final question, and disclaimer. DeepSeek output is limited to per-signal analysis sentences and non-factual prose polish, with exact metric restatements and hype/trading phrasing stripped before rendering. It falls back to deterministic copy when it fails guardrails.
 
 The deterministic renderer still owns:
 

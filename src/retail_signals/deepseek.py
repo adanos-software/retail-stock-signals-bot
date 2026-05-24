@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -120,11 +121,14 @@ def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
             "You may use unverified_context only with soft framing such as Reddit discussion points to",
             "Do not state causal claims as fact",
             "For signal_reads, synthesize the metrics and Reddit context into one readable analysis sentence",
+            "Do not repeat exact buzz scores, buzz deltas, sentiment scores, or bull/bear percentages in prose",
+            "Explain the tension between attention, sentiment, and context instead of restating facts",
             "Do not repeat the metric line or start signal_reads with Context:",
             "Sound like a professional market desk note, not a hype post and not generic AI copy",
             "Use compact sentence structure and avoid generic AI phrasing",
             "Avoid stale phrases such as today's signal, stands out, cleanest signal, worth watching, and only time will tell",
-            "Avoid trading-framing words such as setup, play, entry, exit, target, conviction, or compelling",
+            "Avoid hype or trading-framing words such as squeeze, trigger, sharp decline, sparking optimism, setup, play, entry, exit, target, conviction, or compelling",
+            "If a selected ticker is obscure, use company_name for one short identifying phrase",
             "Keep wording plain and Reddit-native",
         ],
         "hard_facts": _hard_facts(signals),
@@ -141,6 +145,7 @@ def _clean_text(value: Any, *, max_chars: int) -> str:
         raise DeepSeekError("DeepSeek field is empty")
     cleaned = _replace_trading_framing(cleaned)
     cleaned = _soften_claim_language(cleaned)
+    cleaned = _remove_metric_restatement(cleaned)
     if _contains_blocked_claim_language(cleaned):
         raise DeepSeekError("DeepSeek field contains blocked claim language")
     return cleaned[:max_chars].rstrip()
@@ -272,6 +277,14 @@ def _replace_trading_framing(text: str) -> str:
         "m&a play": "M&A narrative",
         "acquisition play": "acquisition narrative",
         "squeeze setup": "squeeze narrative",
+        "short squeeze": "short-interest narrative",
+        "short-squeeze": "short-interest",
+        "potential trigger": "possible catalyst",
+        "trigger": "catalyst",
+        "sharp decline": "downside concern",
+        "sparking optimism": "adding optimism",
+        "sparked optimism": "added optimism",
+        "surged": "rose",
         "trade setup": "market signal",
         "trading setup": "market signal",
         "entry point": "signal point",
@@ -299,6 +312,20 @@ def _soften_claim_language(text: str) -> str:
     return cleaned
 
 
+def _remove_metric_restatement(text: str) -> str:
+    """Strip exact metric restatements that duplicate the line above."""
+    cleaned = text
+    patterns = [
+        r"\s+to\s+\d+(?:\.\d+)?\b",
+        r"\s+\d+(?:\.\d+)?\s+points?\b",
+        r"\s+by\s+\d+(?:\.\d+)?\s+points?\b",
+        r"\s+with\s+(?:strong positive|positive|neutral|negative|strong negative)\s+sentiment\b",
+    ]
+    for pattern in patterns:
+        cleaned = re.sub(pattern, "", cleaned, flags=re.IGNORECASE)
+    return " ".join(cleaned.split())
+
+
 def _contains_blocked_claim_language(text: str) -> bool:
     lowered = text.lower()
     blocked = [
@@ -312,6 +339,10 @@ def _contains_blocked_claim_language(text: str) -> bool:
         " will ",
         " buy ",
         " sell ",
+        " squeeze",
+        " trigger",
+        " sharp decline",
+        " sparking optimism",
         " target",
     ]
     return any(fragment in lowered for fragment in blocked)

@@ -6,19 +6,19 @@ Today's split: **SPCX** led raw buzz, but **IBM** had the cleaner sentiment prof
 
 **Top Buzz: SPCX**  
 Buzz **82.6** | Sentiment **neutral** | Bull/Bear **28% / 23%**  
-SPCX buzz is rising to 82.6 with neutral sentiment, as Reddit discussion points to optimism around future infrastructure opportunities offset by concern about profitability at high leasing costs.
+**SPCX** owns the attention lead, but the read is not cleanly bullish: Reddit discussion is balancing infrastructure upside against profitability concerns around high leasing costs.
 
 **Best Sentiment Read: IBM**  
 7D Buzz **+8.3** (60.9 -> 69.2) | Sentiment **strong positive** (+0.116) | Bull/Bear **35% / 12%**  
-IBM buzz is rising to 69.2 with strong positive sentiment, as Reddit discussion points to a major government grant for quantum research awarded to IBM, sparking optimism around its quantum computing prospects.
+**IBM** is the cleaner quality read because sentiment confirms the move, and the Reddit context is specific: quantum research funding is giving the discussion a clearer business angle.
 
 **Largest 7-Day Buzz Move: GRPN**  
 7D Buzz **+38.1** (29.3 -> 67.4) | Sentiment **strong positive** (+0.110) | Bull/Bear **33% / 10%**  
-GRPN buzz surged 38.1 points to 67.4 with strong positive sentiment, as Reddit discussion points to a major short interest being cited as a potential trigger for a sharp short squeeze.
+**GRPN** has the stronger retail-risk profile: sentiment is clearly bullish, but the discussion is still centered on short-interest mechanics rather than broad business confidence.
 
 **7-Day Buzz Fade: SNDK**  
 7D Buzz **-4.1** (75.4 -> 71.3) | Sentiment **neutral** (+0.008) | Bull/Bear **25% / 24%**  
-SNDK buzz fell 4.1 points to 71.3 with neutral sentiment, as Reddit discussion points to optimism around expiring options offset by concern about a potential sharp decline in the future.
+**SNDK** is fading without a clear sentiment break; options-related optimism is still present, but downside concern is enough to keep the read from looking constructive.
 
 ### Top Buzz
 
@@ -41,9 +41,9 @@ SNDK buzz fell 4.1 points to 71.3 with neutral sentiment, as Reddit discussion p
 
 ### Takeaway
 
-SPCX holds the highest buzz but sentiment is neutral, reflecting a tug-of-war between infrastructure optimism and profitability concerns. IBM's strong positive sentiment is tied to a quantum research grant, while GRPN's buzz surge is tied to short squeeze speculation. SNDK's buzz is fading as options-related optimism gives way to bearish outlooks.
+The useful split is between broad attention, confirmed sentiment, and retail-risk momentum. **SPCX** has the largest audience, but neutral sentiment makes it more of a watchlist attention signal. **IBM** is cleaner because sentiment and context line up around quantum funding, while **GRPN** is more speculative: the move is strong, but the story is still short-interest driven. **SNDK** is the fade to respect because attention cooled without a bullish sentiment offset.
 
-Which part matters more here: **IBM's sentiment quality** or the context behind **GRPN's buzz spike**?
+Which signal matters more here: **SPCX's attention lead**, **IBM's cleaner sentiment**, or **GRPN's retail-risk momentum**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.

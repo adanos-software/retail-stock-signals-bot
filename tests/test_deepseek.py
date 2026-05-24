@@ -8,6 +8,7 @@ from retail_signals.deepseek import (
     DeepSeekError,
     _loads_json_object,
     _prompt_payload,
+    _remove_metric_restatement,
     _replace_trading_framing,
     _style_profile,
 )
@@ -104,6 +105,8 @@ def test_prompt_payload_includes_professional_style_guardrails():
     assert any("avoid generic AI phrasing" in item for item in payload["constraints"])
     assert "today's signal" in " ".join(payload["constraints"])
     assert "signal_reads" in payload["output_schema"]
+    assert any("Do not repeat exact buzz scores" in item for item in payload["constraints"])
+    assert any("attention, sentiment, and context" in item for item in payload["constraints"])
 
 
 def test_prompt_payload_includes_explain_context_when_available():
@@ -138,13 +141,22 @@ def test_style_profile_rotates_by_date_label():
 
 def test_replace_trading_framing_removes_trade_call_phrases():
     text = _replace_trading_framing(
-        "Which has more staying power: the M&A play, acquisition play, or squeeze setup?"
+        "Which has more staying power: the M&A play, acquisition play, squeeze setup, or short squeeze trigger?"
     )
 
     assert text == (
         "Which has more staying power: the M&A narrative, "
-        "acquisition narrative, or squeeze narrative?"
+        "acquisition narrative, squeeze narrative, or short-interest narrative catalyst?"
     )
+
+
+def test_remove_metric_restatement_strips_duplicate_numbers():
+    text = _remove_metric_restatement(
+        "GRPN buzz surged 38.1 points to 67.4 with strong positive sentiment, "
+        "as context points to short interest."
+    )
+
+    assert text == "GRPN buzz surged, as context points to short interest."
 
 
 def test_deepseek_softens_causal_claim_language(monkeypatch):

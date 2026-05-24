@@ -178,6 +178,14 @@ def test_sanitize_explanation_removes_trading_call_language():
         "short-squeeze discussion."
     )
     assert sanitize_explanation(
+        "GRPN",
+        "GRPN is trending because major short interest being cited as a potential trigger for a sharp short squeeze.",
+    ) == "Reddit discussion points to major short interest and short-interest speculation."
+    assert sanitize_explanation(
+        "SNDK",
+        "SNDK is trending because optimism around expiring options offset by concern about a potential sharp decline.",
+    ) == "Reddit discussion points to optimism around expiring options offset by downside concern."
+    assert sanitize_explanation(
         "BA",
         "BA is trending because china agreed to buy Boeing jets, offset by concern about the potential for a short squeeze.",
     ) == (

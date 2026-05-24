@@ -292,6 +292,16 @@ def _soften_explanation_claims(explanation: str) -> str:
         ),
         "concern about the potential for a short squeeze": "concern about volatility",
         "potential for a short squeeze": "short-squeeze potential",
+        "major short interest being cited as a potential trigger for a sharp short squeeze": (
+            "major short interest and short-interest speculation"
+        ),
+        "concern about a potential sharp decline": "downside concern",
+        "sharp short squeeze": "short-interest move",
+        "short squeeze": "short-interest narrative",
+        "potential sharp decline": "downside concern",
+        "sharp decline": "downside concern",
+        "sparking optimism": "adding optimism",
+        "sparked optimism": "added optimism",
         "a sharp buying opportunity": "short-squeeze interest",
         "buying opportunity": "retail interest",
         "potential for higher capital gains": "upside speculation",
