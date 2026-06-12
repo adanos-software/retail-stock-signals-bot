@@ -1,0 +1,20 @@
+name = "adanos-retail-stock-signals-scheduler"
+main = "src/index.ts"
+compatibility_date = "2026-06-12"
+workers_dev = false
+
+[observability]
+enabled = true
+
+[vars]
+GITHUB_OWNER = "adanos-software"
+GITHUB_REPO = "retail-stock-signals-bot"
+GITHUB_WORKFLOW_ID = "daily-publish.yml"
+GITHUB_REF = "main"
+SERVICE_LABEL = "Adanos Retail Stock Signals Scheduler"
+TARGET_TIMEZONE = "Europe/Berlin"
+TARGET_HOUR = "20"
+TARGET_MINUTE = "00"
+
+[triggers]
+crons = ["0 18 * * *", "0 19 * * *"]

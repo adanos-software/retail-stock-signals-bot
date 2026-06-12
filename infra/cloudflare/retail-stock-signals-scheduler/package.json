@@ -1,0 +1,16 @@
+{
+  "name": "adanos-retail-stock-signals-scheduler",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cloudflare Cron scheduler for the retail stock signals daily GitHub workflow.",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260612.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.100.0"
+  }
+}
