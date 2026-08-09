@@ -221,3 +221,90 @@ def test_render_post_falls_back_when_deepseek_takeaway_is_empty():
 
     assert "NVDA analysis from DeepSeek." in post
     assert "**NVDA** owns the buzz lead" in post
+
+
+def test_select_and_render_all_down_market_without_false_breakout():
+    rows = [
+        _row("TOP", 82.0, 0.08, 40, 20, [90.0, 82.0], trend="falling"),
+        _row("LESS", 70.0, 0.12, 45, 15, [73.0, 70.0], trend="falling"),
+        _row("MOST", 61.0, -0.08, 18, 38, [75.0, 61.0], trend="falling"),
+    ]
+
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+    rendered = f"{render_title(signals)}\n{render_post(signals)}"
+
+    assert signals.biggest_breakout is None
+    assert signals.cleanest_breakout is None
+    assert "Largest 7-Day Buzz Move" not in rendered
+    assert "Best Sentiment Read" not in rendered
+    assert "LESS Moves Most" not in rendered
+    assert "LESS Has Stronger Sentiment" not in rendered
+    assert "MOST" in rendered
+    assert "7-Day Buzz Fade" in rendered
+
+
+def test_select_and_render_all_up_market_without_false_fade():
+    rows = [
+        _row("TOP", 82.0, 0.08, 40, 20, [70.0, 82.0]),
+        _row("MOST", 74.0, 0.12, 45, 15, [30.0, 74.0]),
+        _row("LESS", 61.0, -0.02, 22, 25, [58.0, 61.0]),
+    ]
+
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+    rendered = f"{render_title(signals)}\n{render_post(signals)}"
+
+    assert signals.biggest_fade is None
+    assert signals.biggest_breakout is not None
+    assert signals.biggest_breakout.buzz_delta_7d > 0
+    assert "7-Day Buzz Fade" not in rendered
+    assert "showing where attention cooled" not in rendered
+
+
+def test_select_and_render_attention_jump_without_false_sentiment_role():
+    rows = [
+        _row("TOP", 82.0, -0.08, 18, 38, [70.0, 82.0]),
+        _row("MOST", 74.0, -0.12, 15, 45, [30.0, 74.0]),
+    ]
+
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+    rendered = f"{render_title(signals)}\n{render_post(signals)}"
+
+    assert signals.biggest_breakout is not None
+    assert signals.cleanest_breakout is None
+    assert "Best Sentiment Read" not in rendered
+    assert "Has Stronger Sentiment" not in rendered
+    assert "Sentiment Improves" not in rendered
+    assert "Attention Jumps" in rendered
+
+
+def test_select_and_render_flat_market_without_directional_labels():
+    rows = [
+        _row("TOP", 82.0, 0.08, 40, 20, [82.0, 82.0]),
+        _row("FLAT", 70.0, -0.02, 22, 25, [70.0, 70.0]),
+    ]
+
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=rows,
+        trending_7d=rows,
+    )
+    rendered = f"{render_title(signals)}\n{render_post(signals)}"
+
+    assert signals.biggest_breakout is None
+    assert signals.cleanest_breakout is None
+    assert signals.biggest_fade is None
+    assert "Largest 7-Day Buzz Move" not in rendered
+    assert "7-Day Buzz Fade" not in rendered
+    assert "7-Day Attention Is Flat" in rendered

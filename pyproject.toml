@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "retail-stock-signals-bot"
-version = "0.1.0"
+version = "0.2.0"
 description = "Dry-run publisher for r/RetailStockSignals daily Adanos Reddit stock signal posts."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,11 +12,17 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
+    "exchange-calendars==4.13.2",
     "pytest>=8.0",
+]
+research = [
+    "exchange-calendars==4.13.2",
 ]
 
 [project.scripts]
 retail-stock-signals = "retail_signals.cli:main"
+retail-stock-signals-snapshot = "retail_signals.snapshot_cli:main"
+retail-stock-signals-backtest = "retail_signals.backtest:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -133,6 +133,44 @@ def test_prompt_payload_includes_explain_context_when_available():
     )
 
 
+def test_prompt_payload_omits_unavailable_directional_roles():
+    all_down = [
+        _row("TOP", 82.0, 0.08, 40, 20, [90.0, 82.0], trend="falling"),
+        _row("LESS", 70.0, 0.12, 45, 15, [73.0, 70.0], trend="falling"),
+    ]
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=all_down,
+        trending_7d=all_down,
+    )
+
+    payload = _prompt_payload(signals)
+
+    assert set(payload["hard_facts"]["selected"]) == {"top_buzz", "biggest_fade"}
+    assert set(payload["output_schema"]["signal_reads"]) == {"top_buzz", "biggest_fade"}
+    assert "No selected ticker has a positive 7-day buzz delta." in payload[
+        "allowed_interpretations"
+    ]
+
+    all_up = [
+        _row("TOP", 82.0, 0.08, 40, 20, [70.0, 82.0]),
+        _row("MOST", 74.0, 0.12, 45, 15, [30.0, 74.0]),
+    ]
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=all_up,
+        trending_7d=all_up,
+    )
+
+    payload = _prompt_payload(signals)
+
+    assert "biggest_fade" not in payload["hard_facts"]["selected"]
+    assert "biggest_fade" not in payload["output_schema"]["signal_reads"]
+    assert "No selected ticker has a negative 7-day buzz delta." in payload[
+        "allowed_interpretations"
+    ]
+
+
 def test_style_profile_rotates_by_date_label():
     profiles = {_style_profile(label)["name"] for label in ["May 4, 2026", "May 5, 2026", "May 6, 2026"]}
 

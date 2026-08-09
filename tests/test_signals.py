@@ -45,7 +45,7 @@ def test_select_daily_signals_prefers_buzz_and_quality_breakout():
     assert signals.biggest_fade.ticker == "FADE"
 
 
-def test_select_daily_signals_falls_back_to_biggest_gainer_when_no_quality_candidate():
+def test_select_daily_signals_omits_sentiment_role_when_no_quality_candidate():
     today = [_row("TOP", 82.0, 0.00, 28, 28, [80, 82])]
     seven_day = [
         _row("BIG", 74.0, -0.04, 20, 40, [0, 74]),
@@ -59,7 +59,7 @@ def test_select_daily_signals_falls_back_to_biggest_gainer_when_no_quality_candi
     )
 
     assert signals.biggest_breakout.ticker == "BIG"
-    assert signals.cleanest_breakout.ticker == "BIG"
+    assert signals.cleanest_breakout is None
 
 
 def test_select_daily_signals_rejects_missing_7d_history():

@@ -66,7 +66,10 @@ class DeepSeekClient:
             content = data["choices"][0]["message"]["content"]
             decoded = _loads_json_object(content)
             takeaway = _clean_optional_text(decoded.get("takeaway"), max_chars=520)
-            signal_reads = _clean_signal_reads(decoded.get("signal_reads"))
+            signal_reads = _clean_signal_reads(
+                decoded.get("signal_reads"),
+                expected=list(_selected_signal_roles(signals)),
+            )
             if not takeaway and not signal_reads:
                 raise DeepSeekError("DeepSeek returned no usable copy")
             return AiCopy(takeaway=takeaway, signal_reads=signal_reads)
@@ -103,14 +106,22 @@ class DeepSeekClient:
 
 
 def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
+    selected = _selected_signal_roles(signals)
+    signal_read_descriptions = {
+        "top_buzz": "1 sentence analyzing top_buzz using metrics and Reddit context",
+        "cleanest_breakout": (
+            "1 sentence analyzing cleanest_breakout using metrics and Reddit context"
+        ),
+        "biggest_breakout": (
+            "1 sentence analyzing biggest_breakout using metrics and Reddit context"
+        ),
+        "biggest_fade": "1 sentence analyzing biggest_fade using metrics and Reddit context",
+    }
     return {
         "output_schema": {
             "takeaway": "2-3 concise sentences focused on buzz/sentiment context",
             "signal_reads": {
-                "top_buzz": "1 sentence analyzing top_buzz using metrics and Reddit context",
-                "cleanest_breakout": "1 sentence analyzing cleanest_breakout using metrics and Reddit context",
-                "biggest_breakout": "1 sentence analyzing biggest_breakout using metrics and Reddit context",
-                "biggest_fade": "1 sentence analyzing biggest_fade using metrics and Reddit context",
+                role: signal_read_descriptions[role] for role in selected
             },
         },
         "style": _style_profile(signals.date_label),
@@ -158,11 +169,16 @@ def _clean_optional_text(value: Any, *, max_chars: int) -> str:
         return ""
 
 
-def _clean_signal_reads(value: Any) -> dict[str, str]:
+def _clean_signal_reads(
+    value: Any,
+    *,
+    expected: list[str] | None = None,
+) -> dict[str, str]:
     if not isinstance(value, dict):
         return {}
 
-    expected = ["top_buzz", "cleanest_breakout", "biggest_breakout", "biggest_fade"]
+    if expected is None:
+        expected = ["top_buzz", "cleanest_breakout", "biggest_breakout", "biggest_fade"]
     cleaned: dict[str, str] = {}
     for key in expected:
         field = _clean_optional_text(value.get(key), max_chars=260)
@@ -172,12 +188,7 @@ def _clean_signal_reads(value: Any) -> dict[str, str]:
 
 
 def _hard_facts(signals: DailySignals) -> dict[str, Any]:
-    selected = {
-        "top_buzz": signals.top_buzz,
-        "cleanest_breakout": signals.cleanest_breakout,
-        "biggest_breakout": signals.biggest_breakout,
-        "biggest_fade": signals.biggest_fade,
-    }
+    selected = _selected_signal_roles(signals)
     return {
         "date_label": signals.date_label,
         "selected": {name: _signal_facts(signal) for name, signal in selected.items()},
@@ -205,10 +216,21 @@ def _signal_facts(signal: StockSignal) -> dict[str, Any]:
 def _allowed_interpretations(signals: DailySignals) -> list[str]:
     interpretations = [
         f"{signals.top_buzz.ticker} leads on absolute buzz score.",
-        f"{signals.cleanest_breakout.ticker} has the cleanest sentiment profile.",
-        f"{signals.biggest_breakout.ticker} has the largest 7-day buzz expansion.",
-        f"{signals.biggest_fade.ticker} is the main 7-day fade.",
     ]
+    if signals.cleanest_breakout is not None:
+        interpretations.append(
+            f"{signals.cleanest_breakout.ticker} has the cleanest sentiment profile."
+        )
+    if signals.biggest_breakout is not None:
+        interpretations.append(
+            f"{signals.biggest_breakout.ticker} has the largest 7-day buzz expansion."
+        )
+    else:
+        interpretations.append("No selected ticker has a positive 7-day buzz delta.")
+    if signals.biggest_fade is not None:
+        interpretations.append(f"{signals.biggest_fade.ticker} is the main 7-day fade.")
+    else:
+        interpretations.append("No selected ticker has a negative 7-day buzz delta.")
     if signals.top_buzz.trend == "falling":
         interpretations.append(
             f"{signals.top_buzz.ticker} is sustained attention rather than fresh acceleration."
@@ -217,13 +239,20 @@ def _allowed_interpretations(signals: DailySignals) -> list[str]:
 
 
 def _unverified_context(signals: DailySignals) -> dict[str, str]:
-    selected = [
-        signals.top_buzz,
-        signals.cleanest_breakout,
-        signals.biggest_breakout,
-        signals.biggest_fade,
-    ]
+    selected = _selected_signal_roles(signals).values()
     return {signal.ticker: signal.explanation for signal in selected if signal.explanation}
+
+
+def _selected_signal_roles(signals: DailySignals) -> dict[str, StockSignal]:
+    """Return only signal roles whose directional invariants are satisfied."""
+    selected = {"top_buzz": signals.top_buzz}
+    if signals.cleanest_breakout is not None:
+        selected["cleanest_breakout"] = signals.cleanest_breakout
+    if signals.biggest_breakout is not None:
+        selected["biggest_breakout"] = signals.biggest_breakout
+    if signals.biggest_fade is not None:
+        selected["biggest_fade"] = signals.biggest_fade
+    return selected
 
 
 def _loads_json_object(content: str) -> dict[str, Any]:

@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 from zoneinfo import ZoneInfo
 
-from retail_signals.adanos import AdanosClient
+from retail_signals.adanos import AdanosClient, parse_retries, parse_timeout
 from retail_signals.deepseek import DeepSeekClient, DeepSeekError
 from retail_signals.render import render_post, render_title
 from retail_signals.signals import (
@@ -27,7 +27,9 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: ADANOS_API_KEY is required.", file=sys.stderr)
         return 2
 
-    date_label = args.date_label or datetime.now(ZoneInfo(args.timezone)).strftime("%B %-d, %Y")
+    date_label = args.date_label or datetime.now(ZoneInfo(args.timezone)).strftime(
+        "%B %-d, %Y"
+    )
     client = AdanosClient(
         api_key=api_key,
         base_url=args.adanos_base_url,
@@ -84,16 +86,20 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate a Reddit daily stock signals post.")
+    parser = argparse.ArgumentParser(
+        description="Generate a Reddit daily stock signals post."
+    )
     parser.add_argument("--output", help="Path to write the generated Markdown draft.")
     parser.add_argument("--date-label", help="Display date, e.g. 'May 4, 2026'.")
     parser.add_argument("--timezone", default="Europe/Berlin")
     parser.add_argument("--limit", type=int, default=50)
-    parser.add_argument("--timeout", type=float, default=30.0)
-    parser.add_argument("--retries", type=int, default=2)
+    parser.add_argument("--timeout", type=parse_timeout, default=30.0)
+    parser.add_argument("--retries", type=parse_retries, default=2)
     parser.add_argument("--api-key", help="Adanos API key. Prefer ADANOS_API_KEY.")
     parser.add_argument("--adanos-base-url", default="https://api.adanos.org")
-    parser.add_argument("--deepseek-api-key", help="DeepSeek API key. Prefer DEEPSEEK_API_KEY.")
+    parser.add_argument(
+        "--deepseek-api-key", help="DeepSeek API key. Prefer DEEPSEEK_API_KEY."
+    )
     parser.add_argument("--deepseek-base-url", default="https://api.deepseek.com")
     parser.add_argument("--deepseek-model", default="deepseek-chat")
     parser.add_argument("--no-ai", action="store_true", help="Disable DeepSeek polish.")

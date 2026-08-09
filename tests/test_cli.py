@@ -1,3 +1,5 @@
+import pytest
+
 from retail_signals import cli
 
 
@@ -9,6 +11,15 @@ def test_cli_requires_adanos_api_key(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert result == 2
     assert "ADANOS_API_KEY is required" in captured.err
+
+
+@pytest.mark.parametrize("args", (("--timeout", "nan"), ("--retries", "-1")))
+def test_cli_rejects_invalid_client_options_without_traceback(args, capsys):
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main([*args, "--api-key", "test"])
+
+    assert exc_info.value.code == 2
+    assert "invalid" in capsys.readouterr().err
 
 
 def test_cli_falls_back_when_deepseek_fails(monkeypatch, tmp_path, capsys):

@@ -45,9 +45,9 @@ class DailySignals:
 
     date_label: str
     top_buzz: StockSignal
-    cleanest_breakout: StockSignal
-    biggest_breakout: StockSignal
-    biggest_fade: StockSignal
+    cleanest_breakout: StockSignal | None
+    biggest_breakout: StockSignal | None
+    biggest_fade: StockSignal | None
     top_buzz_list: list[StockSignal]
     movers: list[StockSignal]
 
@@ -83,8 +83,15 @@ def select_daily_signals(
         raise ValueError("trending_7d rows must include trend_history")
 
     top_buzz = max(today_signals, key=lambda signal: signal.buzz_score)
-    gainers = sorted(seven_day_signals, key=lambda signal: signal.buzz_delta_7d or 0, reverse=True)
-    faders = sorted(seven_day_signals, key=lambda signal: signal.buzz_delta_7d or 0)
+    gainers = sorted(
+        (signal for signal in seven_day_signals if (signal.buzz_delta_7d or 0) > 0),
+        key=lambda signal: signal.buzz_delta_7d or 0,
+        reverse=True,
+    )
+    faders = sorted(
+        (signal for signal in seven_day_signals if (signal.buzz_delta_7d or 0) < 0),
+        key=lambda signal: signal.buzz_delta_7d or 0,
+    )
 
     quality_candidates = [
         signal
@@ -94,21 +101,25 @@ def select_daily_signals(
         and (signal.bullish_pct or 0) > (signal.bearish_pct or 0)
         and signal.buzz_score >= 60
     ]
-    cleanest_breakout = max(
-        quality_candidates or gainers[:1],
-        key=lambda signal: (
-            signal.sentiment_score or 0,
-            signal.buzz_delta_7d or 0,
-            signal.buzz_score,
-        ),
+    cleanest_breakout = (
+        max(
+            quality_candidates,
+            key=lambda signal: (
+                signal.sentiment_score or 0,
+                signal.buzz_delta_7d or 0,
+                signal.buzz_score,
+            ),
+        )
+        if quality_candidates
+        else None
     )
 
     return DailySignals(
         date_label=date_label,
         top_buzz=top_buzz,
         cleanest_breakout=cleanest_breakout,
-        biggest_breakout=gainers[0],
-        biggest_fade=faders[0],
+        biggest_breakout=gainers[0] if gainers else None,
+        biggest_fade=faders[0] if faders else None,
         top_buzz_list=sorted(today_signals, key=lambda signal: signal.buzz_score, reverse=True)[:5],
         movers=_unique_signals([*gainers[:5], *faders[:3]]),
     )
@@ -237,7 +248,7 @@ def _unique_signals(signals: list[StockSignal]) -> list[StockSignal]:
 
 
 def _selected_context_signals(signals: DailySignals) -> list[StockSignal]:
-    ordered = [
+    ordered: list[StockSignal | None] = [
         signals.top_buzz,
         signals.cleanest_breakout,
         signals.biggest_breakout,
@@ -247,6 +258,8 @@ def _selected_context_signals(signals: DailySignals) -> list[StockSignal]:
     seen: set[str] = set()
     result: list[StockSignal] = []
     for signal in ordered:
+        if signal is None:
+            continue
         if signal.ticker not in seen:
             result.append(signal)
             seen.add(signal.ticker)
