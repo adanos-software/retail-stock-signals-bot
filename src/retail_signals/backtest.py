@@ -9,11 +9,13 @@ import json
 import math
 import statistics
 import sys
+from collections import Counter
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass, replace
 from datetime import UTC, date, datetime
 from functools import lru_cache
 from importlib.metadata import version as package_version
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -23,19 +25,30 @@ from retail_signals.research import (
     ResearchSnapshot,
     config_as_dict,
     load_snapshots,
-    rank_research_candidates,
+    screen_research_candidates,
+)
+
+PRICE_SCHEMA_NAME = "retail-signals-price-bars-v2"
+PRICE_COLUMNS = (
+    "date",
+    "ticker",
+    "adjusted_open",
+    "adjusted_close",
+    "unadjusted_close",
+    "unadjusted_volume",
 )
 
 
 @dataclass(frozen=True)
 class PriceBar:
-    """Split/dividend-adjusted daily bar used for research execution."""
+    """Daily return and point-in-time eligibility prices with explicit semantics."""
 
     date: date
     ticker: str
-    open: float
-    close: float
-    volume: float
+    adjusted_open: float
+    adjusted_close: float
+    unadjusted_close: float
+    unadjusted_volume: float
 
 
 @dataclass(frozen=True)
@@ -45,7 +58,7 @@ class BacktestConfig:
     holding_sessions: int = 1
     gross_exposure: float = 0.25
     max_name_weight: float = 0.05
-    min_adjusted_price: float = 5.0
+    min_unadjusted_price: float = 5.0
     min_average_dollar_volume: float = 10_000_000.0
     liquidity_lookback: int = 20
     volatility_lookback: int = 20
@@ -56,7 +69,7 @@ class BacktestConfig:
         numeric_values = (
             self.gross_exposure,
             self.max_name_weight,
-            self.min_adjusted_price,
+            self.min_unadjusted_price,
             self.min_average_dollar_volume,
             self.cost_bps_per_side,
         )
@@ -70,7 +83,7 @@ class BacktestConfig:
             raise ValueError("max_name_weight must be in (0, gross_exposure]")
         if self.liquidity_lookback < 2 or self.volatility_lookback < 2:
             raise ValueError("market-data lookbacks must be at least 2")
-        if self.min_adjusted_price < 0 or self.min_average_dollar_volume < 0:
+        if self.min_unadjusted_price < 0 or self.min_average_dollar_volume < 0:
             raise ValueError("price and liquidity minimums must not be negative")
         if self.cost_bps_per_side < 0:
             raise ValueError("cost_bps_per_side must not be negative")
@@ -101,6 +114,31 @@ class PortfolioDay:
     cost: float
     nav: float
     target_weights: dict[str, float]
+    realized_gross_exposure: float
+    cash_weight: float
+    realized_max_name_weight: float
+
+
+@dataclass(frozen=True)
+class AuditExclusion:
+    """One deterministic reason an immutable snapshot or candidate was not used."""
+
+    reason: str
+    snapshot_sha256: str
+    window_end: date
+    observed_at_utc: datetime
+    entry_date: date | None = None
+    ticker: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "reason": self.reason,
+            "snapshot_sha256": self.snapshot_sha256,
+            "window_end": self.window_end.isoformat(),
+            "observed_at_utc": self.observed_at_utc.isoformat().replace("+00:00", "Z"),
+            "entry_date": self.entry_date.isoformat() if self.entry_date else None,
+            "ticker": self.ticker,
+        }
 
 
 @dataclass(frozen=True)
@@ -120,11 +158,13 @@ class BacktestReport:
     snapshots: int
     mapped_signal_sessions: int
     eligible_cohorts: int
+    exclusions: tuple[AuditExclusion, ...]
     days: tuple[PortfolioDay, ...]
     folds: tuple[FoldResult, ...]
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-ready, audit-friendly trial result."""
+        exclusion_counts = Counter(item.reason for item in self.exclusions)
         return {
             "status": "research_only_not_implementation_ready",
             "strategy": asdict(self.strategy),
@@ -135,6 +175,8 @@ class BacktestReport:
             "snapshot_count": self.snapshots,
             "mapped_signal_sessions": self.mapped_signal_sessions,
             "eligible_cohorts": self.eligible_cohorts,
+            "exclusion_counts": dict(sorted(exclusion_counts.items())),
+            "exclusions": [item.to_dict() for item in self.exclusions],
             "folds": [
                 {
                     "start": fold.start.isoformat(),
@@ -153,6 +195,9 @@ class BacktestReport:
                     "cost": day.cost,
                     "nav": day.nav,
                     "target_weights": day.target_weights,
+                    "realized_gross_exposure": day.realized_gross_exposure,
+                    "cash_weight": day.cash_weight,
+                    "realized_max_name_weight": day.realized_max_name_weight,
                 }
                 for day in self.days
             ],
@@ -160,22 +205,26 @@ class BacktestReport:
 
 
 def load_price_bars(path: Path) -> list[PriceBar]:
-    """Load strict adjusted OHLCV CSV data without silently filling gaps."""
+    """Load the explicit return/eligibility price schema without filling gaps."""
     bars: list[PriceBar] = []
     seen: set[tuple[str, date]] = set()
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
-        required = {"date", "ticker", "open", "close", "volume"}
-        if not reader.fieldnames or not required.issubset(reader.fieldnames):
-            raise ValueError(f"price CSV requires columns: {sorted(required)}")
+        if reader.fieldnames != list(PRICE_COLUMNS):
+            raise ValueError(
+                f"price CSV requires exact ordered columns: {list(PRICE_COLUMNS)}"
+            )
         for line_number, row in enumerate(reader, start=2):
             try:
+                if None in row:
+                    raise ValueError("unexpected extra value")
                 bar = PriceBar(
                     date=date.fromisoformat(row["date"]),
                     ticker=row["ticker"].strip().upper(),
-                    open=float(row["open"]),
-                    close=float(row["close"]),
-                    volume=float(row["volume"]),
+                    adjusted_open=float(row["adjusted_open"]),
+                    adjusted_close=float(row["adjusted_close"]),
+                    unadjusted_close=float(row["unadjusted_close"]),
+                    unadjusted_volume=float(row["unadjusted_volume"]),
                 )
             except (TypeError, ValueError) as exc:
                 raise ValueError(f"invalid price row at line {line_number}") from exc
@@ -218,17 +267,22 @@ def run_backtest(
     if len(sessions) < 2:
         raise ValueError("benchmark requires at least two sessions")
     _validate_xnys_sessions(sessions)
-    mapped = _map_snapshots_to_sessions(
+    mapped, mapping_exclusions = _map_snapshots_to_sessions(
         snapshot_list,
         sessions,
         holding_sessions=execution.holding_sessions,
     )
     if not mapped:
-        raise ValueError("no snapshots map to an executable next session")
+        counts = Counter(item.reason for item in mapping_exclusions)
+        raise ValueError(
+            "no snapshots map to an executable next session "
+            f"(exclusions={dict(sorted(counts.items()))})"
+        )
 
     cohort_weights: dict[int, dict[str, float]] = {}
+    exclusions = list(mapping_exclusions)
     for entry_index, snapshot in mapped.items():
-        cohort_weights[entry_index] = _build_cohort_weights(
+        weights, cohort_exclusions = _build_cohort_weights(
             snapshot,
             sessions[entry_index],
             bars_by_ticker,
@@ -236,6 +290,8 @@ def run_backtest(
             research,
             execution,
         )
+        cohort_weights[entry_index] = weights
+        exclusions.extend(cohort_exclusions)
 
     start_index = min(mapped)
     last_entry_index = max(mapped)
@@ -255,6 +311,7 @@ def run_backtest(
     days: list[PortfolioDay] = []
     benchmark_returns: list[float] = []
     cost_rate = execution.cost_bps_per_side / 10_000
+    previous_target_weights: dict[str, float] | None = None
 
     for index in range(start_index, end_index):
         entry_date = sessions[index]
@@ -268,12 +325,20 @@ def run_backtest(
             cohort_weights,
             execution,
         )
-        target_values, turnover_dollars, cost = _self_financing_targets(
-            current_values=current_values,
-            target_weights=target_weights,
-            nav_before=nav_before,
-            cost_rate=cost_rate,
-        )
+        weights_changed = previous_target_weights != target_weights
+        if weights_changed:
+            target_values, turnover_dollars, cost = _self_financing_targets(
+                current_values=current_values,
+                target_weights=target_weights,
+                nav_before=nav_before,
+                cost_rate=cost_rate,
+            )
+        else:
+            # A cohort target is a buy-and-hold instruction between membership or
+            # target-weight changes. Price drift is observed, not traded away.
+            target_values = current_values
+            turnover_dollars = 0.0
+            cost = 0.0
         sell_notional = sum(
             max(current_values.get(ticker, 0.0) - target_values.get(ticker, 0.0), 0.0)
             for ticker in set(current_values) | set(target_values)
@@ -284,6 +349,13 @@ def run_backtest(
         )
         sell_cost = sell_notional * cost_rate
         buy_cost = buy_notional * cost_rate
+        if not math.isclose(
+            turnover_dollars,
+            sell_notional + buy_notional,
+            rel_tol=1e-12,
+            abs_tol=1e-15,
+        ):
+            raise ValueError("transaction-cost turnover is inconsistent")
         if not math.isclose(cost, sell_cost + buy_cost, rel_tol=1e-12, abs_tol=1e-15):
             raise ValueError("transaction-cost allocation is inconsistent")
 
@@ -302,21 +374,39 @@ def run_backtest(
         elif sell_notional > 1e-12:
             raise ValueError("first rebalance unexpectedly contains a sale")
 
-        cash = nav_before - sum(target_values.values()) - cost
-        if cash < -1e-10:
-            raise ValueError("self-financing rebalance produced negative cash")
-        cash = max(cash, 0.0)
-        shares = {
-            ticker: value / _bar_for(ticker, entry_date, bar_lookup).open
-            for ticker, value in target_values.items()
-            if value > 0
-        }
+        if weights_changed:
+            cash = nav_before - sum(target_values.values()) - cost
+            if cash < -1e-10:
+                raise ValueError("self-financing rebalance produced negative cash")
+            cash = max(cash, 0.0)
+            shares = {
+                ticker: value / _bar_for(ticker, entry_date, bar_lookup).adjusted_open
+                for ticker, value in target_values.items()
+                if value > 0
+            }
+
+        post_trade_values = _position_values(shares, entry_date, bar_lookup)
+        post_trade_nav = cash + sum(post_trade_values.values())
+        if not math.isfinite(post_trade_nav) or post_trade_nav <= 0:
+            raise ValueError("portfolio NAV became nonpositive after rebalancing")
+        realized_gross = sum(post_trade_values.values()) / post_trade_nav
+        cash_weight = cash / post_trade_nav
+        realized_max_name = (
+            max(post_trade_values.values(), default=0.0) / post_trade_nav
+        )
+        if (
+            realized_gross < -1e-12
+            or cash_weight < -1e-12
+            or not math.isclose(realized_gross + cash_weight, 1.0, abs_tol=1e-12)
+        ):
+            raise ValueError("long-only/cash exposure accounting is inconsistent")
+
         next_values = _position_values(shares, exit_date, bar_lookup)
         nav = cash + sum(next_values.values())
         net_return = nav / period_start_nav - 1
         benchmark_return = (
-            _bar_for(benchmark, exit_date, bar_lookup).open
-            / _bar_for(benchmark, entry_date, bar_lookup).open
+            _bar_for(benchmark, exit_date, bar_lookup).adjusted_open
+            / _bar_for(benchmark, entry_date, bar_lookup).adjusted_open
             - 1
         )
         buy_turnover = buy_notional / period_start_nav
@@ -333,8 +423,12 @@ def run_backtest(
                 cost=buy_cost,
                 nav=nav,
                 target_weights=dict(sorted(target_weights.items())),
+                realized_gross_exposure=realized_gross,
+                cash_weight=cash_weight,
+                realized_max_name_weight=realized_max_name,
             )
         )
+        previous_target_weights = target_weights
 
     final_values = _position_values(shares, sessions[end_index], bar_lookup)
     liquidation_notional = sum(final_values.values())
@@ -371,13 +465,14 @@ def run_backtest(
         snapshots=len(snapshot_list),
         mapped_signal_sessions=len(mapped),
         eligible_cohorts=sum(bool(weights) for weights in cohort_weights.values()),
+        exclusions=tuple(exclusions),
         days=tuple(days),
         folds=tuple(folds),
     )
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run one fully recorded trial from immutable snapshots and adjusted bars."""
+    """Run one trial from immutable snapshots and explicit research price bars."""
     args = _parse_args(argv)
     try:
         return _run_cli(args)
@@ -408,7 +503,7 @@ def _run_cli(args: argparse.Namespace) -> int:
         holding_sessions=args.holding_sessions,
         gross_exposure=args.gross_exposure,
         max_name_weight=args.max_name_weight,
-        min_adjusted_price=args.min_adjusted_price,
+        min_unadjusted_price=args.min_unadjusted_price,
         min_average_dollar_volume=args.min_average_dollar_volume,
         cost_bps_per_side=args.cost_bps_per_side,
         chronological_folds=args.chronological_folds,
@@ -427,11 +522,21 @@ def _run_cli(args: argparse.Namespace) -> int:
     payload = report.to_dict()
     payload["trial"] = {
         "created_at_utc": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "retail_signals_version": __version__,
         "snapshot_files": [
             {"path": str(path), "sha256": content_hash}
             for path, content_hash in zip(snapshot_paths, snapshot_hashes, strict=True)
         ],
         "price_file": {"path": str(price_path), "sha256": price_hash},
+        "price_schema": {
+            "name": PRICE_SCHEMA_NAME,
+            "columns": list(PRICE_COLUMNS),
+            "return_fields": ["adjusted_open", "adjusted_close"],
+            "point_in_time_eligibility_fields": [
+                "unadjusted_close",
+                "unadjusted_volume",
+            ],
+        },
         "research_config": config_as_dict(research_config),
         "backtest_config": asdict(backtest_config),
         "benchmark": args.benchmark.upper(),
@@ -471,7 +576,14 @@ def _index_bars(price_bars: Iterable[PriceBar]) -> dict[str, list[PriceBar]]:
             raise ValueError(f"invalid price bar for {ticker} on {bar.date}")
         seen.add(key)
         indexed.setdefault(ticker, []).append(
-            PriceBar(bar.date, ticker, bar.open, bar.close, bar.volume)
+            PriceBar(
+                bar.date,
+                ticker,
+                bar.adjusted_open,
+                bar.adjusted_close,
+                bar.unadjusted_close,
+                bar.unadjusted_volume,
+            )
         )
     for bars in indexed.values():
         bars.sort(key=lambda item: item.date)
@@ -483,8 +595,15 @@ def _map_snapshots_to_sessions(
     sessions: list[date],
     *,
     holding_sessions: int,
-) -> dict[int, ResearchSnapshot]:
+) -> tuple[dict[int, ResearchSnapshot], list[AuditExclusion]]:
+    """Map snapshots while keeping the latest as-of view for each XNYS open.
+
+    Several closed calendar days can map to one exchange open. The most recently
+    completed response is the deliberate decision view; every older view remains
+    visible in the audit trail as superseded.
+    """
     mapped: dict[int, ResearchSnapshot] = {}
+    exclusions: list[AuditExclusion] = []
     executable_entries = range(max(0, len(sessions) - holding_sessions))
     for snapshot in snapshots:
         if _xnys_open_utc(sessions[0]) > snapshot.observed_at_utc:
@@ -508,11 +627,50 @@ def _map_snapshots_to_sessions(
             None,
         )
         if entry_index is None:
+            exclusions.append(
+                _audit_exclusion(snapshot, "right_censored_holding_horizon")
+            )
             continue
         existing = mapped.get(entry_index)
-        if existing is None or snapshot.observed_at_utc > existing.observed_at_utc:
+        if existing is None:
             mapped[entry_index] = snapshot
-    return mapped
+            continue
+        entry_date = sessions[entry_index]
+        if snapshot.observed_at_utc > existing.observed_at_utc:
+            exclusions.append(
+                _audit_exclusion(
+                    existing,
+                    "superseded_by_later_snapshot_for_same_entry",
+                    entry_date=entry_date,
+                )
+            )
+            mapped[entry_index] = snapshot
+        else:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    "superseded_by_later_snapshot_for_same_entry",
+                    entry_date=entry_date,
+                )
+            )
+    return mapped, exclusions
+
+
+def _audit_exclusion(
+    snapshot: ResearchSnapshot,
+    reason: str,
+    *,
+    entry_date: date | None = None,
+    ticker: str | None = None,
+) -> AuditExclusion:
+    return AuditExclusion(
+        reason=reason,
+        snapshot_sha256=snapshot.content_sha256,
+        window_end=snapshot.window_end,
+        observed_at_utc=snapshot.observed_at_utc,
+        entry_date=entry_date,
+        ticker=ticker,
+    )
 
 
 def _build_cohort_weights(
@@ -522,34 +680,102 @@ def _build_cohort_weights(
     market_sessions: list[date],
     research: ResearchConfig,
     execution: BacktestConfig,
-) -> dict[str, float]:
+) -> tuple[dict[str, float], list[AuditExclusion]]:
     ranked: list[tuple[str, float]] = []
-    for candidate in rank_research_candidates(snapshot, research):
+    social_candidates, social_rejections = screen_research_candidates(
+        snapshot, research
+    )
+    exclusions = [
+        _audit_exclusion(
+            snapshot,
+            reason,
+            entry_date=entry_date,
+            ticker=ticker,
+        )
+        for ticker, reason in social_rejections
+    ]
+    if not social_candidates:
+        if not social_rejections:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    "no_social_candidates",
+                    entry_date=entry_date,
+                )
+            )
+        return {}, exclusions
+
+    for candidate in social_candidates:
+        if len(ranked) == research.max_candidates:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    "portfolio_candidate_limit",
+                    entry_date=entry_date,
+                    ticker=candidate.ticker,
+                )
+            )
+            continue
         bars = bars_by_ticker.get(candidate.ticker)
         if not bars:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    "market_gate_missing_ticker_prices",
+                    entry_date=entry_date,
+                    ticker=candidate.ticker,
+                )
+            )
             continue
-        market = _market_stats(bars, entry_date, market_sessions, execution)
+        market, market_reason = _market_stats(
+            bars, entry_date, market_sessions, execution
+        )
         if market is None:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    market_reason or "market_gate_invalid_stats",
+                    entry_date=entry_date,
+                    ticker=candidate.ticker,
+                )
+            )
             continue
-        volatility, prior_close, average_dollar_volume = market
-        if prior_close < execution.min_adjusted_price:
+        volatility, prior_unadjusted_close, average_dollar_volume = market
+        if prior_unadjusted_close < execution.min_unadjusted_price:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    "market_gate_min_unadjusted_price",
+                    entry_date=entry_date,
+                    ticker=candidate.ticker,
+                )
+            )
             continue
         if average_dollar_volume < execution.min_average_dollar_volume:
+            exclusions.append(
+                _audit_exclusion(
+                    snapshot,
+                    "market_gate_min_average_dollar_volume",
+                    entry_date=entry_date,
+                    ticker=candidate.ticker,
+                )
+            )
             continue
         risk_adjusted_score = candidate.score / volatility
         if math.isfinite(risk_adjusted_score) and risk_adjusted_score > 0:
             ranked.append((candidate.ticker, risk_adjusted_score))
-        if len(ranked) == research.max_candidates:
-            break
 
     if not ranked:
-        return {}
+        return {}, exclusions
     cohort_budget = execution.gross_exposure / execution.holding_sessions
     score_sum = sum(score for _, score in ranked)
-    return {
-        ticker: min(cohort_budget * score / score_sum, execution.max_name_weight)
-        for ticker, score in ranked
-    }
+    return (
+        {
+            ticker: min(cohort_budget * score / score_sum, execution.max_name_weight)
+            for ticker, score in ranked
+        },
+        exclusions,
+    )
 
 
 def _market_stats(
@@ -557,32 +783,36 @@ def _market_stats(
     entry_date: date,
     market_sessions: list[date],
     config: BacktestConfig,
-) -> tuple[float, float, float] | None:
+) -> tuple[tuple[float, float, float] | None, str | None]:
     needed = max(config.liquidity_lookback, config.volatility_lookback + 1)
     expected_dates = [session for session in market_sessions if session < entry_date][
         -needed:
     ]
     if len(expected_dates) < needed:
-        return None
+        return None, "market_gate_insufficient_lookback"
     bars_by_date = {bar.date: bar for bar in bars}
     if any(session not in bars_by_date for session in expected_dates):
-        return None
+        return None, "market_gate_missing_lookback_bar"
     prior = [bars_by_date[session] for session in expected_dates]
     liquidity_window = prior[-config.liquidity_lookback :]
     volatility_window = prior[-(config.volatility_lookback + 1) :]
     returns = [
-        current.close / previous.close - 1
-        for previous, current in zip(volatility_window, volatility_window[1:])
+        current.adjusted_close / previous.adjusted_close - 1
+        for previous, current in pairwise(volatility_window)
     ]
     volatility = statistics.stdev(returns) * math.sqrt(252)
     if not math.isfinite(volatility) or volatility <= 0:
-        return None
+        return None, "market_gate_invalid_trailing_volatility"
     average_dollar_volume = statistics.fmean(
-        bar.close * bar.volume for bar in liquidity_window
+        bar.unadjusted_close * bar.unadjusted_volume for bar in liquidity_window
     )
     if not math.isfinite(average_dollar_volume):
-        return None
-    return volatility, prior[-1].close, average_dollar_volume
+        return None, "market_gate_invalid_average_dollar_volume"
+    return (
+        volatility,
+        prior[-1].unadjusted_close,
+        average_dollar_volume,
+    ), None
 
 
 def _target_weights_for_session(
@@ -647,7 +877,7 @@ def _position_values(
     lookup: dict[str, dict[date, PriceBar]],
 ) -> dict[str, float]:
     return {
-        ticker: units * _bar_for(ticker, session, lookup).open
+        ticker: units * _bar_for(ticker, session, lookup).adjusted_open
         for ticker, units in shares.items()
     }
 
@@ -780,12 +1010,11 @@ def _file_sha256(path: Path) -> str:
 
 
 def _valid_price_values(bar: PriceBar) -> bool:
-    values = (bar.open, bar.close, bar.volume)
+    prices = (bar.adjusted_open, bar.adjusted_close, bar.unadjusted_close)
     return (
-        all(math.isfinite(value) for value in values)
-        and bar.open > 0
-        and bar.close > 0
-        and bar.volume >= 0
+        all(math.isfinite(value) and value > 0 for value in prices)
+        and math.isfinite(bar.unadjusted_volume)
+        and bar.unadjusted_volume >= 0
     )
 
 
@@ -796,14 +1025,19 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--snapshots", nargs="+", required=True)
     parser.add_argument(
-        "--prices", required=True, help="Adjusted CSV: date,ticker,open,close,volume"
+        "--prices",
+        required=True,
+        help=(
+            "CSV with adjusted return prices and point-in-time unadjusted "
+            "eligibility fields"
+        ),
     )
     parser.add_argument("--output", required=True, help="New JSON trial-report path.")
     parser.add_argument("--benchmark", default="SPY")
     parser.add_argument("--holding-sessions", type=int, default=1, choices=(1, 5, 20))
     parser.add_argument("--gross-exposure", type=float, default=0.25)
     parser.add_argument("--max-name-weight", type=float, default=0.05)
-    parser.add_argument("--min-adjusted-price", type=float, default=5.0)
+    parser.add_argument("--min-unadjusted-price", type=float, default=5.0)
     parser.add_argument("--min-average-dollar-volume", type=float, default=10_000_000.0)
     parser.add_argument("--cost-bps-per-side", type=float, default=10.0)
     parser.add_argument("--chronological-folds", type=int, default=3)

@@ -16,11 +16,11 @@ from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
 from typing import Any
 
-from retail_signals.adanos import AdanosClient
+from retail_signals.adanos import AdanosClient, validate_base_url
 
 SNAPSHOT_SCHEMA = "adanos.reddit-stocks.research-snapshot.v1"
 FINALIZATION_TIME_UTC = time(6, 0)
-_TICKER_RE = re.compile(r"^[A-Z][A-Z0-9.-]{0,14}$")
+_TICKER_RE = re.compile(r"^(?=.{1,15}$)[A-Z][A-Z0-9]*(?:[.-][A-Z0-9]+)*$")
 
 
 @dataclass(frozen=True)
@@ -110,6 +110,7 @@ class ResearchSnapshot:
         )
         if self.universe != f"adanos-reddit-trending-top-{request_limit}":
             raise ValueError("snapshot universe does not match its request limit")
+        _validate_snapshot_rows(self.rows, request_limit)
 
     def to_dict(self) -> dict[str, Any]:
         """Return a deterministic JSON-serializable representation."""
@@ -128,6 +129,7 @@ class ResearchSnapshot:
         )
         if self.universe != f"adanos-reddit-trending-top-{request_limit}":
             raise ValueError("snapshot universe changed after validation")
+        _validate_snapshot_rows(self.rows, request_limit)
         return {
             "schema": self.schema,
             "observed_at_utc": self.observed_at_utc.isoformat().replace("+00:00", "Z"),
@@ -188,6 +190,7 @@ def capture_closed_snapshot(
         limit=limit,
     )
     normalized_rows = tuple(_canonicalize_row(row) for row in rows)
+    _validate_snapshot_rows(normalized_rows, limit)
     request_metadata = {
         "base_url": client.base_url.rstrip("/"),
         "path": "/reddit/stocks/v1/trending",
@@ -227,11 +230,11 @@ def capture_closed_snapshot(
 
 def write_snapshot(snapshot: ResearchSnapshot, output_path: Path) -> None:
     """Write one validated snapshot without mutating an existing file."""
+    serialized = json.dumps(snapshot.to_dict(), indent=2, sort_keys=True) + "\n"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         with output_path.open("x", encoding="utf-8") as handle:
-            json.dump(snapshot.to_dict(), handle, indent=2, sort_keys=True)
-            handle.write("\n")
+            handle.write(serialized)
     except FileExistsError as exc:
         raise FileExistsError(f"refusing to overwrite snapshot: {output_path}") from exc
 
@@ -265,12 +268,28 @@ def rank_research_candidates(
     config: ResearchConfig,
 ) -> list[ResearchCandidate]:
     """Return every socially eligible candidate in deterministic score order."""
+    candidates, _ = screen_research_candidates(snapshot, config)
+    return candidates
+
+
+def screen_research_candidates(
+    snapshot: ResearchSnapshot,
+    config: ResearchConfig,
+) -> tuple[list[ResearchCandidate], list[tuple[str, str]]]:
+    """Return ranked candidates plus row-ordered ticker rejection reasons."""
+    snapshot.to_dict()
     candidates: list[ResearchCandidate] = []
+    rejections: list[tuple[str, str]] = []
     for row in snapshot.rows:
-        candidate = _candidate_from_row(row, config)
+        candidate, reason = _candidate_from_row(row, config)
         if candidate is not None:
             candidates.append(candidate)
-    return sorted(candidates, key=lambda item: (-item.score, item.ticker))
+            continue
+        ticker = _normalize_research_ticker(row.get("ticker"))
+        if ticker is None or reason is None:
+            raise ValueError("validated snapshot row could not be socially screened")
+        rejections.append((ticker, reason))
+    return sorted(candidates, key=lambda item: (-item.score, item.ticker)), rejections
 
 
 def config_as_dict(config: ResearchConfig) -> dict[str, Any]:
@@ -281,60 +300,82 @@ def config_as_dict(config: ResearchConfig) -> dict[str, Any]:
 def _candidate_from_row(
     row: dict[str, Any],
     config: ResearchConfig,
-) -> ResearchCandidate | None:
-    ticker = str(row.get("ticker") or "").strip().upper()
-    if not _TICKER_RE.fullmatch(ticker):
-        return None
+) -> tuple[ResearchCandidate | None, str | None]:
+    ticker = _normalize_research_ticker(row.get("ticker"))
+    if ticker is None:
+        return None, "social_screen_invalid_ticker"
     try:
-        buzz_score = float(row["buzz_score"])
-        sentiment_score = float(row["sentiment_score"])
-        bullish_pct = int(row["bullish_pct"])
-        bearish_pct = int(row["bearish_pct"])
-        mentions = int(row["mentions"])
-        unique_posts = int(row["unique_posts"])
-        subreddit_count = int(row["subreddit_count"])
-    except (KeyError, TypeError, ValueError):
-        return None
+        buzz_score = _strict_number(row["buzz_score"])
+        sentiment_score = _strict_number(row["sentiment_score"])
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return None, "social_screen_invalid_numeric_fields"
+    try:
+        integer_values = (
+            row["bullish_pct"],
+            row["bearish_pct"],
+            row["mentions"],
+            row["unique_posts"],
+            row["subreddit_count"],
+        )
+    except KeyError:
+        return None, "social_screen_invalid_integer_fields"
+    if any(
+        isinstance(value, bool) or not isinstance(value, int)
+        for value in integer_values
+    ):
+        return None, "social_screen_invalid_integer_fields"
+    bullish_pct, bearish_pct, mentions, unique_posts, subreddit_count = integer_values
 
     spread = bullish_pct - bearish_pct
     if not math.isfinite(buzz_score) or not 0 <= buzz_score <= 100:
-        return None
+        return None, "social_screen_buzz_out_of_range"
     if not math.isfinite(sentiment_score) or not -1 <= sentiment_score <= 1:
-        return None
+        return None, "social_screen_sentiment_out_of_range"
     if (
         not 0 <= bullish_pct <= 100
         or not 0 <= bearish_pct <= 100
         or bullish_pct + bearish_pct > 100
     ):
-        return None
+        return None, "social_screen_invalid_sentiment_percentages"
     if min(mentions, unique_posts, subreddit_count) < 0:
-        return None
+        return None, "social_screen_invalid_activity_counts"
+    if unique_posts > mentions or subreddit_count > unique_posts:
+        return None, "social_screen_inconsistent_breadth"
     if str(row.get("trend") or "").lower() != "rising":
-        return None
+        return None, "social_screen_trend_not_rising"
     if sentiment_score < config.min_sentiment:
-        return None
+        return None, "social_screen_min_sentiment"
     if spread < config.min_bull_bear_spread:
-        return None
+        return None, "social_screen_min_bull_bear_spread"
     if mentions < config.min_mentions:
-        return None
+        return None, "social_screen_min_mentions"
     if unique_posts < config.min_unique_posts:
-        return None
+        return None, "social_screen_min_unique_posts"
     if subreddit_count < config.min_subreddits:
-        return None
+        return None, "social_screen_min_subreddits"
     if not 0 <= buzz_score < config.max_crowding_buzz:
-        return None
+        return None, "social_screen_max_crowding_buzz"
 
-    direction = sentiment_score * (spread / 100)
-    quality = math.log1p(unique_posts) * math.log1p(subreddit_count)
-    return ResearchCandidate(
-        ticker=ticker,
-        score=round(direction * quality, 12),
-        sentiment_score=sentiment_score,
-        bull_bear_spread=spread,
-        mentions=mentions,
-        unique_posts=unique_posts,
-        subreddit_count=subreddit_count,
-        buzz_score=buzz_score,
+    try:
+        direction = sentiment_score * (spread / 100)
+        quality = math.log1p(unique_posts) * math.log1p(subreddit_count)
+        score = direction * quality
+    except (OverflowError, ValueError):
+        return None, "social_screen_invalid_quality_score"
+    if not math.isfinite(quality) or not math.isfinite(score):
+        return None, "social_screen_invalid_quality_score"
+    return (
+        ResearchCandidate(
+            ticker=ticker,
+            score=round(score, 12),
+            sentiment_score=sentiment_score,
+            bull_bear_spread=spread,
+            mentions=mentions,
+            unique_posts=unique_posts,
+            subreddit_count=subreddit_count,
+            buzz_score=buzz_score,
+        ),
+        None,
     )
 
 
@@ -345,6 +386,37 @@ def _canonicalize_row(row: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(decoded, dict):
         raise ValueError("Adanos row must be an object")
     return decoded
+
+
+def _validate_snapshot_rows(
+    rows: tuple[dict[str, Any], ...], request_limit: int
+) -> None:
+    if len(rows) > request_limit:
+        raise ValueError("snapshot row count exceeds its request limit")
+    seen: set[str] = set()
+    for index, row in enumerate(rows):
+        ticker = _normalize_research_ticker(row.get("ticker"))
+        if ticker is None:
+            raise ValueError(f"snapshot row {index} has an invalid research ticker")
+        if ticker in seen:
+            raise ValueError(f"snapshot rows contain duplicate ticker {ticker}")
+        seen.add(ticker)
+
+
+def _normalize_research_ticker(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    ticker = value.strip().upper()
+    return ticker if _TICKER_RE.fullmatch(ticker) else None
+
+
+def _strict_number(value: Any) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError("research numeric field must be an integer or float")
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError("research numeric field must be finite")
+    return parsed
 
 
 def _snapshot_sha256(
@@ -391,9 +463,12 @@ def _validate_request(
 ) -> int:
     params = request_metadata.get("params")
     base_url = request_metadata.get("base_url")
+    try:
+        normalized_base_url = validate_base_url(base_url)
+    except ValueError as exc:
+        raise ValueError("snapshot request base_url is invalid") from exc
     if (
-        not isinstance(base_url, str)
-        or not base_url.startswith(("https://", "http://"))
+        normalized_base_url != base_url.rstrip("/")
         or request_metadata.get("path") != "/reddit/stocks/v1/trending"
         or not isinstance(params, dict)
     ):

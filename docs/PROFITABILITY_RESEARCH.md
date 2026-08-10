@@ -182,7 +182,7 @@ net excess return is nonpositive.
    50 bp cost stress. This is the default conclusion unless rejected by the
    gates below.
 
-## 4. Implemented v1: preregistered screen-grade hypothesis
+## 4. Implemented screen and v2 backtest: preregistered hypothesis
 
 This is the exact conservative rule implemented by the pull request. It is a
 research scaffold, not a recommended allocation or the complete scientific
@@ -197,12 +197,13 @@ not rank, can depend on today's symbol/reference state, and cannot represent
 delisted names absent from the response. V1 results must therefore be labeled
 `selected-universe` and cannot support a market-wide profitability claim.
 
-At the simulated decision time, v1 additionally requires an adjusted prior
-close of at least $5, trailing 20-session average dollar volume of at least
-$10 million, and exact coverage of the required preceding benchmark sessions
-for a 20-session realized-volatility estimate. A missing recent ticker bar is a
-failed eligibility input; older observations are never compressed across the
-gap.
+At the simulated decision time, backtest v2 requires a point-in-time,
+**unadjusted** prior close of at least $5 and trailing 20-session average dollar
+volume of at least $10 million computed from unadjusted close and volume. The
+20-session realized-volatility estimate instead uses consistently adjusted
+closes. Exact coverage of the required preceding benchmark sessions is required;
+a missing recent ticker bar is a failed eligibility input and older observations
+are never compressed across the gap.
 
 ### Coarse D/A/Q/C operationalization
 
@@ -226,27 +227,36 @@ eligibility in that order, and only then keeps the first five eligible names.
 
 1. Timestamp the snapshot only after the Adanos response has completed, then
    map it to the first benchmark/US session open strictly after that UTC
-   observation timestamp. Reject multiple vintages for the same signal day.
+   observation timestamp. Reject multiple vintages for the same signal day. If
+   distinct closed calendar days map to the same XNYS open, retain the latest
+   response completed before that open as the deliberate as-of view and record
+   each displaced snapshot as superseded.
 2. Within a signal cohort, divide the score by trailing 20-session annualized
    volatility and allocate proportionally. The cohort budget is 25% gross
    divided by the configured holding horizon; each name is capped at 5%.
    Targets are sized against post-cost NAV, so transaction fees are reserved
-   without borrowing and configured gross/name caps remain true after costs.
+   without borrowing and configured gross/name caps hold at each target change.
 3. Combine active cohorts, keep gross exposure at or below 25%, and leave the
    remainder in non-interest-bearing simulated cash. There is no leverage,
-   shorting, sector constraint, or portfolio volatility target in v1.
+   shorting, sector constraint, or portfolio volatility target in the scaffold.
 4. The CLI exposes fixed holding variants of 1, 5, or 20 sessions. One session
-   is the default. These are separate registered trials; v1 does not implement
-   the archive diagnostic's 3-session variant. A cohort is included only when
-   the price input contains its full configured horizon; right-censored
-   holdings are never shortened or scored.
+   is the default. These are separate registered trials; the simulator does not
+   implement the archive diagnostic's 3-session variant. Between changes to the
+   combined target membership or weights, shares are carried without daily
+   constant-weight rebalancing. Price drift can therefore move realized gross
+   and name weights away from their target values; those realized exposures are
+   reported daily. A cohort is included only when the price input contains its
+   full configured horizon; right-censored holdings are never shortened or
+   scored and are recorded in the exclusion ledger.
 5. Charge 10 bp per traded side by default (20 bp for a fully entered and later
    liquidated position). Missing eligibility inputs leave the name out; no
-   qualified cohort means cash.
+   qualified cohort means cash. Social-screen, market-gate, right-censoring, and
+   supersession exclusions receive explicit reasons tied to the source snapshot.
 
 Every change to a screen, score, budget, cap, cost, or horizon creates a new
-trial. V1 must first accumulate new immutable snapshots; running it on data
-queried retrospectively would not convert that data into point-in-time evidence.
+trial. The scaffold must first accumulate new immutable snapshots; running it on
+data queried retrospectively would not convert that data into point-in-time
+evidence.
 
 ### Decision-grade successor, not implemented
 
@@ -256,7 +266,7 @@ and separately standardized Reddit/X direction, raw attention surprise,
 evidence quality, news confirmation, and crowding. Polymarket may be tested only
 as a separately standardized event-risk feature because its flow semantics
 differ. Learned coefficients, sector constraints, a portfolio volatility target,
-and point-in-time short interest are future trials, not v1 behavior.
+and point-in-time short interest are future trials, not current behavior.
 
 ## 5. Adanos closed-day snapshot contracts
 
@@ -274,10 +284,21 @@ The `adanos.reddit-stocks.research-snapshot.v1` file contains the response-
 completion UTC observation timestamp, one-day window start/end, canonical
 request path/query metadata, explicit top-100 universe label, canonicalized JSON
 rows, schema name, and SHA-256 of that complete canonical manifest. Loading
-revalidates the hash, one-day window, and closed-window request; writing uses an
-exclusive create and refuses to replace an existing file. The research client
-rejects the entire response if any API list element is not an object; it never
-silently deletes malformed rows before hashing.
+revalidates the hash, one-day window, credential-free base URL, closed-window
+request, requested row ceiling, and unique normalized ticker set; writing
+serializes and validates before an exclusive create and refuses to replace an
+existing file. The research client rejects the entire response if any API list
+element is not an object; it never silently deletes malformed rows before
+hashing.
+
+Backtest loading revalidates every manifest and rejects multiple vintages for
+the same closed signal day. Distinct closed days may legitimately map to one
+future XNYS open, such as over a weekend or holiday. In that case only the latest
+response completed before the open is the executable as-of view; the older
+immutable files are not deleted and appear in the trial exclusion ledger with a
+supersession reason. A snapshot without its full requested forward horizon is
+likewise retained in the inputs and reported as right-censored rather than being
+silently shortened.
 
 This makes accidental mutation detectable and enforces a basic closed-day
 cutoff. It does **not** preserve the raw HTTP response, request/response headers,
@@ -287,9 +308,12 @@ the first 100 ranked Reddit rows or any other platform. V1 is therefore a
 screen-grade evidence object, not the final decision-grade provenance contract.
 
 The shared HTTP client treats an explanation `404` as absent context, stops on
-a quota `429` without `Retry-After`, and retries a burst `429` using either
-delta-seconds or an HTTP date. A server-controlled delay is capped at 60 seconds
-per retry so a response cannot indefinitely stall the publisher or collector.
+a quota `429` without `Retry-After`, retries `429` when that header is present,
+and retries transient server failures. For any retried response it honors
+`Retry-After` expressed as delta-seconds or an HTTP date. A server-controlled
+delay is capped at 60 seconds per retry so a response cannot indefinitely stall
+the publisher or collector. Credential-bearing endpoint URLs are rejected and
+provider error bodies redact the active API key before reaching CLI diagnostics.
 
 ### Required decision-grade future contract
 
@@ -331,40 +355,60 @@ fields. Never use Polymarket `current_market_count`, `pulse`, or today's
 
 ## 6. Portfolio simulation and validation
 
-### Implemented v1 simulation
+### Implemented v2 simulation
 
-V1 loads a strict adjusted daily `date,ticker,open,close,volume` CSV and validates
-every supplied SPY session against the pinned
+Backtest price schema `retail-signals-price-bars-v2` requires the exact ordered
+daily CSV fields
+`date,ticker,adjusted_open,adjusted_close,unadjusted_close,unadjusted_volume`.
+Adjusted opens provide open-to-open portfolio and benchmark returns; adjusted
+closes provide trailing return volatility. The point-in-time $5 and average
+dollar-volume screens use unadjusted close and unadjusted volume, so a later
+split adjustment cannot retroactively change historical eligibility. The loader
+rejects the former ambiguous five-column format, missing/extra columns,
+duplicates, and nonfinite or invalid values. The corresponding configurable CLI
+gate is named `--min-unadjusted-price`.
+
+The simulator validates every supplied SPY session against the pinned
 [`exchange-calendars` 4.13.2](https://pypi.org/project/exchange-calendars/4.13.2/)
-XNYS calendar. A missing or unexpected benchmark session fails the trial; snapshots
-cannot silently advance to a later available row. V1 enters only at the first
-actual XNYS open after response completion. It rejects duplicate vintages for
-one signal day and excludes any cohort without the full requested holding
-horizon. It marks active cohorts open-to-open, charges turnover at 10 bp per
-side, charges final liquidation in both daily and aggregate metrics, and assigns
-every sell fee to the return period ending at that exit open while a buy fee
-starts the new period. It holds idle cash at zero return and fails on a missing
-held-ticker bar rather than inventing a fill.
+XNYS calendar. A missing or unexpected benchmark session fails the trial;
+snapshots cannot silently advance to a later available row. The simulator enters
+only at the first actual XNYS open after response completion. It rejects duplicate
+vintages for one signal day; for distinct days sharing an entry open,
+latest-as-of wins and superseded snapshots remain audit-visible. It excludes any
+cohort without the full requested holding horizon and records the right-censoring
+reason. Active cohort target weights are combined, but shares are rebalanced only
+when combined target membership or weights change; unchanged targets carry shares
+and their price drift. The simulator charges turnover at 10 bp per side, charges
+final liquidation in both daily and aggregate metrics, and assigns every sell
+fee to the return period ending at that exit open while a buy fee starts the new
+period. It holds idle cash at zero return and fails on a missing held-ticker bar
+rather than inventing a fill.
 
 The JSON report refuses overwrite and records snapshot/price file hashes, the
-full research and backtest configs, created time, benchmark, XNYS calendar
-library/version, daily weights, turnover, costs, NAV, and SPY return. It reports
-total/annualized return,
-annualized volatility, a deliberately named **naive** Sharpe, maximum drawdown,
-hit rate, and contiguous descriptive folds. These folds do not train, purge,
-embargo, or establish out-of-sample validity. The reported SPY series is
-full-notional rather than matched to v1's 25% gross budget, so it is descriptive,
+`retail_signals` package version, explicit price schema and field roles, full
+research and backtest configs, created time, benchmark, and XNYS calendar
+library/version. Its exclusion ledger records snapshot hash, decision dates,
+optional ticker, and reason for supersession, right-censoring, no social
+candidate, market-data failure, eligibility gate, or candidate limit. Daily rows
+include target weights, realized gross exposure, cash weight, realized largest-
+name weight, turnover, costs, NAV, and SPY return. It reports total/annualized
+return, annualized volatility, a deliberately named **naive** Sharpe, maximum
+drawdown, hit rate, and contiguous descriptive folds. These folds do not train,
+purge, embargo, or establish out-of-sample validity. The reported SPY series is
+full-notional rather than matched to the 25% gross target, so it is descriptive,
 not by itself a fair superiority test.
 
 ### Decision-grade simulation requirements
 
-- Replace user-supplied adjusted CSV assumptions with a vetted point-in-time
-  security master, corporate actions, delistings, and executable auction/quote
-  data with a consistent total-return ledger. Archive and audit the exact
-  exchange-calendar vintage and exceptional closures used by each trial.
+- Replace user-supplied v2 CSV assertions with a vetted point-in-time security
+  master, corporate-action vintages, delistings, and executable auction/quote
+  data with a consistent total-return ledger. Separate field names prevent one
+  known look-ahead class but do not prove that supplied unadjusted values were
+  actually available at the decision time. Archive and audit the exact exchange-
+  calendar vintage and exceptional closures used by each trial.
 - Never fill before the signal or silently advance to a favorable print. Model
   halts, rejected/partial orders, dividends, cash yield, and realized exposure.
-- Keep the v1 20 bp round-trip baseline but require 10/50 bp sensitivity. With
+- Keep the 20 bp round-trip baseline but require 10/50 bp sensitivity. With
   quote/trade data, separately charge half-spread, fees, slippage, and nonlinear
   impact. Add a preregistered participation cap and report capacity.
 - Report net CAGR/mean return, Sharpe and Sortino ratios, SPY- and sector-excess
@@ -457,7 +501,9 @@ coordinate trading, ingest private customer data, or expose API/broker secrets.
 **NO-GO for profitability claims and NO-GO for live trading.** The only supported
 claim today is that the existing software publishes retail-sentiment summaries
 and that its short retrospective archive does not establish a durable net edge.
-The v1 screen and simulator are conservative research scaffolding only and do
-not pass the decision-grade data or validation gates. The next authorized
-activity is immutable data collection and offline paper research under this
-protocol.
+The v1 snapshot/screen and v2 simulator are conservative research scaffolding
+only and do not pass the decision-grade data or validation gates. Explicit price
+fields, exclusion reasons, and exposure accounting improve reproducibility but
+do not establish point-in-time provenance, executable fills, market capacity, or
+profitability. The next authorized activity is immutable data collection and
+offline paper research under this protocol.

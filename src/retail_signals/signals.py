@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import math
+import re
 from dataclasses import dataclass
 from typing import Any
+
+_TICKER_RE = re.compile(r"^(?=.{1,15}$)[A-Z][A-Z0-9]*(?:[.-][A-Z0-9]+)*$")
 
 
 @dataclass(frozen=True)
@@ -66,17 +70,30 @@ def select_daily_signals(
         raise ValueError("trending_7d must not be empty")
 
     explanations = explanations or {}
-    today_signals = [
-        signal
-        for row in trending_today
-        if (signal := _from_row(row, explanations=explanations)) is not None
-    ]
+    today_signals = _unique_signals(
+        [
+            signal
+            for row in trending_today
+            if (signal := _from_row(row, explanations=explanations)) is not None
+        ]
+    )
+    seven_day_signals = _unique_signals(
+        [
+            signal
+            for row in trending_7d
+            if (
+                signal := _from_row(
+                    row,
+                    explanations=explanations,
+                    include_delta=True,
+                )
+            )
+            is not None
+        ]
+    )
     seven_day_signals = [
-        signal
-        for row in trending_7d
-        if (signal := _from_row(row, explanations=explanations, include_delta=True)) is not None
+        signal for signal in seven_day_signals if signal.buzz_delta_7d is not None
     ]
-    seven_day_signals = [signal for signal in seven_day_signals if signal.buzz_delta_7d is not None]
     if not today_signals:
         raise ValueError("trending_today must include at least one valid ticker")
     if not seven_day_signals:
@@ -120,7 +137,9 @@ def select_daily_signals(
         cleanest_breakout=cleanest_breakout,
         biggest_breakout=gainers[0] if gainers else None,
         biggest_fade=faders[0] if faders else None,
-        top_buzz_list=sorted(today_signals, key=lambda signal: signal.buzz_score, reverse=True)[:5],
+        top_buzz_list=sorted(
+            today_signals, key=lambda signal: signal.buzz_score, reverse=True
+        )[:5],
         movers=_unique_signals([*gainers[:5], *faders[:3]]),
     )
 
@@ -140,7 +159,10 @@ def resolve_shared_narrative_explanations(
 
     for target in selected:
         target_explanation = resolved.get(target.ticker, "")
-        if target_explanation and "without a clear catalyst" not in target_explanation.lower():
+        if (
+            target_explanation
+            and "without a clear catalyst" not in target_explanation.lower()
+        ):
             continue
 
         target_aliases = _explanation_aliases(target)
@@ -189,31 +211,65 @@ def _from_row(
     explanations: dict[str, str],
     include_delta: bool = False,
 ) -> StockSignal | None:
+    if not isinstance(row, dict):
+        return None
     ticker = str(row.get("ticker") or "").strip().upper()
-    if not ticker:
-        raise ValueError("row missing ticker")
     if not _is_public_stock_ticker(ticker):
+        return None
+
+    try:
+        buzz_score = _required_number(row.get("buzz_score"))
+        sentiment_score = _optional_number(row.get("sentiment_score"))
+        bullish_pct = _optional_integer(row.get("bullish_pct"))
+        bearish_pct = _optional_integer(row.get("bearish_pct"))
+        subreddit_count = _optional_integer(row.get("subreddit_count"))
+    except (TypeError, ValueError):
+        return None
+    if not 0 <= buzz_score <= 100:
+        return None
+    if sentiment_score is not None and not -1 <= sentiment_score <= 1:
+        return None
+    if bullish_pct is not None and not 0 <= bullish_pct <= 100:
+        return None
+    if bearish_pct is not None and not 0 <= bearish_pct <= 100:
+        return None
+    if (
+        bullish_pct is not None
+        and bearish_pct is not None
+        and bullish_pct + bearish_pct > 100
+    ):
+        return None
+    if subreddit_count is not None and subreddit_count < 0:
         return None
 
     buzz_delta = None
     buzz_start = None
     buzz_end = None
     if include_delta:
-        history = row.get("trend_history") or []
-        if len(history) >= 2 and history[0] is not None and history[-1] is not None:
-            buzz_start = float(history[0])
-            buzz_end = float(history[-1])
-            buzz_delta = round(buzz_end - buzz_start, 1)
+        history = row.get("trend_history")
+        if isinstance(history, list) and len(history) >= 2:
+            try:
+                buzz_start = _required_number(history[0])
+                buzz_end = _required_number(history[-1])
+            except (TypeError, ValueError):
+                buzz_start = None
+                buzz_end = None
+            else:
+                if 0 <= buzz_start <= 100 and 0 <= buzz_end <= 100:
+                    buzz_delta = round(buzz_end - buzz_start, 1)
+                else:
+                    buzz_start = None
+                    buzz_end = None
 
     return StockSignal(
         ticker=ticker,
         company_name=str(row.get("company_name") or ticker),
-        buzz_score=float(row.get("buzz_score") or 0.0),
-        sentiment_score=_optional_float(row.get("sentiment_score")),
-        bullish_pct=_optional_int(row.get("bullish_pct")),
-        bearish_pct=_optional_int(row.get("bearish_pct")),
+        buzz_score=buzz_score,
+        sentiment_score=sentiment_score,
+        bullish_pct=bullish_pct,
+        bearish_pct=bearish_pct,
         trend=str(row.get("trend") or "stable").lower(),
-        subreddit_count=_optional_int(row.get("subreddit_count")),
+        subreddit_count=subreddit_count,
         buzz_delta_7d=buzz_delta,
         buzz_start_7d=buzz_start,
         buzz_end_7d=buzz_end,
@@ -221,20 +277,31 @@ def _from_row(
     )
 
 
-def _optional_float(value: Any) -> float | None:
-    if value is None:
-        return None
-    return float(value)
+def _required_number(value: Any) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError("value must be numeric")
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError("value must be finite")
+    return parsed
 
 
-def _optional_int(value: Any) -> int | None:
+def _optional_number(value: Any) -> float | None:
     if value is None:
         return None
-    return int(value)
+    return _required_number(value)
+
+
+def _optional_integer(value: Any) -> int | None:
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError("value must be an integer")
+    return value
 
 
 def _is_public_stock_ticker(ticker: str) -> bool:
-    return not ticker.isdigit()
+    return _TICKER_RE.fullmatch(ticker) is not None
 
 
 def _unique_signals(signals: list[StockSignal]) -> list[StockSignal]:

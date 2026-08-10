@@ -14,6 +14,8 @@ from retail_signals.adanos import (
     AdanosClient,
     parse_retries,
     parse_timeout,
+    parse_trending_limit,
+    validate_base_url,
 )
 from retail_signals.research import capture_closed_snapshot, write_snapshot
 
@@ -28,13 +30,13 @@ def main(argv: list[str] | None = None) -> int:
 
     request_started_at = datetime.now(UTC)
     window_end = args.window_end or request_started_at.date() - timedelta(days=1)
-    client = AdanosClient(
-        api_key=api_access,
-        base_url=args.adanos_base_url,
-        timeout=args.timeout,
-        retries=args.retries,
-    )
     try:
+        client = AdanosClient(
+            api_key=api_access,
+            base_url=args.adanos_base_url,
+            timeout=args.timeout,
+            retries=args.retries,
+        )
         snapshot = capture_closed_snapshot(
             client,
             window_end=window_end,
@@ -71,12 +73,26 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
         help="Completed UTC date (YYYY-MM-DD); defaults to yesterday.",
     )
     parser.add_argument(
-        "--limit", type=int, default=100, help="Rows to capture (1-100)."
+        "--limit",
+        type=parse_trending_limit,
+        default=100,
+        help="Rows to capture (1-100).",
     )
     parser.add_argument("--timeout", type=parse_timeout, default=30.0)
     parser.add_argument("--retries", type=parse_retries, default=2)
-    parser.add_argument("--adanos-base-url", default="https://api.adanos.org")
+    parser.add_argument(
+        "--adanos-base-url",
+        type=_parse_base_url,
+        default="https://api.adanos.org",
+    )
     return parser.parse_args(argv)
+
+
+def _parse_base_url(value: str) -> str:
+    try:
+        return validate_base_url(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
 
 
 if __name__ == "__main__":

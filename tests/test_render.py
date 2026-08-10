@@ -132,7 +132,9 @@ def test_render_post_keeps_question_specific_and_filters_numeric_tickers():
         date_label="May 14, 2026",
         trending_today=rows,
         trending_7d=rows,
-        explanations={"BABA": "BABA is trending because a news claim should not print."},
+        explanations={
+            "BABA": "BABA is trending because a news claim should not print."
+        },
     )
 
     title = render_title(signals)
@@ -169,7 +171,10 @@ def test_render_post_surfaces_sanitized_explain_context_in_summary_and_takeaway(
     assert "NVDA has the widest attention" in post
     assert "short-squeeze discussion" in post
     assert "buying opportunity" not in post
-    assert "The board is split between raw attention, sentiment quality, and fresh acceleration." in post
+    assert (
+        "The board is split between raw attention, sentiment quality, and fresh acceleration."
+        in post
+    )
 
 
 def test_render_post_uses_deepseek_signal_reads_when_available():
@@ -215,7 +220,9 @@ def test_render_post_falls_back_when_deepseek_takeaway_is_empty():
         trending_today=rows,
         trending_7d=rows,
     )
-    ai_copy = AiCopy(takeaway="", signal_reads={"top_buzz": "NVDA analysis from DeepSeek."})
+    ai_copy = AiCopy(
+        takeaway="", signal_reads={"top_buzz": "NVDA analysis from DeepSeek."}
+    )
 
     post = render_post(signals, ai_copy=ai_copy)
 

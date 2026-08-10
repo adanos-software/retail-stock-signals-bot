@@ -21,7 +21,8 @@ loop. It does not connect to a broker, place orders, or establish profitability.
 - Uploads the generated `.md` draft as a GitHub Actions artifact for review.
 - Captures opt-in, tamper-evident snapshots for completed Adanos UTC days.
 - Runs a long-only/cash, next-session-open paper backtest with explicit costs,
-  liquidity gates, position caps, chronological folds, and hashed trial inputs.
+  point-in-time price/liquidity gates, exposure and exclusion ledgers,
+  chronological folds, and hashed trial inputs.
 
 ## GitHub Secrets
 
@@ -65,22 +66,40 @@ retail-stock-signals-snapshot \
   --output private-research/snapshots/2026-08-08.json
 ```
 
-Run one recorded paper trial against independently sourced, corporate-action-
-adjusted daily bars. The CSV schema is `date,ticker,open,close,volume`; `open`
-and `close` must be adjusted consistently. The report records configuration and
-SHA-256 hashes for every input:
+Run one recorded paper trial against independently sourced daily bars. Backtest
+price schema `retail-signals-price-bars-v2` requires these exact ordered columns:
+
+```text
+date,ticker,adjusted_open,adjusted_close,unadjusted_close,unadjusted_volume
+```
+
+`adjusted_open` drives open-to-open returns and `adjusted_close` drives trailing
+volatility. The point-in-time $5 price and trailing dollar-volume gates use
+`unadjusted_close` and `unadjusted_volume`; retrospective adjustment must never
+change historical eligibility. The report records input hashes, package version,
+price schema, exclusions, daily realized exposure, configuration, costs, and NAV:
 
 ```bash
 retail-stock-signals-backtest \
   --snapshots private-research/snapshots/*.json \
-  --prices private-research/adjusted-prices.csv \
-  --output private-research/trials/baseline-v1.json
+  --prices private-research/prices-v2.csv \
+  --output private-research/trials/baseline-v2.json
 ```
+
+Snapshots from distinct closed calendar days can map to the same XNYS open, for
+example over a weekend. The latest response completed before that open is the
+deliberate as-of view; every displaced snapshot is retained in the exclusion
+ledger as superseded. Between changes to the combined target membership or
+weights, the simulator carries shares rather than rebalancing price drift away.
+Realized gross, cash, and largest-name weights are reported daily.
 
 The snapshot command currently captures the Adanos Reddit trending top 100, so
 it is a selected-universe scaffold rather than a decision-grade point-in-time
-universe. Read [the profitability research protocol](docs/PROFITABILITY_RESEARCH.md)
-before interpreting any result. Live trading is explicitly out of scope.
+universe. User-supplied prices do not supply a vetted security master, corporate-
+action vintage, delisting/halts policy, executable quotes, or market-impact
+model. Read [the profitability research protocol](docs/PROFITABILITY_RESEARCH.md)
+before interpreting any result. Profitability claims and live trading remain
+explicitly out of scope.
 
 ## Workflow
 

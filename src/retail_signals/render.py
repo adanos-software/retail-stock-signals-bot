@@ -43,7 +43,11 @@ def render_title(signals: DailySignals) -> str:
 def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
     """Render mobile-first Reddit Markdown."""
     intro = _contrast_intro(signals)
-    takeaway = ai_copy.takeaway if ai_copy and ai_copy.takeaway else _fallback_takeaway(signals)
+    takeaway = (
+        ai_copy.takeaway
+        if ai_copy and ai_copy.takeaway
+        else _fallback_takeaway(signals)
+    )
     signal_reads = ai_copy.signal_reads if ai_copy else {}
     question = _engagement_question(signals)
 
@@ -86,7 +90,10 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
         "",
         "### Top Buzz",
         "",
-        *[_top_buzz_line(index, signal) for index, signal in enumerate(signals.top_buzz_list, 1)],
+        *[
+            _top_buzz_line(index, signal)
+            for index, signal in enumerate(signals.top_buzz_list, 1)
+        ],
         "",
         "### 7-Day Movers",
         "",
@@ -105,7 +112,9 @@ def render_post(signals: DailySignals, *, ai_copy: AiCopy | None = None) -> str:
     return "\n".join(lines)
 
 
-def _summary_block(label: str, signal: StockSignal, analysis: str | None = None) -> list[str]:
+def _summary_block(
+    label: str, signal: StockSignal, analysis: str | None = None
+) -> list[str]:
     return [
         f"**{label}: {signal.ticker}**  ",
         _summary_metric_line(label, signal),
@@ -126,7 +135,9 @@ def _summary_metric_line(label: str, signal: StockSignal) -> str:
             f"Sentiment **{signal.sentiment_label}** ({_signed(signal.sentiment_score)}) | "
             f"Bull/Bear **{_pct(signal.bullish_pct)} / {_pct(signal.bearish_pct)}**  "
         )
-    return f"Buzz **{signal.buzz_score:.1f}** | Sentiment **{signal.sentiment_label}**  "
+    return (
+        f"Buzz **{signal.buzz_score:.1f}** | Sentiment **{signal.sentiment_label}**  "
+    )
 
 
 def _signal_read(label: str, signal: StockSignal) -> str:
@@ -251,7 +262,10 @@ def _contrast_intro(signals: DailySignals) -> str:
         )
 
     cleanest_breakout = signals.cleanest_breakout
-    if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
+    if (
+        signals.biggest_breakout.sentiment_score is not None
+        and signals.biggest_breakout.sentiment_score < -0.03
+    ):
         return (
             f"Today's split: **{signals.top_buzz.ticker}** had the attention, "
             f"**{cleanest_breakout.ticker}** had the cleaner sentiment read, "
@@ -269,11 +283,15 @@ def _contrast_intro(signals: DailySignals) -> str:
 
 
 def _fallback_takeaway(signals: DailySignals) -> str:
-    top_context = _context_clause(signals.top_buzz) if signals.top_buzz.explanation else ""
+    top_context = (
+        _context_clause(signals.top_buzz) if signals.top_buzz.explanation else ""
+    )
     if signals.biggest_breakout is None:
         if signals.biggest_fade is not None:
             fade_context = (
-                _context_clause(signals.biggest_fade) if signals.biggest_fade.explanation else ""
+                _context_clause(signals.biggest_fade)
+                if signals.biggest_fade.explanation
+                else ""
             )
             return (
                 "No selected ticker posted a positive 7-day buzz move. "
@@ -288,7 +306,9 @@ def _fallback_takeaway(signals: DailySignals) -> str:
         )
 
     breakout_context = (
-        _context_clause(signals.biggest_breakout) if signals.biggest_breakout.explanation else ""
+        _context_clause(signals.biggest_breakout)
+        if signals.biggest_breakout.explanation
+        else ""
     )
     fade_read = (
         f", with **{signals.biggest_fade.ticker}** showing where attention cooled."
@@ -308,7 +328,10 @@ def _fallback_takeaway(signals: DailySignals) -> str:
         _context_clause(cleanest_breakout) if cleanest_breakout.explanation else ""
     )
 
-    if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
+    if (
+        signals.biggest_breakout.sentiment_score is not None
+        and signals.biggest_breakout.sentiment_score < -0.03
+    ):
         return (
             f"The board is split between attention, sentiment quality, and risk. "
             f"**{signals.top_buzz.ticker}** owns raw buzz"
@@ -342,12 +365,18 @@ def _engagement_question(signals: DailySignals) -> str:
         )
 
     cleanest_breakout = signals.cleanest_breakout
-    if signals.biggest_breakout.explanation and signals.biggest_breakout.ticker != cleanest_breakout.ticker:
+    if (
+        signals.biggest_breakout.explanation
+        and signals.biggest_breakout.ticker != cleanest_breakout.ticker
+    ):
         return (
             f"Which part matters more here: **{cleanest_breakout.ticker}'s sentiment quality** "
             f"or the context behind **{signals.biggest_breakout.ticker}'s buzz spike**?"
         )
-    if signals.biggest_breakout.sentiment_score is not None and signals.biggest_breakout.sentiment_score < -0.03:
+    if (
+        signals.biggest_breakout.sentiment_score is not None
+        and signals.biggest_breakout.sentiment_score < -0.03
+    ):
         return (
             f"Which would you weigh more today: **{cleanest_breakout.ticker}'s cleaner sentiment** "
             f"or **{signals.biggest_breakout.ticker}'s larger but negative buzz spike**?"
