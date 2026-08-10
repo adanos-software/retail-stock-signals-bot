@@ -45,7 +45,7 @@ def test_select_daily_signals_prefers_buzz_and_quality_breakout():
     assert signals.biggest_fade.ticker == "FADE"
 
 
-def test_select_daily_signals_falls_back_to_biggest_gainer_when_no_quality_candidate():
+def test_select_daily_signals_omits_sentiment_role_when_no_quality_candidate():
     today = [_row("TOP", 82.0, 0.00, 28, 28, [80, 82])]
     seven_day = [
         _row("BIG", 74.0, -0.04, 20, 40, [0, 74]),
@@ -59,7 +59,7 @@ def test_select_daily_signals_falls_back_to_biggest_gainer_when_no_quality_candi
     )
 
     assert signals.biggest_breakout.ticker == "BIG"
-    assert signals.cleanest_breakout.ticker == "BIG"
+    assert signals.cleanest_breakout is None
 
 
 def test_select_daily_signals_rejects_missing_7d_history():
@@ -101,6 +101,21 @@ def test_select_daily_signals_filters_numeric_tickers():
     assert signals.biggest_breakout.ticker == "BABA"
 
 
+@pytest.mark.parametrize("ticker", ("BAD.", "BAD..CLASS", "-BAD"))
+def test_select_daily_signals_filters_structurally_invalid_tickers(ticker):
+    invalid = _row(ticker, 99.0, 0.4, 80, 5, [1, 99])
+    valid = _row("GOOD", 70.0, 0.2, 60, 10, [20, 70])
+
+    signals = select_daily_signals(
+        date_label="August 10, 2026",
+        trending_today=[invalid, valid],
+        trending_7d=[invalid, valid],
+    )
+
+    assert signals.top_buzz.ticker == "GOOD"
+    assert {signal.ticker for signal in signals.movers} == {"GOOD"}
+
+
 def test_select_daily_signals_deduplicates_movers():
     rows = [
         _row("AAA", 80.0, 0.05, 35, 20, [70, 80]),
@@ -115,6 +130,79 @@ def test_select_daily_signals_deduplicates_movers():
 
     mover_tickers = [signal.ticker for signal in signals.movers]
     assert mover_tickers == ["AAA", "BBB"]
+
+
+def test_malformed_history_cannot_create_a_directional_signal():
+    today = [_row("SAFE", 70.0, 0.05, 35, 20, [65, 70])]
+    malformed = _row("BAD", 90.0, 0.20, 60, 10, "09")
+    fade = _row("FADE", 60.0, -0.05, 20, 35, [70, 60], trend="falling")
+
+    signals = select_daily_signals(
+        date_label="August 10, 2026",
+        trending_today=today,
+        trending_7d=[malformed, fade],
+    )
+
+    assert signals.biggest_breakout is None
+    assert signals.cleanest_breakout is None
+    assert signals.biggest_fade.ticker == "FADE"
+    assert "BAD" not in {signal.ticker for signal in signals.movers}
+
+
+@pytest.mark.parametrize(
+    ("ticker", "history"),
+    (
+        ("NEGSTART", [-1, 80]),
+        ("NEGEND", [80, -1]),
+        ("HIGHSTART", [101, 80]),
+        ("HIGHEND", [20, 101]),
+    ),
+)
+def test_out_of_range_history_endpoints_cannot_create_a_mover(ticker, history):
+    today = [_row("SAFE", 70.0, 0.05, 35, 20, [60, 70])]
+    invalid = _row(ticker, 90.0, 0.20, 60, 10, history)
+    valid = _row("GOOD", 75.0, 0.10, 45, 15, [60, 75])
+
+    signals = select_daily_signals(
+        date_label="August 10, 2026",
+        trending_today=today,
+        trending_7d=[invalid, valid],
+    )
+
+    assert signals.biggest_breakout.ticker == "GOOD"
+    assert ticker not in {signal.ticker for signal in signals.movers}
+
+
+def test_malformed_rows_and_nonfinite_metrics_fail_closed():
+    valid = _row("GOOD", 70.0, 0.05, 35, 20, [60, 70])
+    missing_ticker = _row("DROP", 99.0, 0.50, 80, 5, [1, 99])
+    missing_ticker.pop("ticker")
+    nonfinite = _row("NAN", float("nan"), 0.50, 80, 5, [1, 99])
+    string_percentage = _row("TEXT", 95.0, 0.50, "80", 5, [1, 95])
+
+    signals = select_daily_signals(
+        date_label="August 10, 2026",
+        trending_today=[missing_ticker, nonfinite, string_percentage, valid],
+        trending_7d=[missing_ticker, nonfinite, string_percentage, valid],
+    )
+
+    assert signals.top_buzz.ticker == "GOOD"
+    assert {signal.ticker for signal in signals.movers} == {"GOOD"}
+
+
+def test_duplicate_publisher_rows_are_selected_once():
+    first = _row("DUP", 80.0, 0.10, 40, 20, [70, 80])
+    duplicate = _row("dup", 99.0, 0.20, 60, 10, [1, 99])
+
+    signals = select_daily_signals(
+        date_label="August 10, 2026",
+        trending_today=[first, duplicate],
+        trending_7d=[first, duplicate],
+    )
+
+    assert signals.top_buzz.ticker == "DUP"
+    assert [signal.ticker for signal in signals.top_buzz_list] == ["DUP"]
+    assert [signal.ticker for signal in signals.movers] == ["DUP"]
 
 
 def test_tickers_requiring_explanations_are_unique_and_ordered():
@@ -152,21 +240,37 @@ def test_resolve_shared_narrative_replaces_generic_target_explanation():
         },
     )
 
-    assert resolved["EBAY"].startswith("EBAY appears tied to the same GME/EBAY narrative")
+    assert resolved["EBAY"].startswith(
+        "EBAY appears tied to the same GME/EBAY narrative"
+    )
     assert "GameStop and eBay are being discussed together" in resolved["EBAY"]
 
 
 def test_sanitize_explanation_reframes_safe_context_and_drops_unsafe_claims():
-    assert sanitize_explanation(
-        "GME",
-        "GME is trending because GameStop and eBay are being discussed together.",
-    ) == "Reddit discussion points to GameStop and eBay are being discussed together."
-    assert sanitize_explanation("GOOGL", "GOOGL is trending because Google passed Nvidia.") == ""
-    assert sanitize_explanation(
-        "JPM",
-        "JPM is trending because a settlement was rejected.",
-    ) == "Reddit discussion points to a settlement was rejected."
-    assert sanitize_explanation("EBAY", "EBAY shows mixed sentiment without a clear catalyst.") == ""
+    assert (
+        sanitize_explanation(
+            "GME",
+            "GME is trending because GameStop and eBay are being discussed together.",
+        )
+        == "Reddit discussion points to GameStop and eBay are being discussed together."
+    )
+    assert (
+        sanitize_explanation("GOOGL", "GOOGL is trending because Google passed Nvidia.")
+        == ""
+    )
+    assert (
+        sanitize_explanation(
+            "JPM",
+            "JPM is trending because a settlement was rejected.",
+        )
+        == "Reddit discussion points to a settlement was rejected."
+    )
+    assert (
+        sanitize_explanation(
+            "EBAY", "EBAY shows mixed sentiment without a clear catalyst."
+        )
+        == ""
+    )
 
 
 def test_sanitize_explanation_removes_trading_call_language():
@@ -177,14 +281,20 @@ def test_sanitize_explanation_removes_trading_call_language():
         "Reddit discussion points to low float, major short interest, and "
         "short-squeeze discussion."
     )
-    assert sanitize_explanation(
-        "GRPN",
-        "GRPN is trending because major short interest being cited as a potential trigger for a sharp short squeeze.",
-    ) == "Reddit discussion points to major short interest and short-interest speculation."
-    assert sanitize_explanation(
-        "SNDK",
-        "SNDK is trending because optimism around expiring options offset by concern about a potential sharp decline.",
-    ) == "Reddit discussion points to optimism around expiring options offset by downside concern."
+    assert (
+        sanitize_explanation(
+            "GRPN",
+            "GRPN is trending because major short interest being cited as a potential trigger for a sharp short squeeze.",
+        )
+        == "Reddit discussion points to major short interest and short-interest speculation."
+    )
+    assert (
+        sanitize_explanation(
+            "SNDK",
+            "SNDK is trending because optimism around expiring options offset by concern about a potential sharp decline.",
+        )
+        == "Reddit discussion points to optimism around expiring options offset by downside concern."
+    )
     assert sanitize_explanation(
         "BA",
         "BA is trending because china agreed to buy Boeing jets, offset by concern about the potential for a short squeeze.",

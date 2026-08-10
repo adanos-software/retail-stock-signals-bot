@@ -3,6 +3,8 @@
 Dry-run publisher for daily `r/RetailStockSignals` posts powered by the Adanos Reddit stock sentiment API.
 
 Phase 1 generates a Markdown draft only. It does not post to Reddit.
+The repository also contains an offline, research-only snapshot and paper-backtest
+loop. It does not connect to a broker, place orders, or establish profitability.
 
 ## What It Does
 
@@ -17,6 +19,10 @@ Phase 1 generates a Markdown draft only. It does not post to Reddit.
 - Filters numeric non-US ticker symbols from the Reddit post.
 - Commits the generated `.md` draft under `public/` so Devvit can fetch it from `raw.githubusercontent.com`.
 - Uploads the generated `.md` draft as a GitHub Actions artifact for review.
+- Captures opt-in, tamper-evident snapshots for completed Adanos UTC days.
+- Runs a long-only/cash, next-session-open paper backtest with explicit costs,
+  point-in-time price/liquidity gates, exposure and exclusion ledgers,
+  chronological folds, and hashed trial inputs.
 
 ## GitHub Secrets
 
@@ -46,12 +52,60 @@ To disable DeepSeek even when `DEEPSEEK_API_KEY` is set:
 retail-stock-signals --no-ai --output out/daily-retail-stock-signals.md
 ```
 
+### Research-only workflow
+
+Install the pinned XNYS calendar dependency with `python -m pip install -e
+".[research]"` (the `dev` extra includes it as well).
+
+Capture only a completed UTC day. The command rejects the previous day before
+the 06:00 UTC finalization cutoff and refuses to overwrite an existing snapshot:
+
+```bash
+retail-stock-signals-snapshot \
+  --window-end 2026-08-08 \
+  --output private-research/snapshots/2026-08-08.json
+```
+
+Run one recorded paper trial against independently sourced daily bars. Backtest
+price schema `retail-signals-price-bars-v2` requires these exact ordered columns:
+
+```text
+date,ticker,adjusted_open,adjusted_close,unadjusted_close,unadjusted_volume
+```
+
+`adjusted_open` drives open-to-open returns and `adjusted_close` drives trailing
+volatility. The point-in-time $5 price and trailing dollar-volume gates use
+`unadjusted_close` and `unadjusted_volume`; retrospective adjustment must never
+change historical eligibility. The report records input hashes, package version,
+price schema, exclusions, daily realized exposure, configuration, costs, and NAV:
+
+```bash
+retail-stock-signals-backtest \
+  --snapshots private-research/snapshots/*.json \
+  --prices private-research/prices-v2.csv \
+  --output private-research/trials/baseline-v2.json
+```
+
+Snapshots from distinct closed calendar days can map to the same XNYS open, for
+example over a weekend. The latest response completed before that open is the
+deliberate as-of view; every displaced snapshot is retained in the exclusion
+ledger as superseded. Between changes to the combined target membership or
+weights, the simulator carries shares rather than rebalancing price drift away.
+Realized gross, cash, and largest-name weights are reported daily.
+
+The snapshot command currently captures the Adanos Reddit trending top 100, so
+it is a selected-universe scaffold rather than a decision-grade point-in-time
+universe. User-supplied prices do not supply a vetted security master, corporate-
+action vintage, delisting/halts policy, executable quotes, or market-impact
+model. Read [the profitability research protocol](docs/PROFITABILITY_RESEARCH.md)
+before interpreting any result. Profitability claims and live trading remain
+explicitly out of scope.
+
 ## Workflow
 
-`.github/workflows/daily-publish.yml` runs at 17:55 Europe/Berlin using two
-UTC cron slots plus a DST guard. The `:55` schedule avoids GitHub Actions'
-high-load `:00` cron window and keeps the dated draft ready before Devvit's
-publisher. It can also be run manually with `workflow_dispatch`.
+The Cloudflare scheduler dispatches `.github/workflows/daily-publish.yml` at
+20:00 Europe/Berlin using two UTC cron slots plus a DST guard. The workflow can
+also be run manually with `workflow_dispatch`.
 
 The workflow generates the draft with the private Adanos and DeepSeek secrets, writes:
 
@@ -84,8 +138,10 @@ If DeepSeek returns invalid JSON, times out, or produces no usable fields, the C
 
 Explain endpoint text is treated as unverified context, not verified fact. The public Reddit body frames it as Reddit discussion context and strips trading-call phrasing before rendering.
 
-## Next Phases
+## Research Status
 
-Phase 2: review daily artifacts for several days and tune format.
-
-Phase 3: add Reddit/PRAW submit mode with duplicate protection.
+The existing published roles have no demonstrated net edge in the short archive.
+Promotion requires immutable point-in-time data, a complete dated universe,
+purged walk-forward evaluation, multiple-testing controls, and forward paper
+trading. The explicit gates and scientific sources are documented in
+[`docs/PROFITABILITY_RESEARCH.md`](docs/PROFITABILITY_RESEARCH.md).

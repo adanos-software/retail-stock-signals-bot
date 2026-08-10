@@ -1,4 +1,6 @@
+import io
 import json
+from http.client import IncompleteRead
 from urllib import error
 
 import pytest
@@ -29,6 +31,28 @@ class _FakeResponse:
         return json.dumps(self.payload).encode("utf-8")
 
 
+class _RawResponse:
+    def __init__(self, payload):
+        self.payload = payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return None
+
+    def read(self):
+        return self.payload
+
+
+class _ReadErrorResponse(_RawResponse):
+    def read(self):
+        raise self.payload
+
+    def close(self):
+        return None
+
+
 def test_deepseek_rejects_invalid_json(monkeypatch):
     def fake_urlopen(request, timeout):  # noqa: ARG001
         return _FakeResponse({"choices": [{"message": {"content": "not json"}}]})
@@ -40,13 +64,152 @@ def test_deepseek_rejects_invalid_json(monkeypatch):
 
 
 def test_deepseek_reports_http_error(monkeypatch):
+    body = _Body()
+
     def fake_urlopen(request, timeout):  # noqa: ARG001
-        raise error.HTTPError("https://api.example.test", 401, "Unauthorized", None, _Body())
+        raise error.HTTPError(
+            "https://api.example.test", 401, "Unauthorized", None, body
+        )
 
     monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
 
     with pytest.raises(DeepSeekError, match="HTTP 401"):
         DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+    assert body.closed
+
+
+def test_deepseek_redacts_api_key_from_http_error_body(monkeypatch):
+    api_key = "dummy"
+
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        raise error.HTTPError(
+            "https://api.example.test",
+            401,
+            "Unauthorized",
+            None,
+            io.BytesIO(f'{{"error":"invalid {api_key}"}}'.encode()),
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    with pytest.raises(DeepSeekError) as exc_info:
+        DeepSeekClient(api_key=api_key, retries=0).generate_copy(_signals())
+
+    assert api_key not in str(exc_info.value)
+    assert "[REDACTED]" in str(exc_info.value)
+
+
+def test_deepseek_normalizes_truncated_http_error_body(monkeypatch):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        raise error.HTTPError(
+            "https://api.example.test",
+            401,
+            "test error",
+            {},
+            _ReadErrorResponse(IncompleteRead(b"[", 1)),
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    with pytest.raises(DeepSeekError, match="HTTP 401"):
+        DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+
+@pytest.mark.parametrize("status", [429, 500, 502, 503, 504])
+def test_deepseek_honors_capped_retry_after_for_retryable_errors(monkeypatch, status):
+    attempts = 0
+    sleeps = []
+    error_bodies = []
+
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            body = io.BytesIO(b'{"error":"retry"}')
+            error_bodies.append(body)
+            raise error.HTTPError(
+                "https://api.example.test",
+                status,
+                "retry",
+                {"Retry-After": "999"},
+                body,
+            )
+        return _FakeResponse(
+            {
+                "choices": [
+                    {"message": {"content": json.dumps({"takeaway": "valid read"})}}
+                ]
+            }
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("retail_signals.deepseek.time.sleep", sleeps.append)
+
+    copy = DeepSeekClient(api_key="test", retries=1).generate_copy(_signals())
+
+    assert copy.takeaway == "valid read"
+    assert attempts == 2
+    assert sleeps == [60.0]
+    assert error_bodies[0].closed
+
+
+@pytest.mark.parametrize("content", [None, 42, {"takeaway": "wrong level"}])
+def test_deepseek_rejects_non_string_content(monkeypatch, content):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        return _FakeResponse({"choices": [{"message": {"content": content}}]})
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    with pytest.raises(DeepSeekError, match="content is not a string"):
+        DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+
+def test_deepseek_normalizes_invalid_utf8_and_transport_errors(monkeypatch):
+    monkeypatch.setattr(
+        "retail_signals.deepseek.request.urlopen",
+        lambda request, timeout: _RawResponse(b"\xff"),  # noqa: ARG005
+    )
+    with pytest.raises(DeepSeekError, match="request failed"):
+        DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+    def fail_transport(request, timeout):  # noqa: ARG001
+        raise OSError("broken transport")
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fail_transport)
+    with pytest.raises(DeepSeekError, match="request failed"):
+        DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("timeout", 0),
+        ("timeout", float("nan")),
+        ("retries", -1),
+        ("retries", True),
+        ("retry_sleep", -1),
+        ("retry_sleep", float("inf")),
+    ],
+)
+def test_deepseek_rejects_invalid_retry_settings(field, value):
+    with pytest.raises(ValueError):
+        DeepSeekClient(api_key="test", **{field: value})
+
+
+@pytest.mark.parametrize(
+    "base_url",
+    [
+        "not-a-url",
+        "ftp://api.example.test",
+        "https://user:dummy@api.example.test",
+        "https://api.example.test?token=dummy",
+        "https://api.example.test#fragment",
+    ],
+)
+def test_deepseek_rejects_invalid_base_urls(base_url):
+    with pytest.raises(DeepSeekError, match="base_url"):
+        DeepSeekClient(api_key="test", base_url=base_url)
 
 
 def test_loads_json_object_tolerates_markdown_fence():
@@ -99,14 +262,22 @@ def test_prompt_payload_includes_professional_style_guardrails():
     assert "allowed_interpretations" in payload
     assert payload["unverified_context"] == {}
     assert "signals" not in payload
-    assert any("professional market desk note" in item for item in payload["constraints"])
-    assert any("Do not state causal claims as fact" in item for item in payload["constraints"])
+    assert any(
+        "professional market desk note" in item for item in payload["constraints"]
+    )
+    assert any(
+        "Do not state causal claims as fact" in item for item in payload["constraints"]
+    )
     assert any("unverified_context" in item for item in payload["constraints"])
     assert any("avoid generic AI phrasing" in item for item in payload["constraints"])
     assert "today's signal" in " ".join(payload["constraints"])
     assert "signal_reads" in payload["output_schema"]
-    assert any("Do not repeat exact buzz scores" in item for item in payload["constraints"])
-    assert any("attention, sentiment, and context" in item for item in payload["constraints"])
+    assert any(
+        "Do not repeat exact buzz scores" in item for item in payload["constraints"]
+    )
+    assert any(
+        "attention, sentiment, and context" in item for item in payload["constraints"]
+    )
 
 
 def test_prompt_payload_includes_explain_context_when_available():
@@ -120,7 +291,9 @@ def test_prompt_payload_includes_explain_context_when_available():
             _row("NVDA", 82.6, 0.01, 26, 21, [80, 82.6]),
             _row("GRPN", 67.0, 0.148, 36, 11, [55.6, 67.0]),
         ],
-        explanations={"NVDA": "NVDA is trending because demand is rising around agentic AI."},
+        explanations={
+            "NVDA": "NVDA is trending because demand is rising around agentic AI."
+        },
     )
 
     payload = _prompt_payload(signals)
@@ -128,13 +301,55 @@ def test_prompt_payload_includes_explain_context_when_available():
     assert payload["unverified_context"] == {
         "NVDA": "Reddit discussion points to demand is rising around agentic AI."
     }
-    assert payload["hard_facts"]["selected"]["top_buzz"]["reddit_context"].startswith(
-        "Reddit discussion points to"
+    assert "reddit_context" not in payload["hard_facts"]["selected"]["top_buzz"]
+    assert "Reddit discussion points to" not in json.dumps(payload["hard_facts"])
+
+
+def test_prompt_payload_omits_unavailable_directional_roles():
+    all_down = [
+        _row("TOP", 82.0, 0.08, 40, 20, [90.0, 82.0], trend="falling"),
+        _row("LESS", 70.0, 0.12, 45, 15, [73.0, 70.0], trend="falling"),
+    ]
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=all_down,
+        trending_7d=all_down,
+    )
+
+    payload = _prompt_payload(signals)
+
+    assert set(payload["hard_facts"]["selected"]) == {"top_buzz", "biggest_fade"}
+    assert set(payload["output_schema"]["signal_reads"]) == {"top_buzz", "biggest_fade"}
+    assert (
+        "No selected ticker has a positive 7-day buzz delta."
+        in payload["allowed_interpretations"]
+    )
+
+    all_up = [
+        _row("TOP", 82.0, 0.08, 40, 20, [70.0, 82.0]),
+        _row("MOST", 74.0, 0.12, 45, 15, [30.0, 74.0]),
+    ]
+    signals = select_daily_signals(
+        date_label="August 9, 2026",
+        trending_today=all_up,
+        trending_7d=all_up,
+    )
+
+    payload = _prompt_payload(signals)
+
+    assert "biggest_fade" not in payload["hard_facts"]["selected"]
+    assert "biggest_fade" not in payload["output_schema"]["signal_reads"]
+    assert (
+        "No selected ticker has a negative 7-day buzz delta."
+        in payload["allowed_interpretations"]
     )
 
 
 def test_style_profile_rotates_by_date_label():
-    profiles = {_style_profile(label)["name"] for label in ["May 4, 2026", "May 5, 2026", "May 6, 2026"]}
+    profiles = {
+        _style_profile(label)["name"]
+        for label in ["May 4, 2026", "May 5, 2026", "May 6, 2026"]
+    }
 
     assert len(profiles) > 1
 
@@ -208,6 +423,30 @@ def test_deepseek_rejects_internal_filtering_language(monkeypatch):
         DeepSeekClient(api_key="test").generate_copy(_signals())
 
 
+@pytest.mark.parametrize(
+    "takeaway",
+    [
+        "Buy GME now.",
+        "Would you SELL GME?",
+        "Hold.",
+        "Price target: $50.",
+        "The price estimate is $50.",
+        "Will GME rise?",
+        "GME will.",
+    ],
+)
+def test_deepseek_rejects_direct_advice_at_word_boundaries(monkeypatch, takeaway):
+    def fake_urlopen(request, timeout):  # noqa: ARG001
+        return _FakeResponse(
+            {"choices": [{"message": {"content": json.dumps({"takeaway": takeaway})}}]}
+        )
+
+    monkeypatch.setattr("retail_signals.deepseek.request.urlopen", fake_urlopen)
+
+    with pytest.raises(DeepSeekError, match="no usable copy"):
+        DeepSeekClient(api_key="test", retries=0).generate_copy(_signals())
+
+
 def test_deepseek_keeps_valid_signal_reads_when_takeaway_is_rejected(monkeypatch):
     def fake_urlopen(request, timeout):  # noqa: ARG001
         return _FakeResponse(
@@ -243,11 +482,14 @@ def test_deepseek_keeps_valid_signal_reads_when_takeaway_is_rejected(monkeypatch
 
 
 class _Body:
+    def __init__(self):
+        self.closed = False
+
     def read(self):
         return b'{"error":"bad key"}'
 
     def close(self):
-        return None
+        self.closed = True
 
 
 def _signals():

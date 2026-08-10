@@ -3,16 +3,23 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 from dataclasses import dataclass
+from http.client import HTTPException
 from typing import Any
-from urllib import error, request
+from urllib import error, parse, request
 
+from retail_signals.adanos import _retry_after_seconds
 from retail_signals.signals import DailySignals, StockSignal
 
-
 DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
+_RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}
+_DIRECT_ADVICE_RE = re.compile(
+    r"\b(?:buy|sell|hold|target|will)\b|\bprice\s+estimate\b",
+    flags=re.IGNORECASE,
+)
 
 
 class DeepSeekError(RuntimeError):
@@ -38,6 +45,27 @@ class DeepSeekClient:
     retries: int = 1
     retry_sleep: float = 1.0
 
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.timeout, bool)
+            or not isinstance(self.timeout, (int, float))
+            or not math.isfinite(self.timeout)
+            or self.timeout <= 0
+        ):
+            raise ValueError("timeout must be a positive finite number")
+        if isinstance(self.retries, bool) or not isinstance(self.retries, int):
+            raise ValueError("retries must be an integer")
+        if self.retries < 0:
+            raise ValueError("retries must not be negative")
+        if (
+            isinstance(self.retry_sleep, bool)
+            or not isinstance(self.retry_sleep, (int, float))
+            or not math.isfinite(self.retry_sleep)
+            or self.retry_sleep < 0
+        ):
+            raise ValueError("retry_sleep must be a nonnegative finite number")
+        _validate_base_url(self.base_url)
+
     def generate_copy(self, signals: DailySignals) -> AiCopy:
         """Generate compact Reddit copy from deterministic signal facts."""
         payload = {
@@ -57,7 +85,9 @@ class DeepSeekClient:
                 },
                 {
                     "role": "user",
-                    "content": json.dumps(_prompt_payload(signals), separators=(",", ":")),
+                    "content": json.dumps(
+                        _prompt_payload(signals), separators=(",", ":")
+                    ),
                 },
             ],
         }
@@ -66,7 +96,10 @@ class DeepSeekClient:
             content = data["choices"][0]["message"]["content"]
             decoded = _loads_json_object(content)
             takeaway = _clean_optional_text(decoded.get("takeaway"), max_chars=520)
-            signal_reads = _clean_signal_reads(decoded.get("signal_reads"))
+            signal_reads = _clean_signal_reads(
+                decoded.get("signal_reads"),
+                expected=list(_selected_signal_roles(signals)),
+            )
             if not takeaway and not signal_reads:
                 raise DeepSeekError("DeepSeek returned no usable copy")
             return AiCopy(takeaway=takeaway, signal_reads=signal_reads)
@@ -75,7 +108,10 @@ class DeepSeekClient:
 
     def _post_json(self, path: str, payload: dict[str, Any]) -> Any:
         url = f"{self.base_url.rstrip('/')}{path}"
-        encoded = json.dumps(payload).encode("utf-8")
+        try:
+            encoded = json.dumps(payload).encode("utf-8")
+        except (TypeError, ValueError, UnicodeError) as exc:
+            raise DeepSeekError(f"DeepSeek request setup failed: {exc}") from exc
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -84,34 +120,76 @@ class DeepSeekClient:
         last_error: Exception | None = None
 
         for attempt in range(self.retries + 1):
+            retry_delay: float | None = None
             try:
-                api_request = request.Request(url, data=encoded, headers=headers, method="POST")
+                api_request = request.Request(
+                    url, data=encoded, headers=headers, method="POST"
+                )
                 with request.urlopen(api_request, timeout=self.timeout) as response:
                     return json.loads(response.read().decode("utf-8"))
             except error.HTTPError as exc:
-                body = exc.read().decode("utf-8", errors="replace")
-                last_error = DeepSeekError(f"HTTP {exc.code} from DeepSeek: {body[:300]}")
-                if exc.code not in {429, 500, 502, 503, 504}:
+                retry_after = (
+                    exc.headers.get("Retry-After") if exc.headers is not None else None
+                )
+                try:
+                    try:
+                        body = exc.read().decode("utf-8", errors="replace")
+                    except (HTTPException, OSError) as body_error:
+                        body = (
+                            f"<response body unavailable: {type(body_error).__name__}>"
+                        )
+                finally:
+                    exc.close()
+                if self.api_key:
+                    body = body.replace(self.api_key, "[REDACTED]")
+                last_error = DeepSeekError(
+                    f"HTTP {exc.code} from DeepSeek: {body[:300]}"
+                )
+                if exc.code not in _RETRYABLE_HTTP_STATUSES:
                     break
-            except (TimeoutError, error.URLError, json.JSONDecodeError) as exc:
+                if retry_after is not None:
+                    retry_delay = _retry_after_seconds(retry_after)
+            except json.JSONDecodeError as exc:
                 last_error = exc
+            except (
+                HTTPException,
+                OSError,
+                TimeoutError,
+                UnicodeError,
+                error.URLError,
+            ) as exc:
+                last_error = exc
+            except (TypeError, ValueError) as exc:
+                last_error = exc
+                break
 
             if attempt < self.retries:
-                time.sleep(self.retry_sleep * (attempt + 1))
+                delay = (
+                    retry_delay
+                    if retry_delay is not None
+                    else self.retry_sleep * (attempt + 1)
+                )
+                time.sleep(delay)
 
         raise DeepSeekError(f"DeepSeek request failed: {last_error}") from last_error
 
 
 def _prompt_payload(signals: DailySignals) -> dict[str, Any]:
+    selected = _selected_signal_roles(signals)
+    signal_read_descriptions = {
+        "top_buzz": "1 sentence analyzing top_buzz using metrics and Reddit context",
+        "cleanest_breakout": (
+            "1 sentence analyzing cleanest_breakout using metrics and Reddit context"
+        ),
+        "biggest_breakout": (
+            "1 sentence analyzing biggest_breakout using metrics and Reddit context"
+        ),
+        "biggest_fade": "1 sentence analyzing biggest_fade using metrics and Reddit context",
+    }
     return {
         "output_schema": {
             "takeaway": "2-3 concise sentences focused on buzz/sentiment context",
-            "signal_reads": {
-                "top_buzz": "1 sentence analyzing top_buzz using metrics and Reddit context",
-                "cleanest_breakout": "1 sentence analyzing cleanest_breakout using metrics and Reddit context",
-                "biggest_breakout": "1 sentence analyzing biggest_breakout using metrics and Reddit context",
-                "biggest_fade": "1 sentence analyzing biggest_fade using metrics and Reddit context",
-            },
+            "signal_reads": {role: signal_read_descriptions[role] for role in selected},
         },
         "style": _style_profile(signals.date_label),
         "constraints": [
@@ -158,11 +236,16 @@ def _clean_optional_text(value: Any, *, max_chars: int) -> str:
         return ""
 
 
-def _clean_signal_reads(value: Any) -> dict[str, str]:
+def _clean_signal_reads(
+    value: Any,
+    *,
+    expected: list[str] | None = None,
+) -> dict[str, str]:
     if not isinstance(value, dict):
         return {}
 
-    expected = ["top_buzz", "cleanest_breakout", "biggest_breakout", "biggest_fade"]
+    if expected is None:
+        expected = ["top_buzz", "cleanest_breakout", "biggest_breakout", "biggest_fade"]
     cleaned: dict[str, str] = {}
     for key in expected:
         field = _clean_optional_text(value.get(key), max_chars=260)
@@ -172,12 +255,7 @@ def _clean_signal_reads(value: Any) -> dict[str, str]:
 
 
 def _hard_facts(signals: DailySignals) -> dict[str, Any]:
-    selected = {
-        "top_buzz": signals.top_buzz,
-        "cleanest_breakout": signals.cleanest_breakout,
-        "biggest_breakout": signals.biggest_breakout,
-        "biggest_fade": signals.biggest_fade,
-    }
+    selected = _selected_signal_roles(signals)
     return {
         "date_label": signals.date_label,
         "selected": {name: _signal_facts(signal) for name, signal in selected.items()},
@@ -198,17 +276,27 @@ def _signal_facts(signal: StockSignal) -> dict[str, Any]:
         "buzz_delta_7d": signal.buzz_delta_7d,
         "buzz_start_7d": signal.buzz_start_7d,
         "buzz_end_7d": signal.buzz_end_7d,
-        "reddit_context": signal.explanation,
     }
 
 
 def _allowed_interpretations(signals: DailySignals) -> list[str]:
     interpretations = [
         f"{signals.top_buzz.ticker} leads on absolute buzz score.",
-        f"{signals.cleanest_breakout.ticker} has the cleanest sentiment profile.",
-        f"{signals.biggest_breakout.ticker} has the largest 7-day buzz expansion.",
-        f"{signals.biggest_fade.ticker} is the main 7-day fade.",
     ]
+    if signals.cleanest_breakout is not None:
+        interpretations.append(
+            f"{signals.cleanest_breakout.ticker} has the cleanest sentiment profile."
+        )
+    if signals.biggest_breakout is not None:
+        interpretations.append(
+            f"{signals.biggest_breakout.ticker} has the largest 7-day buzz expansion."
+        )
+    else:
+        interpretations.append("No selected ticker has a positive 7-day buzz delta.")
+    if signals.biggest_fade is not None:
+        interpretations.append(f"{signals.biggest_fade.ticker} is the main 7-day fade.")
+    else:
+        interpretations.append("No selected ticker has a negative 7-day buzz delta.")
     if signals.top_buzz.trend == "falling":
         interpretations.append(
             f"{signals.top_buzz.ticker} is sustained attention rather than fresh acceleration."
@@ -217,17 +305,28 @@ def _allowed_interpretations(signals: DailySignals) -> list[str]:
 
 
 def _unverified_context(signals: DailySignals) -> dict[str, str]:
-    selected = [
-        signals.top_buzz,
-        signals.cleanest_breakout,
-        signals.biggest_breakout,
-        signals.biggest_fade,
-    ]
-    return {signal.ticker: signal.explanation for signal in selected if signal.explanation}
+    selected = _selected_signal_roles(signals).values()
+    return {
+        signal.ticker: signal.explanation for signal in selected if signal.explanation
+    }
 
 
-def _loads_json_object(content: str) -> dict[str, Any]:
+def _selected_signal_roles(signals: DailySignals) -> dict[str, StockSignal]:
+    """Return only signal roles whose directional invariants are satisfied."""
+    selected = {"top_buzz": signals.top_buzz}
+    if signals.cleanest_breakout is not None:
+        selected["cleanest_breakout"] = signals.cleanest_breakout
+    if signals.biggest_breakout is not None:
+        selected["biggest_breakout"] = signals.biggest_breakout
+    if signals.biggest_fade is not None:
+        selected["biggest_fade"] = signals.biggest_fade
+    return selected
+
+
+def _loads_json_object(content: Any) -> dict[str, Any]:
     """Parse model JSON, tolerating fenced or prefixed JSON output."""
+    if not isinstance(content, str):
+        raise DeepSeekError("DeepSeek response content is not a string")
     stripped = content.strip()
     if stripped.startswith("```"):
         lines = stripped.splitlines()
@@ -327,6 +426,8 @@ def _remove_metric_restatement(text: str) -> str:
 
 
 def _contains_blocked_claim_language(text: str) -> bool:
+    if _DIRECT_ADVICE_RE.search(text):
+        return True
     lowered = text.lower()
     blocked = [
         " market cap",
@@ -336,13 +437,32 @@ def _contains_blocked_claim_language(text: str) -> bool:
         " cleaned",
         " filter",
         " filtered",
-        " will ",
-        " buy ",
-        " sell ",
         " squeeze",
         " trigger",
         " sharp decline",
         " sparking optimism",
-        " target",
     ]
     return any(fragment in lowered for fragment in blocked)
+
+
+def _validate_base_url(value: Any) -> None:
+    if not isinstance(value, str) or not value or any(char.isspace() for char in value):
+        raise DeepSeekError("DeepSeek base_url must be an absolute HTTP(S) URL")
+    try:
+        parsed = parse.urlsplit(value)
+        _port = parsed.port
+    except ValueError as exc:
+        raise DeepSeekError(
+            "DeepSeek base_url must be an absolute HTTP(S) URL"
+        ) from exc
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise DeepSeekError(
+            "DeepSeek base_url must be HTTP(S) without credentials, query, or fragment"
+        )
