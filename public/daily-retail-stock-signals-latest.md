@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - October 10, 2026: SPCX Leads Buzz, RDDT Has Stronger Sentiment
+Title: Daily Retail Stock Signals - October 11, 2026: NVDA Buzz Leads, TIPS Sentiment Improves
 
-Today's split: **SPCX** led raw buzz, but **RDDT** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, but **TIPS** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: SPCX**  
-Buzz **78.1** | Sentiment **neutral** | Bull/Bear **24% / 30%**  
-SPCX has the widest attention, while Reddit discussion points to it agreed to acquire a nationwide portfolio of low-band spectrum licenses, a move that could pave the way for Starlink to become a major mobile carrier in the U.S; neutral sentiment keeps it from reading like broad bullish confirmation.
+**Top Buzz: NVDA**  
+Buzz **78.1** | Sentiment **positive** | Bull/Bear **29% / 14%**  
+NVDA leads on absolute buzz score, but the falling trend suggests sustained attention rather than fresh acceleration, with Reddit discussion points to concerns about its role in the economic circle involving OpenAI, Anthropic, and AWS.
 
-**Best Sentiment Read: RDDT**  
-7D Buzz **+8.9** (52.2 -> 61.1) | Sentiment **positive** (+0.092) | Bull/Bear **37% / 18%**  
-The best-confirmed sentiment read: buzz rose and bullish discussion stayed clearly ahead of bearish discussion.
+**Best Sentiment Read: TIPS**  
+7D Buzz **+13.9** (46.3 -> 60.2) | Sentiment **positive** (+0.089) | Bull/Bear **42% / 16%**  
+TIPS has the cleanest sentiment profile, with a positive tilt and a 7-day buzz increase, as Reddit discussion points to Vanguard allocates a significant portion to short-term TIPS once they reach retirement date.
 
-**Largest 7-Day Buzz Move: TMUS**  
-7D Buzz **+66.6** (0.0 -> 66.6) | Sentiment **positive** (+0.031) | Bull/Bear **30% / 22%**  
-TMUS had the fastest 7-day attention expansion, with Reddit discussion pointing to concerns about T-Mobile's partnership with ASTS spacemobile are being discussed.
+**Largest 7-Day Buzz Move: VZ**  
+7D Buzz **+30.2** (33.2 -> 63.4) | Sentiment **neutral** (-0.014) | Bull/Bear **24% / 27%**  
+VZ has the largest 7-day buzz expansion, but sentiment remains neutral, with Reddit discussion points to concerns about Starlink's acquisition of general carrier frequencies may impact Verizon's business.
 
-**7-Day Buzz Fade: PEP**  
-7D Buzz **-24.2** (69.7 -> 45.5) | Sentiment **positive** (+0.041) | Bull/Bear **32% / 24%**  
-PEP lost attention over 7 days, but Reddit discussion points to concerns about declining soda consumption are being debated, so the fade is not a clean negative sentiment read.
+**7-Day Buzz Fade: APP**  
+7D Buzz **-47.6** (68.6 -> 21.0) | Sentiment **positive** (+0.098) | Bull/Bear **38% / 13%**  
+APP is the main 7-day fade, with buzz dropping sharply while sentiment stays positive, as Reddit discussion points to concerns about the company's lawsuit development are being discussed.
 
 ### Top Buzz
 
-**1. SPCX** - Buzz **78.1**, sentiment **neutral**, rising  
-**2. NVDA** - Buzz **76.8**, sentiment **positive**, falling  
-**3. AMZN** - Buzz **76.3**, sentiment **positive**, stable  
-**4. AAPL** - Buzz **75.0**, sentiment **positive**, stable  
-**5. GME** - Buzz **74.9**, sentiment **positive**, rising  
+**1. NVDA** - Buzz **78.1**, sentiment **positive**, falling  
+**2. AMZN** - Buzz **75.5**, sentiment **positive**, stable  
+**3. SPCX** - Buzz **73.4**, sentiment **neutral**, stable  
+**4. GOOGL** - Buzz **73.0**, sentiment **positive**, falling  
+**5. META** - Buzz **72.2**, sentiment **positive**, falling  
 
 ### 7-Day Movers
 
-**TMUS** - **+66.6** buzz, positive momentum  
-**ADBE** - **+24.2** buzz, buzz up, sentiment negative  
-**VZ** - **+22.7** buzz, buzz up, sentiment neutral  
-**BAND** - **+14.8** buzz, buzz up, sentiment neutral  
-**PLTR** - **+10.3** buzz, buzz up, sentiment neutral  
-**PEP** - **-24.2** buzz, buzz fading  
-**VST** - **-23.8** buzz, buzz fading  
-**WM** - **-21.2** buzz, buzz fading  
+**VZ** - **+30.2** buzz, buzz up, sentiment neutral  
+**TMUS** - **+22.5** buzz, buzz up, sentiment neutral  
+**TIPS** - **+13.9** buzz, positive momentum  
+**ADBE** - **+12.0** buzz, buzz up, sentiment negative  
+**BAND** - **+10.5** buzz, buzz up, sentiment neutral  
+**APP** - **-47.6** buzz, buzz fading  
+**LULU** - **-33.7** buzz, buzz fading  
+**VST** - **-33.1** buzz, buzz fading  
 
 ### Takeaway
 
-The board is split between raw attention, sentiment quality, and fresh acceleration. **SPCX** owns the buzz lead, with Reddit context around it agreed to acquire a nationwide portfolio of low-band spectrum licenses, a move that could pave the way for Starlink to become a major mobile carrier in the U.S, while **RDDT** has the cleaner sentiment read. **TMUS** is the real 7-day acceleration signal, with Reddit context around concerns about T-Mobile's partnership with ASTS spacemobile are being discussed, with **PEP** showing where attention cooled.
+NVDA holds the highest absolute buzz, but its trend is falling, suggesting sustained attention rather than fresh acceleration. VZ shows the largest 7-day buzz expansion, yet sentiment remains neutral, indicating attention is not translating into clear directional sentiment. APP is the main fade, with buzz dropping sharply while sentiment stays positive, a divergence between attention and sentiment.
 
-Which part matters more here: **RDDT's sentiment quality** or the context behind **TMUS's buzz spike**?
+Which part matters more here: **TIPS's sentiment quality** or the context behind **VZ's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
