@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - October 11, 2026: NVDA Buzz Leads, TIPS Sentiment Improves
+Title: Daily Retail Stock Signals - October 12, 2026: NVDA Leads Buzz, TMUS Moves Most
 
-Today's split: **NVDA** led raw buzz, but **TIPS** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, but **RDDT** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **78.1** | Sentiment **positive** | Bull/Bear **29% / 14%**  
-NVDA leads on absolute buzz score, but the falling trend suggests sustained attention rather than fresh acceleration, with Reddit discussion points to concerns about its role in the economic circle involving OpenAI, Anthropic, and AWS.
+Buzz **79.7** | Sentiment **neutral** | Bull/Bear **26% / 22%**  
+NVDA remains the most-discussed ticker, but its neutral sentiment and falling trend suggest sustained attention rather than fresh momentum, with Reddit threads raising questions about its AI investment strategy.
 
-**Best Sentiment Read: TIPS**  
-7D Buzz **+13.9** (46.3 -> 60.2) | Sentiment **positive** (+0.089) | Bull/Bear **42% / 16%**  
-TIPS has the cleanest sentiment profile, with a positive tilt and a 7-day buzz increase, as Reddit discussion points to Vanguard allocates a significant portion to short-term TIPS once they reach retirement date.
+**Best Sentiment Read: RDDT**  
+7D Buzz **+0.8** (68.0 -> 68.8) | Sentiment **strong positive** (+0.116) | Bull/Bear **40% / 16%**  
+RDDT shows the strongest positive sentiment among selected names, though its falling buzz trend and Reddit chatter about valuation keep the tone more cautious than celebratory.
 
-**Largest 7-Day Buzz Move: VZ**  
-7D Buzz **+30.2** (33.2 -> 63.4) | Sentiment **neutral** (-0.014) | Bull/Bear **24% / 27%**  
-VZ has the largest 7-day buzz expansion, but sentiment remains neutral, with Reddit discussion points to concerns about Starlink's acquisition of general carrier frequencies may impact Verizon's business.
+**Largest 7-Day Buzz Move: TMUS**  
+7D Buzz **+27.8** (29.5 -> 57.3) | Sentiment **positive** (+0.039) | Bull/Bear **31% / 22%**  
+TMUS posts the largest 7-day buzz expansion, but the positive sentiment is tempered by Reddit debate over its Mint Mobile support, leaving the move more about attention than clear consensus.
 
-**7-Day Buzz Fade: APP**  
-7D Buzz **-47.6** (68.6 -> 21.0) | Sentiment **positive** (+0.098) | Bull/Bear **38% / 13%**  
-APP is the main 7-day fade, with buzz dropping sharply while sentiment stays positive, as Reddit discussion points to concerns about the company's lawsuit development are being discussed.
+**7-Day Buzz Fade: HTZ**  
+7D Buzz **-35.2** (72.7 -> 37.5) | Sentiment **positive** (+0.083) | Bull/Bear **35% / 16%**  
+HTZ sees the sharpest 7-day buzz decline, yet its positive sentiment and Reddit discussion of a tentative investor settlement suggest the fade is about cooling chatter rather than a shift in tone.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **78.1**, sentiment **positive**, falling  
-**2. AMZN** - Buzz **75.5**, sentiment **positive**, stable  
-**3. SPCX** - Buzz **73.4**, sentiment **neutral**, stable  
-**4. GOOGL** - Buzz **73.0**, sentiment **positive**, falling  
-**5. META** - Buzz **72.2**, sentiment **positive**, falling  
+**1. NVDA** - Buzz **79.7**, sentiment **neutral**, falling  
+**2. AMZN** - Buzz **76.9**, sentiment **positive**, falling  
+**3. MSFT** - Buzz **76.6**, sentiment **neutral**, falling  
+**4. AAPL** - Buzz **74.8**, sentiment **positive**, falling  
+**5. META** - Buzz **74.6**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**VZ** - **+30.2** buzz, buzz up, sentiment neutral  
-**TMUS** - **+22.5** buzz, buzz up, sentiment neutral  
-**TIPS** - **+13.9** buzz, positive momentum  
-**ADBE** - **+12.0** buzz, buzz up, sentiment negative  
-**BAND** - **+10.5** buzz, buzz up, sentiment neutral  
-**APP** - **-47.6** buzz, buzz fading  
-**LULU** - **-33.7** buzz, buzz fading  
-**VST** - **-33.1** buzz, buzz fading  
+**TMUS** - **+27.8** buzz, positive momentum  
+**CMG** - **+13.2** buzz, buzz up, sentiment neutral  
+**VZ** - **+8.9** buzz, buzz up, sentiment neutral  
+**JPM** - **+7.6** buzz, buzz up, sentiment neutral  
+**BAND** - **+4.5** buzz, buzz up, sentiment neutral  
+**HTZ** - **-35.2** buzz, buzz fading  
+**MS** - **-19.6** buzz, buzz fading  
+**TIPS** - **-19.0** buzz, buzz fading  
 
 ### Takeaway
 
-NVDA holds the highest absolute buzz, but its trend is falling, suggesting sustained attention rather than fresh acceleration. VZ shows the largest 7-day buzz expansion, yet sentiment remains neutral, indicating attention is not translating into clear directional sentiment. APP is the main fade, with buzz dropping sharply while sentiment stays positive, a divergence between attention and sentiment.
+Buzz is broadly fading across the most-discussed names, with NVDA holding the top spot on sustained attention rather than fresh acceleration. Sentiment is mixed: RDDT carries the cleanest positive tilt, while TMUS shows the largest weekly buzz expansion and HTZ the steepest fade. Reddit threads lean cautious on NVDA's business model and RDDT's valuation, with TMUS and HTZ drawing more company-specific debate.
 
-Which part matters more here: **TIPS's sentiment quality** or the context behind **VZ's buzz spike**?
+Which part matters more here: **RDDT's sentiment quality** or the context behind **TMUS's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
