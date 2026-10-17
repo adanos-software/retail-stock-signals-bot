@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - October 16, 2026: TSLA Leads Buzz, TSM Has Stronger Sentiment
+Title: Daily Retail Stock Signals - October 17, 2026: NVDA Buzz Leads, BRK Sentiment Improves
 
-Today's split: **TSLA** had the attention, **TSM** had the cleaner sentiment read, and **CRWV** drew the largest 7-day buzz jump with negative sentiment.
+Today's split: **NVDA** led raw buzz, but **BRK** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: TSLA**  
-Buzz **85.6** | Sentiment **neutral** | Bull/Bear **10% / 14%**  
-TSLA leads on absolute buzz, but the neutral sentiment and low bull/bear participation suggest Reddit discussion is more about upcoming earnings uncertainty than directional enthusiasm.
+**Top Buzz: NVDA**  
+Buzz **78.4** | Sentiment **positive** | Bull/Bear **34% / 18%**  
+NVDA has the widest attention, while Reddit discussion points to concerns about the concentration of earnings in a few large tech companies, including NVDA, are being discussed; neutral sentiment keeps it from reading like broad bullish confirmation.
 
-**Best Sentiment Read: TSM**  
-7D Buzz **+1.8** (67.6 -> 69.4) | Sentiment **positive** (+0.063) | Bull/Bear **33% / 18%**  
-TSM pairs a rising buzz trend with the most positive sentiment among selected names, though Reddit chatter about advanced-node supply constraints adds a note of caution to the otherwise constructive tone.
+**Best Sentiment Read: BRK**  
+7D Buzz **+10.1** (60.3 -> 70.4) | Sentiment **positive** (+0.078) | Bull/Bear **32% / 14%**  
+BRK is the cleaner sentiment read: buzz rose, bulls led bears, and Reddit discussion points to berkshire Hathaway's investment in Bending Spoons led to a rally in the company's shares.
 
-**Largest 7-Day Buzz Move: CRWV**  
-7D Buzz **+22.6** (53.2 -> 75.8) | Sentiment **negative** (-0.065) | Bull/Bear **17% / 30%**  
-CRWV's buzz expanded sharply over the past week, but the negative sentiment and bearish tilt in Reddit discussion point to debt-financing concerns around its AI buildout weighing on the conversation.
+**Largest 7-Day Buzz Move: BMBL**  
+7D Buzz **+28.6** (0.0 -> 28.6) | Sentiment **neutral** (-0.004) | Bull/Bear **18% / 21%**  
+BMBL had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to it is reportedly in advanced talks to go private in a deal valuing the company at roughly a billion dollars.
 
 **7-Day Buzz Fade: VZ**  
-7D Buzz **-72.0** (72.0 -> 0.0) | Sentiment **positive** (+0.052) | Bull/Bear **33% / 22%**  
-VZ's buzz has fallen off dramatically from its prior level, and while the remaining sentiment is positive, the much smaller discussion base makes that reading less representative of broader attention.
+7D Buzz **-24.7** (70.2 -> 45.5) | Sentiment **positive** (+0.065) | Bull/Bear **37% / 21%**  
+VZ lost attention over 7 days, but Reddit discussion points to a joint venture between Verizon, AT&T, and T-Mobile is set to encourage competition, so the fade is not a clean negative sentiment read.
 
 ### Top Buzz
 
-**1. TSLA** - Buzz **85.6**, sentiment **neutral**, rising  
-**2. NVDA** - Buzz **80.2**, sentiment **neutral**, rising  
-**3. SPCX** - Buzz **78.1**, sentiment **neutral**, rising  
-**4. AMZN** - Buzz **76.5**, sentiment **positive**, stable  
-**5. MSFT** - Buzz **76.0**, sentiment **positive**, falling  
+**1. NVDA** - Buzz **78.4**, sentiment **positive**, rising  
+**2. AMZN** - Buzz **78.2**, sentiment **positive**, stable  
+**3. TSLA** - Buzz **77.3**, sentiment **neutral**, rising  
+**4. META** - Buzz **76.4**, sentiment **positive**, falling  
+**5. MSFT** - Buzz **76.4**, sentiment **positive**, falling  
 
 ### 7-Day Movers
 
-**CRWV** - **+22.6** buzz, buzz up, sentiment negative  
-**AVD** - **+18.2** buzz, buzz up, sentiment neutral  
-**BLK** - **+18.1** buzz, buzz up, sentiment negative  
-**BMBL** - **+14.9** buzz, buzz up, sentiment neutral  
-**SLS** - **+10.4** buzz, positive momentum  
-**VZ** - **-72.0** buzz, buzz fading  
-**TMUS** - **-45.6** buzz, buzz fading  
-**CCJ** - **-24.1** buzz, buzz fading  
+**BMBL** - **+28.6** buzz, buzz up, sentiment neutral  
+**CRWV** - **+13.8** buzz, buzz up, sentiment negative  
+**BRK** - **+10.1** buzz, positive momentum  
+**AVD** - **+7.8** buzz, buzz up, sentiment neutral  
+**WMT** - **+6.8** buzz, positive momentum  
+**VZ** - **-24.7** buzz, buzz fading  
+**APP** - **-21.0** buzz, buzz fading  
+**VOW** - **-17.7** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is spread across large-cap tech and AI-adjacent names, with TSLA holding the highest buzz despite neutral-to-slightly-negative sentiment. TSM shows the most constructive sentiment profile among rising-buzz names, while CRWV's rapid buzz expansion carries a negative tilt. VZ's buzz has collapsed over the past week, leaving a positive sentiment reading on a much smaller discussion base.
+The board is split between raw attention, sentiment quality, and fresh acceleration. **NVDA** owns the buzz lead, with Reddit context around concerns about the concentration of earnings in a few large tech companies, including NVDA, are being discussed, while **BRK** has the cleaner sentiment read, with Reddit context around berkshire Hathaway's investment in Bending Spoons led to a rally in the company's shares. **BMBL** is the real 7-day acceleration signal, with Reddit context around it is reportedly in advanced talks to go private in a deal valuing the company at roughly a billion dollars, with **VZ** showing where attention cooled.
 
-Which part matters more here: **TSM's sentiment quality** or the context behind **CRWV's buzz spike**?
+Which part matters more here: **BRK's sentiment quality** or the context behind **BMBL's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
