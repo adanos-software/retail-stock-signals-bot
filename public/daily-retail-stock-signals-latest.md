@@ -1,49 +1,45 @@
-Title: Daily Retail Stock Signals - October 20, 2026: SPCX Buzz Leads, HTZ Sentiment Improves
+Title: Daily Retail Stock Signals - October 21, 2026: NFLX Leads Buzz, NFLX Attention Jumps
 
-Today's split: **SPCX** led raw buzz, but **HTZ** had the cleaner sentiment profile.
+Today's split: **NFLX** led raw buzz, while **NFLX** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
-**Top Buzz: SPCX**  
-Buzz **79.2** | Sentiment **neutral** | Bull/Bear **12% / 18%**  
-SPCX has the widest attention, while Reddit discussion points to concerns about a potential merger are being discussed among investors; neutral sentiment keeps it from reading like broad bullish confirmation.
+**Top Buzz: NFLX**  
+Buzz **82.8** | Sentiment **negative** | Bull/Bear **19% / 26%**  
+NFLX tops the buzz ranking while its sentiment sits slightly negative, and Reddit threads frame the split as revenue beating expectations against a softer forward outlook, so attention is high but the tone is not celebratory.
 
-**Best Sentiment Read: HTZ**  
-7D Buzz **+7.3** (58.6 -> 65.9) | Sentiment **strong positive** (+0.101) | Bull/Bear **40% / 18%**  
-HTZ is the cleaner sentiment read: buzz rose, bulls led bears, and Reddit discussion points to a Hertz-launched business focused on fleet operations, including autonomous vehicles, was reported.
+**Largest 7-Day Buzz Move: NFLX**  
+7D Buzz **+13.7** (69.1 -> 82.8) | Sentiment **neutral** (-0.018) | Bull/Bear **20% / 25%**  
+NFLX pairs the largest week-over-week buzz expansion with a sentiment reading that has drifted toward neutral, suggesting the added discussion is more about parsing results than a one-sided reaction.
 
-**Largest 7-Day Buzz Move: NVO**  
-7D Buzz **+8.7** (59.3 -> 68.0) | Sentiment **neutral** (+0.001) | Bull/Bear **9% / 9%**  
-NVO had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to concerns about Novo Nordisk's market share being affected by Eli Lilly's entry into the obesity market.
-
-**7-Day Buzz Fade: PYPL**  
-7D Buzz **-29.8** (66.4 -> 36.6) | Sentiment **neutral** (+0.012) | Bull/Bear **17% / 13%**  
-PYPL lost attention over 7 days, but Reddit discussion points to concerns about PayPal's payment method functionality are being discussed among users who have experienced issues with using their cards for purchases, so the fade is not a clean negative sentiment read.
+**7-Day Buzz Fade: CSCO**  
+7D Buzz **-24.1** (64.5 -> 40.4) | Sentiment **neutral** (-0.021) | Bull/Bear **21% / 24%**  
+CSCO's buzz has fallen sharply over the week while sentiment stays near neutral, and Reddit discussion points to an industry debate over copper versus optics in short links rather than a single clear narrative.
 
 ### Top Buzz
 
-**1. SPCX** - Buzz **79.2**, sentiment **neutral**, rising  
-**2. NVDA** - Buzz **76.6**, sentiment **positive**, falling  
-**3. TSLA** - Buzz **75.7**, sentiment **neutral**, falling  
-**4. AAPL** - Buzz **75.3**, sentiment **positive**, falling  
-**5. GME** - Buzz **74.6**, sentiment **negative**, stable  
+**1. NFLX** - Buzz **82.8**, sentiment **negative**, rising  
+**2. SPCX** - Buzz **82.3**, sentiment **neutral**, rising  
+**3. AMZN** - Buzz **80.0**, sentiment **positive**, rising  
+**4. NVDA** - Buzz **79.6**, sentiment **positive**, falling  
+**5. TSLA** - Buzz **79.5**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**NVO** - **+8.7** buzz, buzz up, sentiment neutral  
-**VNA** - **+8.5** buzz, buzz up, sentiment neutral  
-**HTZ** - **+7.3** buzz, strong positive sentiment  
-**SPCX** - **+4.8** buzz, buzz up, sentiment neutral  
-**TSLA** - **+3.5** buzz, buzz up, sentiment neutral  
-**PYPL** - **-29.8** buzz, buzz fading  
-**AVD** - **-25.8** buzz, buzz fading  
-**BAC** - **-23.9** buzz, buzz fading  
+**NFLX** - **+13.7** buzz, buzz up, sentiment neutral  
+**ABNB** - **+13.2** buzz, positive momentum  
+**F** - **+6.2** buzz, buzz up, sentiment neutral  
+**SPCX** - **+4.9** buzz, buzz up, sentiment neutral  
+**VNA** - **+3.5** buzz, buzz up, sentiment neutral  
+**CSCO** - **-24.1** buzz, buzz fading  
+**RDDT** - **-16.3** buzz, buzz fading  
+**DJT** - **-15.9** buzz, fading with negative sentiment  
 
 ### Takeaway
 
-The board is split between raw attention, sentiment quality, and fresh acceleration. **SPCX** owns the buzz lead, with Reddit context around concerns about a potential merger are being discussed among investors, while **HTZ** has the cleaner sentiment read, with Reddit context around a Hertz-launched business focused on fleet operations, including autonomous vehicles, was reported. **NVO** is the real 7-day acceleration signal, with Reddit context around concerns about Novo Nordisk's market share being affected by Eli Lilly's entry into the obesity market, with **PYPL** showing where attention cooled.
+NFLX is the loudest name on the board and also the fastest-growing in buzz, but the chatter skews negative even as attention builds. Sentiment across the top of the list is mixed rather than one-directional, with AMZN and NVDA carrying a positive tilt while NFLX and TSLA sit closer to neutral-to-soft. CSCO is the clearest attention fade, with discussion volume dropping off while sentiment holds near neutral.
 
-Which part matters more here: **HTZ's sentiment quality** or the context behind **NVO's buzz spike**?
+Does **NFLX's attention jump** need stronger positive-sentiment confirmation before it matters?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
