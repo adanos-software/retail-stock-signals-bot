@@ -1,45 +1,49 @@
-Title: Daily Retail Stock Signals - October 21, 2026: NFLX Leads Buzz, NFLX Attention Jumps
+Title: Daily Retail Stock Signals - October 22, 2026: META Leads Buzz, HTZ Has Stronger Sentiment
 
-Today's split: **NFLX** led raw buzz, while **NFLX** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
+Today's split: **META** led raw buzz, but **HTZ** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: NFLX**  
-Buzz **82.8** | Sentiment **negative** | Bull/Bear **19% / 26%**  
-NFLX tops the buzz ranking while its sentiment sits slightly negative, and Reddit threads frame the split as revenue beating expectations against a softer forward outlook, so attention is high but the tone is not celebratory.
+**Top Buzz: META**  
+Buzz **82.3** | Sentiment **negative** | Bull/Bear **18% / 30%**  
+META carries the highest buzz and a rising trend, but the negative tilt and heavier bearish share suggest Reddit discussion is focused on the earnings mix rather than enthusiasm.
 
-**Largest 7-Day Buzz Move: NFLX**  
-7D Buzz **+13.7** (69.1 -> 82.8) | Sentiment **neutral** (-0.018) | Bull/Bear **20% / 25%**  
-NFLX pairs the largest week-over-week buzz expansion with a sentiment reading that has drifted toward neutral, suggesting the added discussion is more about parsing results than a one-sided reaction.
+**Best Sentiment Read: HTZ**  
+7D Buzz **+23.0** (43.5 -> 66.5) | Sentiment **positive** (+0.096) | Bull/Bear **38% / 18%**  
+HTZ pairs its buzz expansion with the most favorable sentiment profile among the movers, and Reddit discussion points to an autonomous-vehicle fleet operations launch as the topic drawing attention.
 
-**7-Day Buzz Fade: CSCO**  
-7D Buzz **-24.1** (64.5 -> 40.4) | Sentiment **neutral** (-0.021) | Bull/Bear **21% / 24%**  
-CSCO's buzz has fallen sharply over the week while sentiment stays near neutral, and Reddit discussion points to an industry debate over copper versus optics in short links rather than a single clear narrative.
+**Largest 7-Day Buzz Move: HTZ**  
+7D Buzz **+23.0** (43.5 -> 66.5) | Sentiment **positive** (+0.096) | Bull/Bear **38% / 18%**  
+HTZ also shows the largest 7-day buzz expansion, with the positive tilt holding alongside the rising trend rather than diverging from it.
+
+**7-Day Buzz Fade: ACN**  
+7D Buzz **-31.2** (71.5 -> 40.3) | Sentiment **negative** (-0.048) | Bull/Bear **10% / 23%**  
+ACN's buzz has fallen sharply over the week and sentiment remains negative, with Reddit discussion pointing to concerns about revenue and earnings integrity.
 
 ### Top Buzz
 
-**1. NFLX** - Buzz **82.8**, sentiment **negative**, rising  
-**2. SPCX** - Buzz **82.3**, sentiment **neutral**, rising  
-**3. AMZN** - Buzz **80.0**, sentiment **positive**, rising  
-**4. NVDA** - Buzz **79.6**, sentiment **positive**, falling  
-**5. TSLA** - Buzz **79.5**, sentiment **neutral**, falling  
+**1. META** - Buzz **82.3**, sentiment **negative**, rising  
+**2. SPCX** - Buzz **78.4**, sentiment **neutral**, rising  
+**3. TSLA** - Buzz **78.4**, sentiment **negative**, rising  
+**4. AMZN** - Buzz **78.1**, sentiment **positive**, rising  
+**5. NFLX** - Buzz **77.8**, sentiment **neutral**, rising  
 
 ### 7-Day Movers
 
-**NFLX** - **+13.7** buzz, buzz up, sentiment neutral  
-**ABNB** - **+13.2** buzz, positive momentum  
-**F** - **+6.2** buzz, buzz up, sentiment neutral  
-**SPCX** - **+4.9** buzz, buzz up, sentiment neutral  
-**VNA** - **+3.5** buzz, buzz up, sentiment neutral  
-**CSCO** - **-24.1** buzz, buzz fading  
-**RDDT** - **-16.3** buzz, buzz fading  
-**DJT** - **-15.9** buzz, fading with negative sentiment  
+**HTZ** - **+23.0** buzz, positive momentum  
+**NFLX** - **+10.7** buzz, buzz up, sentiment neutral  
+**META** - **+5.7** buzz, buzz up, sentiment negative  
+**WDC** - **+3.5** buzz, buzz up, sentiment neutral  
+**VOW** - **+1.7** buzz, buzz up, sentiment neutral  
+**ACN** - **-31.2** buzz, fading with negative sentiment  
+**KO** - **-24.0** buzz, buzz fading  
+**AVD** - **-21.5** buzz, buzz fading  
 
 ### Takeaway
 
-NFLX is the loudest name on the board and also the fastest-growing in buzz, but the chatter skews negative even as attention builds. Sentiment across the top of the list is mixed rather than one-directional, with AMZN and NVDA carrying a positive tilt while NFLX and TSLA sit closer to neutral-to-soft. CSCO is the clearest attention fade, with discussion volume dropping off while sentiment holds near neutral.
+Attention is concentrated in mega-cap names, but sentiment is not confirming that attention: META leads on buzz while Reddit discussion points to a revenue beat offset by legal-fee drag on earnings. HTZ is the exception where rising buzz and a positive tilt line up, with Reddit discussion pointing to an autonomous-vehicle fleet operations launch. ACN shows the opposite pattern, with fading buzz and negative sentiment as Reddit discussion points to questions about revenue and earnings integrity.
 
-Does **NFLX's attention jump** need stronger positive-sentiment confirmation before it matters?
+Would you trust **META's broad attention** or **HTZ's cleaner sentiment read** more here?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
