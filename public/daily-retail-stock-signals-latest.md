@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - October 23, 2026: NVDA Buzz Leads, HTZ Sentiment Improves
+Title: Daily Retail Stock Signals - October 24, 2026: NVDA Leads Buzz, ABNB Moves Most
 
-Today's split: **NVDA** had the attention, **HTZ** had the cleaner sentiment read, and **NAB** drew the largest 7-day buzz jump with negative sentiment.
+Today's split: **NVDA** led raw buzz, but **LLY** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **79.0** | Sentiment **neutral** | Bull/Bear **24% / 18%**  
-NVDA holds the highest buzz score but sits near neutral sentiment, and Reddit discussion points to demand-slowdown and China competition concerns being discussed.
+Buzz **78.3** | Sentiment **positive** | Bull/Bear **28% / 18%**  
+NVDA tops the buzz board and a rising trend, though Reddit chatter questions whether high-end GPUs are widely used in data centers, leaving attention and context slightly at odds.
 
-**Best Sentiment Read: HTZ**  
-7D Buzz **+22.6** (42.6 -> 65.2) | Sentiment **strong positive** (+0.113) | Bull/Bear **41% / 16%**  
-HTZ shows rising buzz alongside the strongest positive sentiment in the set, with Reddit discussion pointing to a short-interest narrative being discussed.
+**Best Sentiment Read: LLY**  
+7D Buzz **+2.7** (56.6 -> 59.3) | Sentiment **strong positive** (+0.104) | Bull/Bear **33% / 11%**  
+LLY pairs the strongest sentiment profile with a modestly rising buzz trend, but Reddit discussion points to mixed views on drug effectiveness versus alternatives, so the positive tilt is not fully echoed in the chatter.
 
-**Largest 7-Day Buzz Move: NAB**  
-7D Buzz **+41.5** (0.0 -> 41.5) | Sentiment **negative** (-0.083) | Bull/Bear **7% / 24%**  
-NAB's buzz expanded from a near-zero base to a mid-range score, but the lean is negative with more bearish than bullish chatter.
+**Largest 7-Day Buzz Move: ABNB**  
+7D Buzz **+23.9** (25.3 -> 49.2) | Sentiment **neutral** (+0.018) | Bull/Bear **9% / 3%**  
+ABNB shows the largest 7-day buzz expansion yet a neutral sentiment reading and a falling trend, with sparse bullish and bearish participation suggesting attention arrived faster than any clear directional view.
 
-**7-Day Buzz Fade: BAC**  
-7D Buzz **-27.5** (67.1 -> 39.6) | Sentiment **positive** (+0.036) | Bull/Bear **20% / 13%**  
-BAC's buzz has fallen over the week even as its sentiment stays mildly positive, a divergence between attention and tone.
+**7-Day Buzz Fade: SNDK**  
+7D Buzz **-32.1** (73.0 -> 40.9) | Sentiment **negative** (-0.047) | Bull/Bear **23% / 31%**  
+SNDK posts the steepest 7-day buzz decline alongside negative sentiment and more bearish than bullish participation, with Reddit discussion centered on an earnings preview rather than a settled narrative.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **79.0**, sentiment **neutral**, stable  
-**2. AMZN** - Buzz **77.5**, sentiment **positive**, rising  
-**3. SPCX** - Buzz **77.4**, sentiment **neutral**, falling  
-**4. GOOGL** - Buzz **76.8**, sentiment **positive**, rising  
-**5. META** - Buzz **76.8**, sentiment **negative**, rising  
+**1. NVDA** - Buzz **78.3**, sentiment **positive**, rising  
+**2. AMZN** - Buzz **77.0**, sentiment **positive**, falling  
+**3. META** - Buzz **76.6**, sentiment **negative**, stable  
+**4. SPCX** - Buzz **76.2**, sentiment **neutral**, falling  
+**5. GOOGL** - Buzz **75.9**, sentiment **positive**, stable  
 
 ### 7-Day Movers
 
-**NAB** - **+41.5** buzz, buzz up, sentiment negative  
-**HTZ** - **+22.6** buzz, strong positive sentiment  
-**BE** - **+20.7** buzz, positive momentum  
-**NVO** - **+14.8** buzz, buzz up, sentiment neutral  
-**ABNB** - **+13.3** buzz, buzz up, sentiment neutral  
-**BAC** - **-27.5** buzz, buzz fading  
-**BAND** - **-23.3** buzz, buzz fading  
-**F** - **-21.2** buzz, buzz fading  
+**ABNB** - **+23.9** buzz, buzz up, sentiment neutral  
+**VOW** - **+22.6** buzz, buzz up, sentiment neutral  
+**IBM** - **+11.2** buzz, buzz up, sentiment neutral  
+**AMC** - **+8.5** buzz, positive momentum  
+**BE** - **+7.6** buzz, positive momentum  
+**SNDK** - **-32.1** buzz, fading with negative sentiment  
+**ASML** - **-24.4** buzz, buzz fading  
+**HTZ** - **-23.9** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech, but sentiment there is mixed rather than uniformly positive. Among smaller movers, HTZ pairs rising buzz with the strongest positive tilt, while NAB's buzz expansion comes with a negative lean.
+Buzz is concentrated in mega-cap tech, with NVDA leading on attention and a mildly positive tilt while META carries high buzz but negative sentiment. Movers show attention rotating toward ABNB and VOW, while SNDK's buzz fades and its sentiment leans negative. Reddit context is thin and mostly cautionary, so the tone is more watchful than enthusiastic.
 
-Which would you weigh more today: **HTZ's cleaner sentiment** or **NAB's larger but negative buzz spike**?
+Would you trust **NVDA's broad attention** or **LLY's cleaner sentiment read** more here?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
