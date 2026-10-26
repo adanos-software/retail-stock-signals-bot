@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - October 25, 2026: AAPL Leads Buzz, LLY Has Stronger Sentiment
+Title: Daily Retail Stock Signals - October 26, 2026: SPCX Buzz Leads, NU Sentiment Improves
 
-Today's split: **AAPL** led raw buzz, but **LLY** had the cleaner sentiment profile.
+Today's split: **SPCX** led raw buzz, but **NU** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: AAPL**  
-Buzz **76.8** | Sentiment **neutral** | Bull/Bear **22% / 19%**  
-AAPL holds the highest absolute buzz among a tightly clustered mega-cap tech group, but its neutral sentiment and falling trend suggest sustained attention rather than fresh momentum, with Reddit discussion pointing to iPhone sales concerns tied to the Crackga
+**Top Buzz: SPCX**  
+Buzz **81.7** | Sentiment **neutral** | Bull/Bear **20% / 23%**  
+SPCX holds the highest absolute buzz with sentiment sitting near flat and a falling trend, so the attention looks sustained rather than newly accelerating, with Reddit chatter centering on merger discussion.
 
-**Best Sentiment Read: LLY**  
-7D Buzz **+1.7** (46.0 -> 47.7) | Sentiment **strong positive** (+0.103) | Bull/Bear **33% / 10%**  
-LLY pairs the strongest positive sentiment with a wide bullish-to-bearish gap, even as its overall buzz trend cools, and Reddit discussion points to drug efficacy keeping patients on Ozempic and weighing on competitor share.
+**Best Sentiment Read: NU**  
+7D Buzz **+33.7** (35.6 -> 69.3) | Sentiment **strong positive** (+0.124) | Bull/Bear **35% / 9%**  
+NU pairs the strongest sentiment profile in the set with the largest 7-day buzz expansion, and the bullish-to-bearish split is wide, making it the clearest case of attention and sentiment rising together.
 
-**Largest 7-Day Buzz Move: SOFI**  
-7D Buzz **+6.2** (51.8 -> 58.0) | Sentiment **positive** (+0.033) | Bull/Bear **31% / 17%**  
-SOFI posts the largest week-over-week buzz expansion and a clear bullish lean, and Reddit discussion points to its high deposit rate as a customer draw.
+**Largest 7-Day Buzz Move: NU**  
+7D Buzz **+33.7** (35.6 -> 69.3) | Sentiment **strong positive** (+0.124) | Bull/Bear **35% / 9%**  
+NU's buzz roughly doubled over the week while sentiment stayed strongly positive, a rare combination where growing discussion and favorable tone reinforce each other.
 
-**7-Day Buzz Fade: ABNB**  
-7D Buzz **-41.0** (70.3 -> 29.3) | Sentiment **neutral** (+0.012) | Bull/Bear **9% / 4%**  
-ABNB shows the steepest week-over-week buzz decline, with sentiment neutral and participation thin, and Reddit discussion points to questions about measurable revenue traction.
+**7-Day Buzz Fade: BAC**  
+7D Buzz **-25.5** (49.5 -> 24.0) | Sentiment **neutral** (-0.024) | Bull/Bear **11% / 16%**  
+BAC's buzz has been cut roughly in half over the week with sentiment near neutral and a bearish tilt, so the fade reflects fading discussion more than an active negative shift.
 
 ### Top Buzz
 
-**1. AAPL** - Buzz **76.8**, sentiment **neutral**, falling  
-**2. NVDA** - Buzz **76.7**, sentiment **positive**, falling  
-**3. AMZN** - Buzz **76.4**, sentiment **positive**, falling  
-**4. GOOGL** - Buzz **76.1**, sentiment **positive**, falling  
-**5. META** - Buzz **75.7**, sentiment **neutral**, falling  
+**1. SPCX** - Buzz **81.7**, sentiment **neutral**, falling  
+**2. MSFT** - Buzz **81.4**, sentiment **neutral**, rising  
+**3. AMZN** - Buzz **80.2**, sentiment **positive**, falling  
+**4. META** - Buzz **79.9**, sentiment **negative**, falling  
+**5. NVDA** - Buzz **78.9**, sentiment **positive**, falling  
 
 ### 7-Day Movers
 
-**SOFI** - **+6.2** buzz, positive momentum  
-**ADBE** - **+5.5** buzz, buzz up, sentiment neutral  
-**SNDK** - **+4.1** buzz, buzz up, sentiment negative  
-**LLY** - **+1.7** buzz, strong positive sentiment  
-**AAPL** - **+0.5** buzz, positive momentum  
-**ABNB** - **-41.0** buzz, buzz fading  
-**NAB** - **-38.8** buzz, fading with negative sentiment  
-**VNA** - **-37.2** buzz, buzz fading  
+**NU** - **+33.7** buzz, strong positive sentiment  
+**PYPL** - **+9.1** buzz, buzz up, sentiment neutral  
+**AVGO** - **+5.8** buzz, buzz up, sentiment neutral  
+**META** - **+4.7** buzz, buzz up, sentiment negative  
+**AMD** - **+3.9** buzz, positive momentum  
+**BAC** - **-25.5** buzz, buzz fading  
+**HTZ** - **-15.4** buzz, buzz fading  
+**NAB** - **-14.3** buzz, fading with negative sentiment  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech, but sentiment across that group is mixed and mostly cooling, with META the clearest negative lean. LLY carries the strongest positive sentiment profile while SOFI shows the largest week-over-week buzz expansion; ABNB is the notable fade, with Reddit discussion pointing to questions about revenue traction.
+Attention is concentrated in mega-cap tech, but sentiment there is mixed rather than directional. NU is the outlier where rising buzz and strongly positive sentiment move together, while BAC's attention has cooled over the week. SPCX sits at the top of the buzz list, though Reddit discussion points to merger-related debate rather than a clear lean.
 
-Which part matters more here: **LLY's sentiment quality** or the context behind **SOFI's buzz spike**?
+Would you trust **SPCX's broad attention** or **NU's cleaner sentiment read** more here?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
