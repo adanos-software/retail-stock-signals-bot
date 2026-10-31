@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - October 30, 2026: GOOGL Leads Buzz, NOW Moves Most
+Title: Daily Retail Stock Signals - October 31, 2026: NVDA Leads Buzz, LLY Has Stronger Sentiment
 
-Today's split: **GOOGL** led raw buzz, but **XOM** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, but **LLY** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: GOOGL**  
-Buzz **84.5** | Sentiment **neutral** | Bull/Bear **26% / 24%**  
-GOOGL has the widest attention, while Reddit discussion points to a post reported the company fell sharply in premarket trading after missing adjusted earnings per share and revenue expectations for the quarter, alongside negative free cash flow; neutral sentiment keeps it from reading like broad bullish confirmation.
+**Top Buzz: NVDA**  
+Buzz **82.6** | Sentiment **positive** | Bull/Bear **17% / 12%**  
+NVDA holds the highest buzz score with a positive but thin sentiment edge, and Reddit discussion points to debate over whether cloud customers can sustain GPU spending if cash flow weakens.
 
-**Best Sentiment Read: XOM**  
-7D Buzz **+10.8** (55.4 -> 66.2) | Sentiment **strong positive** (+0.131) | Bull/Bear **41% / 15%**  
-XOM is the cleaner sentiment read: buzz rose, bulls led bears, and Reddit discussion points to exxonMobil reported quarterly GAAP earnings and revenue growth along with announced share repurchases and a fourth-quarter dividend.
+**Best Sentiment Read: LLY**  
+7D Buzz **+10.2** (57.6 -> 67.8) | Sentiment **strong positive** (+0.110) | Bull/Bear **37% / 12%**  
+LLY pairs a rising buzz trend with the strongest positive sentiment and a wide bull-to-bear gap, and Reddit discussion points to GLP-1 demand and AI-enabled R&D as the narrative backdrop.
 
-**Largest 7-Day Buzz Move: NOW**  
-7D Buzz **+38.1** (30.8 -> 68.9) | Sentiment **neutral** (-0.017) | Bull/Bear **5% / 8%**  
-NOW had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to the company reported quarterly earnings with higher revenue and earnings, raised full-year subscription revenue and free cash flow margin guidance, while discussion weighed that against concerns about slowing growth and AI disruptio.
+**Largest 7-Day Buzz Move: F**  
+7D Buzz **+31.3** (20.7 -> 52.0) | Sentiment **neutral** (+0.015) | Bull/Bear **24% / 24%**  
+F shows the largest 7-day buzz expansion but sentiment stays neutral with bulls and bears evenly split, while Reddit discussion points to dividend coverage and strike-related capital spending concerns.
 
-**7-Day Buzz Fade: VOW**  
-7D Buzz **-22.2** (68.1 -> 45.9) | Sentiment **neutral** (+0.003) | Bull/Bear **10% / 9%**  
-Attention cooled over 7 days, but the sentiment read is not strongly negative.
+**7-Day Buzz Fade: GE**  
+7D Buzz **-18.0** (53.9 -> 35.9) | Sentiment **positive** (+0.044) | Bull/Bear **26% / 15%**  
+GE posts the steepest 7-day buzz decline yet keeps positive sentiment, with Reddit discussion points to valuation debate and the CFM partnership as context for the attention drop.
 
 ### Top Buzz
 
-**1. GOOGL** - Buzz **84.5**, sentiment **neutral**, rising  
-**2. INTC** - Buzz **82.9**, sentiment **negative**, rising  
-**3. AMZN** - Buzz **82.7**, sentiment **neutral**, rising  
-**4. RDDT** - Buzz **81.3**, sentiment **negative**, rising  
-**5. META** - Buzz **79.1**, sentiment **neutral**, rising  
+**1. NVDA** - Buzz **82.6**, sentiment **positive**, rising  
+**2. GOOGL** - Buzz **82.0**, sentiment **positive**, rising  
+**3. INTC** - Buzz **80.1**, sentiment **negative**, rising  
+**4. AMZN** - Buzz **79.6**, sentiment **positive**, rising  
+**5. META** - Buzz **78.7**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**NOW** - **+38.1** buzz, buzz up, sentiment neutral  
-**RDDT** - **+30.1** buzz, buzz up, sentiment negative  
-**GM** - **+25.9** buzz, buzz up, sentiment negative  
-**COIN** - **+25.7** buzz, buzz up, sentiment negative  
-**ASML** - **+17.8** buzz, positive momentum  
-**VOW** - **-22.2** buzz, buzz fading  
-**CRWD** - **-17.7** buzz, buzz fading  
-**GE** - **-13.9** buzz, buzz fading  
+**F** - **+31.3** buzz, buzz up, sentiment neutral  
+**MELI** - **+26.2** buzz, positive momentum  
+**EBAY** - **+16.4** buzz, positive momentum  
+**RDDT** - **+14.5** buzz, buzz up, sentiment negative  
+**NOW** - **+11.1** buzz, buzz up, sentiment neutral  
+**GE** - **-18.0** buzz, buzz fading  
+**VOW** - **-17.5** buzz, buzz fading  
+**SOFI** - **-16.6** buzz, buzz fading  
 
 ### Takeaway
 
-The board is split between raw attention, sentiment quality, and fresh acceleration. **GOOGL** owns the buzz lead, with Reddit context around a post reported the company fell sharply in premarket trading after missing adjusted earnings per share and revenue expectations for the quarter, alongside negative free cash flow, while **XOM** has the cleaner sentiment read, with Reddit context around exxonMobil reported quarterly GAAP earnings and revenue growth along with announced share repurchases and a fourth-quarter dividend. **NOW** is the real 7-day acceleration signal, with Reddit context around the company reported quarterly earnings with higher revenue and earnings, raised full-year subscription revenue and free cash flow margin guidance, while discussion weighed that against concerns about slowing growth and AI disruptio, with **VOW** showing where attention cooled.
+Attention is concentrated in mega-cap tech, but sentiment is not uniformly confirming it: NVDA leads on buzz while INTC carries negative sentiment and RDDT draws heavy attention with a negative tilt. LLY shows the most consistent positive sentiment profile among rising names, while F's buzz expansion comes and a mixed bull/bear split. GE's fade is notable as positive sentiment persists even as discussion volume drops.
 
-Which part matters more here: **XOM's sentiment quality** or the context behind **NOW's buzz spike**?
+Which part matters more here: **LLY's sentiment quality** or the context behind **F's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
