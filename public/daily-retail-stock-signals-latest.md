@@ -1,49 +1,45 @@
-Title: Daily Retail Stock Signals - October 31, 2026: NVDA Leads Buzz, LLY Has Stronger Sentiment
+Title: Daily Retail Stock Signals - November 1, 2026: GOOGL Leads Buzz, COIN Attention Jumps
 
-Today's split: **NVDA** led raw buzz, but **LLY** had the cleaner sentiment profile.
+Today's split: **GOOGL** led raw buzz, while **COIN** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
-**Top Buzz: NVDA**  
-Buzz **82.6** | Sentiment **positive** | Bull/Bear **17% / 12%**  
-NVDA holds the highest buzz score with a positive but thin sentiment edge, and Reddit discussion points to debate over whether cloud customers can sustain GPU spending if cash flow weakens.
+**Top Buzz: GOOGL**  
+Buzz **79.9** | Sentiment **positive** | Bull/Bear **29% / 20%**  
+GOOGL holds the highest attention level with mildly positive sentiment, but the falling trend and Reddit chatter about heavier capital spending suggest sustained discussion rather than fresh momentum.
 
-**Best Sentiment Read: LLY**  
-7D Buzz **+10.2** (57.6 -> 67.8) | Sentiment **strong positive** (+0.110) | Bull/Bear **37% / 12%**  
-LLY pairs a rising buzz trend with the strongest positive sentiment and a wide bull-to-bear gap, and Reddit discussion points to GLP-1 demand and AI-enabled R&D as the narrative backdrop.
+**Largest 7-Day Buzz Move: COIN**  
+7D Buzz **+9.6** (52.7 -> 62.3) | Sentiment **neutral** (-0.009) | Bull/Bear **21% / 25%**  
+COIN shows the largest week-over-week buzz expansion, yet sentiment stays near neutral with slightly more bearish than bullish voices, and Reddit threads split between reported results and worries about a peer's crypto revenue.
 
-**Largest 7-Day Buzz Move: F**  
-7D Buzz **+31.3** (20.7 -> 52.0) | Sentiment **neutral** (+0.015) | Bull/Bear **24% / 24%**  
-F shows the largest 7-day buzz expansion but sentiment stays neutral with bulls and bears evenly split, while Reddit discussion points to dividend coverage and strike-related capital spending concerns.
-
-**7-Day Buzz Fade: GE**  
-7D Buzz **-18.0** (53.9 -> 35.9) | Sentiment **positive** (+0.044) | Bull/Bear **26% / 15%**  
-GE posts the steepest 7-day buzz decline yet keeps positive sentiment, with Reddit discussion points to valuation debate and the CFM partnership as context for the attention drop.
+**7-Day Buzz Fade: BLK**  
+7D Buzz **-53.1** (53.1 -> 0.0) | Sentiment **neutral** (+0.010) | Bull/Bear **24% / 20%**  
+BLK's buzz fell to zero around a prior spike, leaving sentiment roughly flat, which reads as discussion dropping off rather than a change in tone.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **82.6**, sentiment **positive**, rising  
-**2. GOOGL** - Buzz **82.0**, sentiment **positive**, rising  
-**3. INTC** - Buzz **80.1**, sentiment **negative**, rising  
-**4. AMZN** - Buzz **79.6**, sentiment **positive**, rising  
-**5. META** - Buzz **78.7**, sentiment **neutral**, falling  
+**1. GOOGL** - Buzz **79.9**, sentiment **positive**, falling  
+**2. NVDA** - Buzz **76.8**, sentiment **positive**, rising  
+**3. AMZN** - Buzz **76.5**, sentiment **positive**, falling  
+**4. AAPL** - Buzz **76.0**, sentiment **neutral**, stable  
+**5. MSFT** - Buzz **75.6**, sentiment **positive**, falling  
 
 ### 7-Day Movers
 
-**F** - **+31.3** buzz, buzz up, sentiment neutral  
-**MELI** - **+26.2** buzz, positive momentum  
-**EBAY** - **+16.4** buzz, positive momentum  
-**RDDT** - **+14.5** buzz, buzz up, sentiment negative  
-**NOW** - **+11.1** buzz, buzz up, sentiment neutral  
-**GE** - **-18.0** buzz, buzz fading  
-**VOW** - **-17.5** buzz, buzz fading  
-**SOFI** - **-16.6** buzz, buzz fading  
+**COIN** - **+9.6** buzz, buzz up, sentiment neutral  
+**NOW** - **+8.1** buzz, buzz up, sentiment neutral  
+**APP** - **+6.8** buzz, positive momentum  
+**DASH** - **+5.6** buzz, buzz up, sentiment negative  
+**SAP** - **+4.0** buzz, buzz up, sentiment neutral  
+**BLK** - **-53.1** buzz, buzz fading  
+**ASTS** - **-34.6** buzz, fading with negative sentiment  
+**BA** - **-29.8** buzz, fading with negative sentiment  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech, but sentiment is not uniformly confirming it: NVDA leads on buzz while INTC carries negative sentiment and RDDT draws heavy attention with a negative tilt. LLY shows the most consistent positive sentiment profile among rising names, while F's buzz expansion comes and a mixed bull/bear split. GE's fade is notable as positive sentiment persists even as discussion volume drops.
+Attention is concentrated in mega-cap tech, where sentiment leans positive but buzz trends are cooling for several names. The clearest buzz expansion sits in COIN, though its sentiment is mixed and Reddit threads pair reported results with questions about peer crypto weakness. BLK's near-total buzz collapse looks like an attention reset rather than a sentiment shift.
 
-Which part matters more here: **LLY's sentiment quality** or the context behind **F's buzz spike**?
+Does **COIN's attention jump** need stronger positive-sentiment confirmation before it matters?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
