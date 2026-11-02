@@ -1,45 +1,45 @@
-Title: Daily Retail Stock Signals - November 1, 2026: GOOGL Leads Buzz, COIN Attention Jumps
+Title: Daily Retail Stock Signals - November 2, 2026: GOOGL Leads Buzz, NOW Attention Jumps
 
-Today's split: **GOOGL** led raw buzz, while **COIN** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
+Today's split: **GOOGL** led raw buzz, while **NOW** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
 **Top Buzz: GOOGL**  
-Buzz **79.9** | Sentiment **positive** | Bull/Bear **29% / 20%**  
-GOOGL holds the highest attention level with mildly positive sentiment, but the falling trend and Reddit chatter about heavier capital spending suggest sustained discussion rather than fresh momentum.
+Buzz **77.4** | Sentiment **positive** | Bull/Bear **28% / 19%**  
+GOOGL carries the heaviest attention in the group but with a falling trend and only a modest positive tilt, so Reddit discussion of an earnings miss and negative free cash flow sits in tension with the still-elevated buzz.
 
-**Largest 7-Day Buzz Move: COIN**  
-7D Buzz **+9.6** (52.7 -> 62.3) | Sentiment **neutral** (-0.009) | Bull/Bear **21% / 25%**  
-COIN shows the largest week-over-week buzz expansion, yet sentiment stays near neutral with slightly more bearish than bullish voices, and Reddit threads split between reported results and worries about a peer's crypto revenue.
+**Largest 7-Day Buzz Move: NOW**  
+7D Buzz **+33.0** (28.6 -> 61.6) | Sentiment **neutral** (-0.018) | Bull/Bear **5% / 8%**  
+NOW shows the largest seven-day buzz expansion, yet sentiment stays neutral and the bullish/bearish split is thin, with Reddit framing centered on AI-disruption worries and valuation debate rather than enthusiasm.
 
-**7-Day Buzz Fade: BLK**  
-7D Buzz **-53.1** (53.1 -> 0.0) | Sentiment **neutral** (+0.010) | Bull/Bear **24% / 20%**  
-BLK's buzz fell to zero around a prior spike, leaving sentiment roughly flat, which reads as discussion dropping off rather than a change in tone.
+**7-Day Buzz Fade: BA**  
+7D Buzz **-25.1** (76.8 -> 51.7) | Sentiment **negative** (-0.061) | Bull/Bear **14% / 27%**  
+BA posts the deepest seven-day buzz decline alongside negative sentiment, and Reddit discussion of production ramp challenges and the Airbus delivery gap lines up with the weaker tone even as users note backlog strength.
 
 ### Top Buzz
 
-**1. GOOGL** - Buzz **79.9**, sentiment **positive**, falling  
-**2. NVDA** - Buzz **76.8**, sentiment **positive**, rising  
-**3. AMZN** - Buzz **76.5**, sentiment **positive**, falling  
-**4. AAPL** - Buzz **76.0**, sentiment **neutral**, stable  
-**5. MSFT** - Buzz **75.6**, sentiment **positive**, falling  
+**1. GOOGL** - Buzz **77.4**, sentiment **positive**, falling  
+**2. NVDA** - Buzz **76.2**, sentiment **neutral**, rising  
+**3. AAPL** - Buzz **75.5**, sentiment **negative**, falling  
+**4. AMZN** - Buzz **75.5**, sentiment **positive**, falling  
+**5. META** - Buzz **74.2**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**COIN** - **+9.6** buzz, buzz up, sentiment neutral  
-**NOW** - **+8.1** buzz, buzz up, sentiment neutral  
-**APP** - **+6.8** buzz, positive momentum  
-**DASH** - **+5.6** buzz, buzz up, sentiment negative  
-**SAP** - **+4.0** buzz, buzz up, sentiment neutral  
-**BLK** - **-53.1** buzz, buzz fading  
-**ASTS** - **-34.6** buzz, fading with negative sentiment  
-**BA** - **-29.8** buzz, fading with negative sentiment  
+**NOW** - **+33.0** buzz, buzz up, sentiment neutral  
+**MRVL** - **+17.4** buzz, buzz up, sentiment neutral  
+**PLTR** - **+15.2** buzz, buzz up, sentiment neutral  
+**DASH** - **+8.9** buzz, buzz up, sentiment negative  
+**COIN** - **+7.5** buzz, buzz up, sentiment neutral  
+**BA** - **-25.1** buzz, fading with negative sentiment  
+**SOFI** - **-24.1** buzz, buzz fading  
+**JPM** - **-22.1** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech, where sentiment leans positive but buzz trends are cooling for several names. The clearest buzz expansion sits in COIN, though its sentiment is mixed and Reddit threads pair reported results with questions about peer crypto weakness. BLK's near-total buzz collapse looks like an attention reset rather than a sentiment shift.
+Buzz is concentrated in mega-cap tech, with GOOGL holding the highest attention even as its trend cools. Sentiment across the top names is mixed rather than uniformly bullish, and Reddit threads lean toward earnings and AI-disruption debates. The breakout and fade lists show attention rotating toward software and away from Boeing.
 
-Does **COIN's attention jump** need stronger positive-sentiment confirmation before it matters?
+Does **NOW's attention jump** need stronger positive-sentiment confirmation before it matters?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
