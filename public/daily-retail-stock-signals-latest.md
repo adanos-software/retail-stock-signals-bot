@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - November 3, 2026: NVDA Leads Buzz, LLY Has Stronger Sentiment
+Title: Daily Retail Stock Signals - November 4, 2026: NVDA Buzz Leads, HTZ Sentiment Improves
 
-Today's split: **NVDA** led raw buzz, but **LLY** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, but **HTZ** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **78.4** | Sentiment **neutral** | Bull/Bear **21% / 25%**  
-NVDA holds the highest buzz reading, but the split between positive and negative discussion is close and the trend is easing, so Reddit talk reads as ongoing debate about the AI trade rather than a fresh push.
+Buzz **78.4** | Sentiment **positive** | Bull/Bear **29% / 18%**  
+NVDA carries the heaviest attention but its trend is falling, so this reads as sustained interest rather than fresh acceleration, with Reddit tying discussion to a reported OpenAI revenue drop and a knock-on move in AI names.
 
-**Best Sentiment Read: LLY**  
-7D Buzz **+2.3** (60.7 -> 63.0) | Sentiment **strong positive** (+0.102) | Bull/Bear **35% / 13%**  
-LLY pairs a modest buzz gain with the most lopsided positive tone in the group, and Reddit discussion points to GLP-1 demand and AI-driven research as the themes, with valuation concerns mixed in.
+**Best Sentiment Read: HTZ**  
+7D Buzz **+1.2** (65.5 -> 66.7) | Sentiment **strong positive** (+0.124) | Bull/Bear **39% / 12%**  
+HTZ shows the most one-sided positive tone among the movers, with Reddit discussion centered on an upcoming earnings report and a peer's results as a possible read-through.
 
-**Largest 7-Day Buzz Move: IBM**  
-7D Buzz **+15.8** (49.1 -> 64.9) | Sentiment **positive** (+0.032) | Bull/Bear **25% / 20%**  
-IBM shows the largest seven-day buzz expansion, yet the trend is falling and the positive tone is mild, so the attention gain looks more like a burst than a sustained shift.
+**Largest 7-Day Buzz Move: SMCI**  
+7D Buzz **+19.1** (50.7 -> 69.8) | Sentiment **positive** (+0.034) | Bull/Bear **28% / 21%**  
+SMCI posted the largest buzz expansion over the week, and Reddit points to quarterly results with sales more than tripling cited as evidence against AI slowdown concerns.
 
-**7-Day Buzz Fade: SAP**  
-7D Buzz **-35.0** (55.4 -> 20.4) | Sentiment **neutral** (+0.012) | Bull/Bear **14% / 10%**  
-SAP's buzz has fallen sharply over the week while sentiment stays neutral, and the Reddit thread cited is a joke claim about a tank rather than a verified business event, so the fade reads as attention leaving without a clear catalyst.
+**7-Day Buzz Fade: DASH**  
+7D Buzz **-56.4** (71.9 -> 15.5) | Sentiment **negative** (-0.049) | Bull/Bear **18% / 30%**  
+DASH saw attention fall sharply and sentiment sits negative, with Reddit discussion noting a moved-up earnings date, an acquisition, and grocery-delivery share gains.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **78.4**, sentiment **neutral**, falling  
-**2. AMZN** - Buzz **78.4**, sentiment **positive**, falling  
-**3. GOOGL** - Buzz **78.3**, sentiment **neutral**, falling  
-**4. META** - Buzz **78.2**, sentiment **neutral**, falling  
-**5. AAPL** - Buzz **77.1**, sentiment **negative**, rising  
+**1. NVDA** - Buzz **78.4**, sentiment **positive**, falling  
+**2. AMD** - Buzz **77.2**, sentiment **negative**, rising  
+**3. GOOGL** - Buzz **76.2**, sentiment **neutral**, falling  
+**4. TSLA** - Buzz **75.8**, sentiment **negative**, rising  
+**5. SPCX** - Buzz **75.8**, sentiment **negative**, rising  
 
 ### 7-Day Movers
 
-**IBM** - **+15.8** buzz, positive momentum  
-**INTC** - **+5.7** buzz, buzz up, sentiment negative  
-**AMD** - **+4.4** buzz, buzz up, sentiment neutral  
-**TSM** - **+4.3** buzz, buzz up, sentiment neutral  
-**WMT** - **+2.8** buzz, buzz up, sentiment neutral  
-**SAP** - **-35.0** buzz, buzz fading  
-**GS** - **-19.0** buzz, buzz fading  
-**XOM** - **-18.2** buzz, buzz fading  
+**SMCI** - **+19.1** buzz, positive momentum  
+**APP** - **+13.6** buzz, positive momentum  
+**MCD** - **+6.9** buzz, buzz up, sentiment neutral  
+**UBER** - **+6.0** buzz, positive momentum  
+**AMC** - **+3.8** buzz, positive momentum  
+**DASH** - **-56.4** buzz, fading with negative sentiment  
+**NOW** - **-43.3** buzz, buzz fading  
+**IBM** - **-39.5** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech, but the tone there is mixed rather than directional, with NVDA drawing the most discussion while sentiment sits near the middle. LLY carries the most one-sided positive tone among the selected names, and IBM's buzz expansion is the clearest attention gain, though its trend line is already cooling. SAP's fade looks like attention draining out rather than a sentiment shift, and the Reddit chatter around it does not point to a verified business event.
+Attention is concentrated in AI names, but sentiment is mixed: NVDA holds the highest buzz while chatter around AMD and TSLA leans negative. SMCI's rapid buzz expansion and HTZ's strongly positive tone contrast with DASH, where attention has collapsed and sentiment is negative.
 
-Would you trust **NVDA's broad attention** or **LLY's cleaner sentiment read** more here?
+Which part matters more here: **HTZ's sentiment quality** or the context behind **SMCI's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
