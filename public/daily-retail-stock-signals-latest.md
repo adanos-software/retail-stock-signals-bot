@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - November 6, 2026: NVDA Leads Buzz, AMC Has Stronger Sentiment
+Title: Daily Retail Stock Signals - November 7, 2026: NVDA Buzz Leads, KO Sentiment Improves
 
-Today's split: **NVDA** led raw buzz, but **AMC** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, but **KO** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **82.3** | Sentiment **positive** | Bull/Bear **31% / 20%**  
-NVDA holds the highest buzz score with a positive tilt and rising trend, and Reddit discussion centers on data center revenue and whether the AI trade narrative holds.
+Buzz **81.4** | Sentiment **neutral** | Bull/Bear **16% / 11%**  
+NVDA has the widest attention, while Reddit discussion points to investors are discussing whether upcoming earnings from major technology companies, including NVDA, could pressure the broader market given their combined weight in the index; neutral sentiment keeps it from reading like broad bullish confirmation.
 
-**Best Sentiment Read: AMC**  
-7D Buzz **+16.6** (43.0 -> 59.6) | Sentiment **positive** (+0.074) | Bull/Bear **32% / 18%**  
-AMC pairs a positive sentiment reading with a rising trend and a moderate 7-day buzz gain, while Reddit threads focus on earnings, a reported net profit, and dilution claims.
+**Best Sentiment Read: KO**  
+7D Buzz **+1.2** (32.7 -> 33.9) | Sentiment **positive** (+0.089) | Bull/Bear **39% / 12%**  
+KO is the cleaner sentiment read: buzz rose, bulls led bears, and Reddit discussion points to investors are discussing it as a dividend stock with a decent current price and quarterly payouts, alongside mentions of strong earnings from Coca-Cola and other established companies.
 
 **Largest 7-Day Buzz Move: GRND**  
-7D Buzz **+44.5** (29.7 -> 74.2) | Sentiment **neutral** (+0.026) | Bull/Bear **16% / 9%**  
-GRND posts the largest 7-day buzz expansion but sentiment stays neutral with low bull and bear shares, as Reddit discussion points to earnings guidance and expansion into adjacent health and wellness services.
+7D Buzz **+59.6** (0.0 -> 59.6) | Sentiment **neutral** (+0.008) | Bull/Bear **13% / 12%**  
+GRND had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to investors are discussing its earnings guidance and potential expansion into peripheral health services, alongside competitive concerns following a rival's acquisition.
 
-**7-Day Buzz Fade: JPM**  
-7D Buzz **-21.9** (70.9 -> 49.0) | Sentiment **neutral** (-0.012) | Bull/Bear **23% / 23%**  
-JPM shows the main 7-day fade with a falling trend and sentiment sitting near flat, with bull and bear shares evenly split.
+**7-Day Buzz Fade: NOW**  
+7D Buzz **-34.4** (67.7 -> 33.3) | Sentiment **neutral** (-0.021) | Bull/Bear **6% / 11%**  
+Attention cooled over 7 days, but the sentiment read is not strongly negative.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **82.3**, sentiment **positive**, rising  
-**2. GOOGL** - Buzz **79.2**, sentiment **positive**, falling  
-**3. AMZN** - Buzz **78.6**, sentiment **positive**, stable  
-**4. META** - Buzz **78.4**, sentiment **positive**, stable  
-**5. MU** - Buzz **78.2**, sentiment **neutral**, rising  
+**1. NVDA** - Buzz **81.4**, sentiment **neutral**, rising  
+**2. AMZN** - Buzz **78.1**, sentiment **positive**, falling  
+**3. MU** - Buzz **75.1**, sentiment **neutral**, rising  
+**4. SPCX** - Buzz **75.0**, sentiment **neutral**, rising  
+**5. GOOGL** - Buzz **73.7**, sentiment **positive**, falling  
 
 ### 7-Day Movers
 
-**GRND** - **+44.5** buzz, buzz up, sentiment neutral  
-**DJT** - **+40.5** buzz, buzz up, sentiment negative  
-**AMC** - **+16.6** buzz, positive momentum  
-**HTZ** - **+14.5** buzz, positive momentum  
-**QCOM** - **+13.7** buzz, buzz up, sentiment negative  
-**JPM** - **-21.9** buzz, buzz fading  
-**LLY** - **-14.4** buzz, buzz fading  
-**NOW** - **-13.4** buzz, buzz fading  
+**GRND** - **+59.6** buzz, buzz up, sentiment neutral  
+**VST** - **+18.3** buzz, buzz up, sentiment neutral  
+**ASTS** - **+15.4** buzz, buzz up, sentiment negative  
+**DJT** - **+12.9** buzz, buzz up, sentiment negative  
+**ASML** - **+11.8** buzz, positive momentum  
+**NOW** - **-34.4** buzz, buzz fading  
+**HTZ** - **-32.5** buzz, buzz fading  
+**F** - **-21.6** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech, with NVDA leading on absolute buzz while sentiment stays mildly positive. AMC shows the cleanest sentiment profile among the movers, and Reddit threads there center on earnings and dilution commentary. GRND carries the largest 7-day buzz expansion but only neutral sentiment, so attention is running ahead of any clear directional read.
+The board is split between raw attention, sentiment quality, and fresh acceleration. **NVDA** owns the buzz lead, with Reddit context around investors are discussing whether upcoming earnings from major technology companies, including NVDA, could pressure the broader market given their combined weight in the index, while **KO** has the cleaner sentiment read, with Reddit context around investors are discussing it as a dividend stock with a decent current price and quarterly payouts, alongside mentions of strong earnings from Coca-Cola and other established companies. **GRND** is the real 7-day acceleration signal, with Reddit context around investors are discussing its earnings guidance and potential expansion into peripheral health services, alongside competitive concerns following a rival's acquisition, with **NOW** showing where attention cooled.
 
-Which part matters more here: **AMC's sentiment quality** or the context behind **GRND's buzz spike**?
+Which part matters more here: **KO's sentiment quality** or the context behind **GRND's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
