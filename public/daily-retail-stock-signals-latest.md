@@ -1,43 +1,43 @@
-Title: Daily Retail Stock Signals - November 8, 2026: NVDA Leads Buzz, GRND Attention Jumps
+Title: Daily Retail Stock Signals - November 9, 2026: NVDA Leads Buzz, GRND Attention Jumps
 
 Today's split: **NVDA** led raw buzz, while **GRND** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **75.0** | Sentiment **neutral** | Bull/Bear **17% / 15%**  
-NVDA holds the highest absolute buzz with sentiment sitting near neutral, and Reddit threads frame it around a value-versus-peak-earnings debate plus its role in the wider AI trade.
+Buzz **84.8** | Sentiment **neutral** | Bull/Bear **15% / 21%**  
+NVDA has the widest attention, while Reddit discussion points to reports say U.S. intelligence and the president were briefed about the CEO's relationship with an alleged Chinese spy, and the CEO reportedly admitted an affair as the board launched an investigation; neutral sentiment keeps it from reading like broad bullish confirmation.
 
 **Largest 7-Day Buzz Move: GRND**  
-7D Buzz **+41.5** (20.5 -> 62.0) | Sentiment **neutral** (-0.000) | Bull/Bear **11% / 12%**  
-GRND's attention expanded sharply over the week, yet sentiment stayed flat and bullish and bearish shares are both low, with Reddit discussion centered on competitive share defense and adjacent wellness expansion.
+7D Buzz **+6.7** (41.3 -> 48.0) | Sentiment **neutral** (-0.000) | Bull/Bear **11% / 12%**  
+GRND had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to investors are discussing whether the company can defend its market share against a newly acquired rival and whether it should expand into adjacent health and wellness services.
 
-**7-Day Buzz Fade: UBER**  
-7D Buzz **-37.7** (63.2 -> 25.5) | Sentiment **positive** (+0.039) | Bull/Bear **27% / 21%**  
-UBER's buzz fell from a much higher base even as sentiment stayed positive, with Reddit discussion weighing its earnings beat and Amazon deal against robotaxi competition and a possible demand-layer role.
+**7-Day Buzz Fade: IREN**  
+7D Buzz **-30.7** (61.4 -> 30.7) | Sentiment **neutral** (-0.002) | Bull/Bear **18% / 23%**  
+IREN lost attention over 7 days, but Reddit discussion points to the company reported quarterly financial results, with discussion noting the stock rose after the report despite missing earnings estimates and delaying revenue targets, so the fade is not a clean negative sentiment read.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **75.0**, sentiment **neutral**, rising  
-**2. AMZN** - Buzz **74.2**, sentiment **positive**, falling  
-**3. GOOGL** - Buzz **74.1**, sentiment **positive**, falling  
-**4. MU** - Buzz **74.0**, sentiment **neutral**, falling  
-**5. META** - Buzz **73.0**, sentiment **neutral**, falling  
+**1. NVDA** - Buzz **84.8**, sentiment **neutral**, rising  
+**2. AAPL** - Buzz **77.2**, sentiment **neutral**, falling  
+**3. META** - Buzz **75.1**, sentiment **negative**, falling  
+**4. AMZN** - Buzz **75.0**, sentiment **neutral**, rising  
+**5. AMD** - Buzz **72.9**, sentiment **positive**, falling  
 
 ### 7-Day Movers
 
-**GRND** - **+41.5** buzz, buzz up, sentiment neutral  
-**VST** - **+5.7** buzz, buzz up, sentiment neutral  
-**RKLB** - **+5.4** buzz, buzz up, sentiment neutral  
-**NKE** - **+5.1** buzz, buzz up, sentiment neutral  
-**MU** - **+0.7** buzz, buzz up, sentiment neutral  
-**UBER** - **-37.7** buzz, buzz fading  
-**HTZ** - **-35.2** buzz, buzz fading  
-**QCOM** - **-33.8** buzz, fading with negative sentiment  
+**GRND** - **+6.7** buzz, buzz up, sentiment neutral  
+**NVDA** - **+4.7** buzz, buzz up, sentiment neutral  
+**ASTS** - **+4.2** buzz, buzz up, sentiment negative  
+**RKLB** - **+3.4** buzz, positive momentum  
+**PYPL** - **+1.0** buzz, buzz up, sentiment neutral  
+**IREN** - **-30.7** buzz, buzz fading  
+**HTZ** - **-29.9** buzz, buzz fading  
+**ORCL** - **-20.4** buzz, fading with negative sentiment  
 
 ### Takeaway
 
-Buzz is concentrated in mega-cap tech, but sentiment across the top names is mostly flat to mildly positive, so attention is running ahead of any clear directional tilt. GRND shows the largest attention expansion while UBER cools from a much higher base, with Reddit threads framing both around company-specific debates rather than broad sentiment shifts.
+**NVDA** owns the raw buzz lead, with Reddit context around reports say U.S. intelligence and the president were briefed about the CEO's relationship with an alleged Chinese spy, and the CEO reportedly admitted an affair as the board launched an investigation, while **GRND** had the largest 7-day attention increase but no mover passed the stronger positive-sentiment screen, with Reddit context around investors are discussing whether the company can defend its market share against a newly acquired rival and whether it should expand into adjacent health and wellness services, with **IREN** showing where attention cooled.
 
 Does **GRND's attention jump** need stronger positive-sentiment confirmation before it matters?
 
