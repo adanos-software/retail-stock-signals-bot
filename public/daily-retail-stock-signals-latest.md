@@ -1,45 +1,49 @@
-Title: Daily Retail Stock Signals - November 9, 2026: NVDA Leads Buzz, GRND Attention Jumps
+Title: Daily Retail Stock Signals - November 10, 2026: NVDA Buzz Leads, IONQ Sentiment Improves
 
-Today's split: **NVDA** led raw buzz, while **GRND** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
+Today's split: **NVDA** led raw buzz, but **IONQ** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **84.8** | Sentiment **neutral** | Bull/Bear **15% / 21%**  
-NVDA has the widest attention, while Reddit discussion points to reports say U.S. intelligence and the president were briefed about the CEO's relationship with an alleged Chinese spy, and the CEO reportedly admitted an affair as the board launched an investigation; neutral sentiment keeps it from reading like broad bullish confirmation.
+Buzz **83.9** | Sentiment **neutral** | Bull/Bear **19% / 22%**  
+NVDA tops the buzz board with a rising trend, but its sentiment sits near flat with bearish voices slightly outnumbering bullish ones, and Reddit discussion points to lawsuit-related chatter as a recurring thread.
 
-**Largest 7-Day Buzz Move: GRND**  
-7D Buzz **+6.7** (41.3 -> 48.0) | Sentiment **neutral** (-0.000) | Bull/Bear **11% / 12%**  
-GRND had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to investors are discussing whether the company can defend its market share against a newly acquired rival and whether it should expand into adjacent health and wellness services.
+**Best Sentiment Read: IONQ**  
+7D Buzz **+9.2** (30.8 -> 40.0) | Sentiment **positive** (+0.085) | Bull/Bear **27% / 11%**  
+IONQ pairs the strongest sentiment profile in the set with the largest 7-day buzz expansion, though the trend flag reads falling and Reddit discussion points to revenue growth alongside a substantial operating loss.
 
-**7-Day Buzz Fade: IREN**  
-7D Buzz **-30.7** (61.4 -> 30.7) | Sentiment **neutral** (-0.002) | Bull/Bear **18% / 23%**  
-IREN lost attention over 7 days, but Reddit discussion points to the company reported quarterly financial results, with discussion noting the stock rose after the report despite missing earnings estimates and delaying revenue targets, so the fade is not a clean negative sentiment read.
+**Largest 7-Day Buzz Move: IONQ**  
+7D Buzz **+9.2** (30.8 -> 40.0) | Sentiment **positive** (+0.085) | Bull/Bear **27% / 11%**  
+IONQ's buzz roughly doubled over the week, and the positive tilt with a wide bullish-to-bearish gap suggests the added attention is leaning constructive rather than contentious.
+
+**7-Day Buzz Fade: ABT**  
+7D Buzz **-46.6** (66.8 -> 20.2) | Sentiment **strong negative** (-0.119) | Bull/Bear **11% / 39%**  
+ABT's buzz fell sharply over the week while sentiment turned strongly negative, and Reddit discussion points to debate over a state data-center moratorium rather than company-specific news.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **84.8**, sentiment **neutral**, rising  
-**2. AAPL** - Buzz **77.2**, sentiment **neutral**, falling  
-**3. META** - Buzz **75.1**, sentiment **negative**, falling  
-**4. AMZN** - Buzz **75.0**, sentiment **neutral**, rising  
-**5. AMD** - Buzz **72.9**, sentiment **positive**, falling  
+**1. NVDA** - Buzz **83.9**, sentiment **neutral**, rising  
+**2. GOOGL** - Buzz **77.9**, sentiment **neutral**, falling  
+**3. SPCX** - Buzz **75.5**, sentiment **neutral**, falling  
+**4. AMD** - Buzz **75.2**, sentiment **positive**, stable  
+**5. TSLA** - Buzz **74.4**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**GRND** - **+6.7** buzz, buzz up, sentiment neutral  
-**NVDA** - **+4.7** buzz, buzz up, sentiment neutral  
-**ASTS** - **+4.2** buzz, buzz up, sentiment negative  
-**RKLB** - **+3.4** buzz, positive momentum  
-**PYPL** - **+1.0** buzz, buzz up, sentiment neutral  
-**IREN** - **-30.7** buzz, buzz fading  
-**HTZ** - **-29.9** buzz, buzz fading  
-**ORCL** - **-20.4** buzz, fading with negative sentiment  
+**IONQ** - **+9.2** buzz, positive momentum  
+**JPM** - **+6.7** buzz, buzz up, sentiment neutral  
+**AVGO** - **+4.3** buzz, positive momentum  
+**GS** - **+4.0** buzz, buzz up, sentiment neutral  
+**RKLB** - **+3.2** buzz, positive momentum  
+**ABT** - **-46.6** buzz, fading with negative sentiment  
+**HTZ** - **-29.3** buzz, buzz fading  
+**APP** - **-28.8** buzz, buzz fading  
 
 ### Takeaway
 
-**NVDA** owns the raw buzz lead, with Reddit context around reports say U.S. intelligence and the president were briefed about the CEO's relationship with an alleged Chinese spy, and the CEO reportedly admitted an affair as the board launched an investigation, while **GRND** had the largest 7-day attention increase but no mover passed the stronger positive-sentiment screen, with Reddit context around investors are discussing whether the company can defend its market share against a newly acquired rival and whether it should expand into adjacent health and wellness services, with **IREN** showing where attention cooled.
+NVDA carries the heaviest buzz but Reddit sentiment is split rather than directional, with the lawsuit chatter framing much of the discussion. IONQ is the clearest case of attention building alongside a positive tilt, while ABT shows the opposite pattern: attention collapsing and sentiment turning strongly negative.
 
-Does **GRND's attention jump** need stronger positive-sentiment confirmation before it matters?
+Would you trust **NVDA's broad attention** or **IONQ's cleaner sentiment read** more here?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
