@@ -1,49 +1,41 @@
-Title: Daily Retail Stock Signals - November 10, 2026: NVDA Buzz Leads, IONQ Sentiment Improves
+Title: Daily Retail Stock Signals - November 11, 2026: NVDA Leads Buzz, NVDA Attention Jumps
 
-Today's split: **NVDA** led raw buzz, but **IONQ** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, while **NVDA** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **83.9** | Sentiment **neutral** | Bull/Bear **19% / 22%**  
-NVDA tops the buzz board with a rising trend, but its sentiment sits near flat with bearish voices slightly outnumbering bullish ones, and Reddit discussion points to lawsuit-related chatter as a recurring thread.
+Buzz **84.4** | Sentiment **neutral** | Bull/Bear **22% / 20%**  
+NVDA tops the buzz list with a neutral read and a near-even bull-bear split, while Reddit threads center on a lawsuit over the CEO's reported ties rather than on the business itself.
 
-**Best Sentiment Read: IONQ**  
-7D Buzz **+9.2** (30.8 -> 40.0) | Sentiment **positive** (+0.085) | Bull/Bear **27% / 11%**  
-IONQ pairs the strongest sentiment profile in the set with the largest 7-day buzz expansion, though the trend flag reads falling and Reddit discussion points to revenue growth alongside a substantial operating loss.
+**Largest 7-Day Buzz Move: NVDA**  
+7D Buzz **+0.8** (83.6 -> 84.4) | Sentiment **neutral** (-0.010) | Bull/Bear **19% / 21%**  
+NVDA's week-over-week buzz gain is the largest among movers, but the added attention arrives with sentiment hovering around zero and slightly more bearish than bullish voices.
 
-**Largest 7-Day Buzz Move: IONQ**  
-7D Buzz **+9.2** (30.8 -> 40.0) | Sentiment **positive** (+0.085) | Bull/Bear **27% / 11%**  
-IONQ's buzz roughly doubled over the week, and the positive tilt with a wide bullish-to-bearish gap suggests the added attention is leaning constructive rather than contentious.
-
-**7-Day Buzz Fade: ABT**  
-7D Buzz **-46.6** (66.8 -> 20.2) | Sentiment **strong negative** (-0.119) | Bull/Bear **11% / 39%**  
-ABT's buzz fell sharply over the week while sentiment turned strongly negative, and Reddit discussion points to debate over a state data-center moratorium rather than company-specific news.
+**7-Day Buzz Fade: ABNB**  
+7D Buzz **-58.7** (58.7 -> 0.0) | Sentiment **positive** (+0.050) | Bull/Bear **35% / 20%**  
+ABNB's buzz has collapsed over the week even as its sentiment stays positive, and Reddit posts cite earnings and buybacks plus a noted AI benefit, leaving the fade as a discussion-volume story rather than a sentiment reversal.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **83.9**, sentiment **neutral**, rising  
-**2. GOOGL** - Buzz **77.9**, sentiment **neutral**, falling  
-**3. SPCX** - Buzz **75.5**, sentiment **neutral**, falling  
-**4. AMD** - Buzz **75.2**, sentiment **positive**, stable  
-**5. TSLA** - Buzz **74.4**, sentiment **neutral**, falling  
+**1. NVDA** - Buzz **84.4**, sentiment **neutral**, rising  
+**2. AMZN** - Buzz **76.0**, sentiment **neutral**, stable  
+**3. SPCX** - Buzz **75.7**, sentiment **neutral**, rising  
+**4. GOOGL** - Buzz **75.6**, sentiment **positive**, rising  
+**5. CRWV** - Buzz **75.0**, sentiment **neutral**, rising  
 
 ### 7-Day Movers
 
-**IONQ** - **+9.2** buzz, positive momentum  
-**JPM** - **+6.7** buzz, buzz up, sentiment neutral  
-**AVGO** - **+4.3** buzz, positive momentum  
-**GS** - **+4.0** buzz, buzz up, sentiment neutral  
-**RKLB** - **+3.2** buzz, positive momentum  
-**ABT** - **-46.6** buzz, fading with negative sentiment  
-**HTZ** - **-29.3** buzz, buzz fading  
-**APP** - **-28.8** buzz, buzz fading  
+**NVDA** - **+0.8** buzz, buzz up, sentiment neutral  
+**ABNB** - **-58.7** buzz, buzz fading  
+**KO** - **-56.0** buzz, buzz fading  
+**LLY** - **-38.7** buzz, buzz fading  
 
 ### Takeaway
 
-NVDA carries the heaviest buzz but Reddit sentiment is split rather than directional, with the lawsuit chatter framing much of the discussion. IONQ is the clearest case of attention building alongside a positive tilt, while ABT shows the opposite pattern: attention collapsing and sentiment turning strongly negative.
+Attention is concentrated in NVDA, which holds the top buzz score and the largest week-over-week expansion, though sentiment sits near flat and bullish/bearish splits are close. ABNB shows the clearest attention fade over the week while still carrying a mildly positive tilt, so the drop looks more like discussion cooling than a negative turn.
 
-Would you trust **NVDA's broad attention** or **IONQ's cleaner sentiment read** more here?
+Does **NVDA's attention jump** need stronger positive-sentiment confirmation before it matters?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
