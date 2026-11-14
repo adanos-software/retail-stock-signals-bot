@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - November 13, 2026: NVDA Buzz Leads, RTX Sentiment Improves
+Title: Daily Retail Stock Signals - November 14, 2026: NVDA Leads Buzz, AVD Moves Most
 
-Today's split: **NVDA** had the attention, **RTX** had the cleaner sentiment read, and **OUST** drew the largest 7-day buzz jump with negative sentiment.
+Today's split: **NVDA** led raw buzz, but **ARM** had the cleaner sentiment profile.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **88.7** | Sentiment **negative** | Bull/Bear **14% / 21%**  
-NVDA has the widest attention, while Reddit discussion points to reports allege CEO Jensen Huang had a relationship with an executive reporting to him, with a board meeting reportedly weighing an ouster and the stock reportedly losing substantial market value; neutral sentiment keeps it from reading like broad bullish confirmation.
+Buzz **85.1** | Sentiment **negative** | Bull/Bear **15% / 22%**  
+NVDA's buzz leads the field while sentiment leans negative, and Reddit discussion points to unconfirmed reports about leadership and a board meeting, so the attention is running ahead of any verified narrative.
 
-**Best Sentiment Read: RTX**  
-7D Buzz **+36.3** (36.8 -> 73.1) | Sentiment **positive** (+0.055) | Bull/Bear **27% / 13%**  
-The best-confirmed sentiment read: buzz rose and bullish discussion stayed clearly ahead of bearish discussion.
+**Best Sentiment Read: ARM**  
+7D Buzz **+7.5** (34.1 -> 41.6) | Sentiment **positive** (+0.089) | Bull/Bear **29% / 8%**  
+ARM pairs rising buzz with the strongest positive sentiment balance in the set, and Reddit discussion points to licensing and data-center architecture positioning as the backdrop.
 
-**Largest 7-Day Buzz Move: OUST**  
-7D Buzz **+68.3** (0.0 -> 68.3) | Sentiment **negative** (-0.062) | Bull/Bear **12% / 23%**  
-OUST had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to oUST appears tied to the same NVDA/OUST narrative: NVDA is trending because reports allege CEO Jensen Huang had a relationship with an executive reporting to him, with a board meeting reportedly weighing an ouster and the stock repo.
+**Largest 7-Day Buzz Move: AVD**  
+7D Buzz **+23.6** (44.4 -> 68.0) | Sentiment **neutral** (+0.000) | Bull/Bear **0% / 0%**  
+AVD shows the largest buzz expansion over the week, but and no bull/bear split, the added attention reads as curiosity rather than directional interest.
 
-**7-Day Buzz Fade: GRND**  
-7D Buzz **-38.9** (78.5 -> 39.6) | Sentiment **neutral** (-0.025) | Bull/Bear **6% / 13%**  
-GRND lost attention over 7 days, but Reddit discussion points to a post questions whether Grindr can defend its market share and keep users on the platform long enough to maximize revenue for shareholders, so the fade is not a clean negative sentiment read.
+**7-Day Buzz Fade: APP**  
+7D Buzz **-33.0** (60.8 -> 27.8) | Sentiment **positive** (+0.039) | Bull/Bear **28% / 18%**  
+APP's buzz has fallen sharply while sentiment stays mildly positive, and Reddit discussion points to an earnings beat alongside questions about competitive durability.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **88.7**, sentiment **negative**, rising  
-**2. MSFT** - Buzz **80.0**, sentiment **negative**, rising  
-**3. AMD** - Buzz **79.2**, sentiment **neutral**, rising  
-**4. AAPL** - Buzz **79.1**, sentiment **neutral**, rising  
-**5. AMZN** - Buzz **76.9**, sentiment **positive**, falling  
+**1. NVDA** - Buzz **85.1**, sentiment **negative**, rising  
+**2. AMZN** - Buzz **78.2**, sentiment **positive**, falling  
+**3. MSFT** - Buzz **76.7**, sentiment **negative**, rising  
+**4. AMD** - Buzz **75.7**, sentiment **positive**, rising  
+**5. AAPL** - Buzz **74.2**, sentiment **positive**, rising  
 
 ### 7-Day Movers
 
-**OUST** - **+68.3** buzz, buzz up, sentiment negative  
-**MBG** - **+39.4** buzz, buzz up, sentiment neutral  
-**RTX** - **+36.3** buzz, positive momentum  
-**BABA** - **+22.6** buzz, buzz up, sentiment negative  
-**GS** - **+18.0** buzz, buzz up, sentiment neutral  
-**GRND** - **-38.9** buzz, buzz fading  
-**IONQ** - **-30.5** buzz, buzz fading  
-**UBER** - **-16.2** buzz, buzz fading  
+**AVD** - **+23.6** buzz, buzz up, sentiment neutral  
+**BLK** - **+18.9** buzz, buzz up, sentiment neutral  
+**CSCO** - **+17.9** buzz, buzz up, sentiment neutral  
+**HTZ** - **+16.8** buzz, positive momentum  
+**BABA** - **+12.1** buzz, buzz up, sentiment negative  
+**APP** - **-33.0** buzz, buzz fading  
+**RKLB** - **-27.9** buzz, buzz fading  
+**ASTS** - **-26.5** buzz, fading with negative sentiment  
 
 ### Takeaway
 
-The board is split between attention, sentiment quality, and risk. **NVDA** owns raw buzz, with Reddit context around reports allege CEO Jensen Huang had a relationship with an executive reporting to him, with a board meeting reportedly weighing an ouster and the stock reportedly losing substantial market value, while **RTX** has the cleaner sentiment profile. **OUST** had the biggest 7-day buzz jump, but its negative sentiment makes the move look contested, with Reddit context around oUST appears tied to the same NVDA/OUST narrative: NVDA is trending because reports allege CEO Jensen Huang had a relationship with an executive reporting to him, with a board meeting reportedly weighing an ouster and the stock repo.
+Attention is concentrated in megacap tech, but sentiment is split: NVDA carries the highest buzz with a negative tilt, while AMD and AAPL draw more favorable chatter. ARM shows the most balanced positive sentiment among the movers, and AVD's rapid buzz expansion lacks directional sentiment. APP's attention is fading even as its sentiment stays mildly positive.
 
-Which part matters more here: **RTX's sentiment quality** or the context behind **OUST's buzz spike**?
+Would you trust **NVDA's broad attention** or **ARM's cleaner sentiment read** more here?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
