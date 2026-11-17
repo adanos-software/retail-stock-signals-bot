@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - November 16, 2026: NVDA Buzz Leads, ARM Sentiment Improves
+Title: Daily Retail Stock Signals - November 17, 2026: NVDA Leads Buzz, ANT Moves Most
 
-Today's split: **NVDA** led raw buzz, but **ARM** had the cleaner sentiment profile.
+Today's split: **NVDA** had the attention, **LLY** had the cleaner sentiment read, and **ANT** drew the largest 7-day buzz jump with negative sentiment.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **85.7** | Sentiment **negative** | Bull/Bear **16% / 24%**  
-NVDA carries the most attention but the sentiment skews negative, and Reddit threads tie the chatter to leadership and supply-financing reports rather than fresh acceleration.
+Buzz **87.0** | Sentiment **negative** | Bull/Bear **16% / 22%**  
+NVDA holds the highest buzz score with a falling trend and slightly negative sentiment, and Reddit threads are focused on CEO and chip-supply allegations rather than fresh enthusiasm, so the attention looks sustained rather than newly driven.
 
-**Best Sentiment Read: ARM**  
-7D Buzz **+20.2** (41.1 -> 61.3) | Sentiment **positive** (+0.066) | Bull/Bear **29% / 13%**  
-ARM pairs a positive sentiment tilt with the largest week-over-week buzz expansion, and Reddit discussion centers on a reported board approach to its CEO.
+**Best Sentiment Read: LLY**  
+7D Buzz **+11.7** (43.0 -> 54.7) | Sentiment **positive** (+0.098) | Bull/Bear **33% / 12%**  
+LLY pairs a rising buzz trend with the most positive sentiment among the selected names, and the bullish share outweighs bearish, giving it the most coherent attention-and-tone profile in the group.
 
-**Largest 7-Day Buzz Move: ARM**  
-7D Buzz **+20.2** (41.1 -> 61.3) | Sentiment **positive** (+0.066) | Bull/Bear **29% / 13%**  
-ARM's buzz build is the biggest in the set, but the falling trend flag suggests the expansion may already be cooling even as sentiment stays constructive.
+**Largest 7-Day Buzz Move: ANT**  
+7D Buzz **+26.4** (54.7 -> 81.1) | Sentiment **negative** (-0.045) | Bull/Bear **18% / 27%**  
+ANT shows the largest 7-day buzz expansion, but sentiment is negative and bearish posts outnumber bullish, with Reddit discussion centered on a potential Anthropic IPO and its knock-on effects.
 
-**7-Day Buzz Fade: MBG**  
-7D Buzz **-36.7** (53.5 -> 16.8) | Sentiment **neutral** (-0.023) | Bull/Bear **5% / 10%**  
-MBG's buzz has drained sharply over the week, and the remaining discussion is thin and neutral, with Reddit threads pointing to tariff pressure and questions about premium pricing.
+**7-Day Buzz Fade: OUST**  
+7D Buzz **-42.6** (55.2 -> 12.6) | Sentiment **negative** (-0.093) | Bull/Bear **12% / 28%**  
+OUST has shed most of its buzz over the week and carries the weakest sentiment in the set, leaving a smaller crowd that leans bearish.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **85.7**, sentiment **negative**, falling  
-**2. AAPL** - Buzz **79.1**, sentiment **positive**, falling  
-**3. INTC** - Buzz **77.1**, sentiment **strong negative**, falling  
-**4. AMZN** - Buzz **76.4**, sentiment **neutral**, falling  
-**5. MSFT** - Buzz **76.4**, sentiment **neutral**, falling  
+**1. NVDA** - Buzz **87.0**, sentiment **negative**, falling  
+**2. ANT** - Buzz **81.1**, sentiment **negative**, rising  
+**3. MSFT** - Buzz **78.4**, sentiment **negative**, falling  
+**4. GME** - Buzz **77.6**, sentiment **positive**, stable  
+**5. AAPL** - Buzz **77.6**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**ARM** - **+20.2** buzz, positive momentum  
-**F** - **+19.5** buzz, buzz up, sentiment neutral  
-**COST** - **+17.4** buzz, positive momentum  
-**PEP** - **+12.9** buzz, buzz up, sentiment neutral  
-**BA** - **+11.1** buzz, buzz up, sentiment negative  
-**MBG** - **-36.7** buzz, buzz fading  
-**PYPL** - **-22.9** buzz, fading with negative sentiment  
-**JPM** - **-21.0** buzz, buzz fading  
+**ANT** - **+26.4** buzz, buzz up, sentiment negative  
+**SLS** - **+19.6** buzz, positive momentum  
+**MBG** - **+17.6** buzz, buzz up, sentiment neutral  
+**JPM** - **+14.6** buzz, buzz up, sentiment neutral  
+**ARM** - **+13.3** buzz, positive momentum  
+**OUST** - **-42.6** buzz, fading with negative sentiment  
+**RKLB** - **-16.0** buzz, buzz fading  
+**HTZ** - **-10.6** buzz, buzz fading  
 
 ### Takeaway
 
-NVDA holds the highest attention in the set, but that attention reads negative and is not accelerating. ARM is the outlier where rising buzz and positive sentiment line up, though the trend flag is falling. MBG's buzz has collapsed over the week, leaving a thin, neutral-to-negative discussion base.
+Attention is concentrated in NVDA, but the tone around that buzz is negative and the trend is falling, so the crowd is engaged without much enthusiasm. LLY is the outlier where rising buzz and positive sentiment move together, while ANT's rapid buzz expansion comes with a negative tilt. OUST's buzz has collapsed over the week, leaving a small, bearish-leaning crowd behind.
 
-Would you trust **NVDA's broad attention** or **ARM's cleaner sentiment read** more here?
+Which part matters more here: **LLY's sentiment quality** or the context behind **ANT's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
