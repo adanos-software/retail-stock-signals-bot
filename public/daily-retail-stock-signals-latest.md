@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - November 18, 2026: NVDA Leads Buzz, LLY Has Stronger Sentiment
+Title: Daily Retail Stock Signals - November 19, 2026: ANT Buzz Leads, AMZN Sentiment Improves
 
-Today's split: **NVDA** had the attention, **LLY** had the cleaner sentiment read, and **UAL** drew the largest 7-day buzz jump with negative sentiment.
+Today's split: **ANT** led raw buzz, but **AMZN** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: NVDA**  
-Buzz **85.6** | Sentiment **negative** | Bull/Bear **17% / 24%**  
-NVDA has the widest attention, while Reddit discussion points to a reported earnings release showed revenue more than doubling as demand for its AI chips accelerated, alongside investor speculation about the stock's direction around that report; neutral sentiment keeps it from reading like broad bullish confirmation.
+**Top Buzz: ANT**  
+Buzz **85.3** | Sentiment **neutral** | Bull/Bear **18% / 19%**  
+ANT holds the highest buzz score with sentiment sitting near the middle and bull/bear roughly balanced, while Reddit discussion points to IPO chatter around Anthropic as the driver of attention rather than a directional lean.
 
-**Best Sentiment Read: LLY**  
-7D Buzz **+4.5** (65.9 -> 70.4) | Sentiment **positive** (+0.088) | Bull/Bear **31% / 14%**  
-The best-confirmed sentiment read: buzz rose and bullish discussion stayed clearly ahead of bearish discussion.
+**Best Sentiment Read: AMZN**  
+7D Buzz **+2.9** (79.1 -> 82.0) | Sentiment **positive** (+0.055) | Bull/Bear **33% / 19%**  
+AMZN pairs rising buzz with the most positive sentiment and a clear bullish edge over bearish mentions, and Reddit discussion points to its participation as an investor in a large IPO alongside peers.
 
-**Largest 7-Day Buzz Move: UAL**  
-7D Buzz **+20.1** (0.0 -> 20.1) | Sentiment **negative** (-0.062) | Bull/Bear **2% / 18%**  
-UAL had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to united Airlines reported a systemwide technology outage that disrupted departures and prevented some aircraft from receiving critical takeoff data, with the airline stating there were no signs of a cyberattack.
+**Largest 7-Day Buzz Move: TU**  
+7D Buzz **+54.8** (5.9 -> 60.7) | Sentiment **neutral** (-0.006) | Bull/Bear **20% / 21%**  
+TU shows the largest 7-day buzz expansion from a low base, yet sentiment stays neutral with bulls and bears nearly even, and Reddit discussion points to a reported Quebecor acquisition proposal for Telus as the topic drawing attention.
 
-**7-Day Buzz Fade: OUST**  
-7D Buzz **-35.7** (65.1 -> 29.4) | Sentiment **negative** (-0.091) | Bull/Bear **13% / 29%**  
-OUST cooled while sentiment was negative, and Reddit discussion points to discussion centers on the reported ouster of Jensen Huang and its implications for Nvidia, with no stock-specific event or business theme concerning Ouster itself.
+**7-Day Buzz Fade: RTX**  
+7D Buzz **-43.6** (75.2 -> 31.6) | Sentiment **positive** (+0.042) | Bull/Bear **24% / 14%**  
+RTX carries a positive sentiment label and a bullish tilt, but its 7-day buzz has fallen sharply from a much higher starting point, so the fade is in attention rather than in tone.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **85.6**, sentiment **negative**, stable  
-**2. ANT** - Buzz **81.7**, sentiment **neutral**, rising  
-**3. META** - Buzz **77.0**, sentiment **negative**, stable  
-**4. SPCX** - Buzz **76.9**, sentiment **neutral**, falling  
-**5. MSFT** - Buzz **76.3**, sentiment **neutral**, falling  
+**1. ANT** - Buzz **85.3**, sentiment **neutral**, rising  
+**2. NVDA** - Buzz **84.4**, sentiment **neutral**, rising  
+**3. AMZN** - Buzz **81.8**, sentiment **positive**, rising  
+**4. META** - Buzz **80.3**, sentiment **neutral**, rising  
+**5. SPCX** - Buzz **80.1**, sentiment **neutral**, stable  
 
 ### 7-Day Movers
 
-**UAL** - **+20.1** buzz, buzz up, sentiment negative  
-**ANT** - **+16.3** buzz, buzz up, sentiment negative  
-**PEP** - **+14.3** buzz, buzz up, sentiment neutral  
-**SLS** - **+13.7** buzz, positive momentum  
-**BAC** - **+9.2** buzz, buzz up, sentiment neutral  
-**OUST** - **-35.7** buzz, fading with negative sentiment  
-**AVD** - **-34.0** buzz, buzz fading  
-**MBG** - **-31.7** buzz, buzz fading  
+**TU** - **+54.8** buzz, buzz up, sentiment neutral  
+**ANT** - **+21.4** buzz, buzz up, sentiment neutral  
+**CAT** - **+10.5** buzz, buzz up, sentiment neutral  
+**NFLX** - **+10.1** buzz, buzz up, sentiment neutral  
+**UBER** - **+8.0** buzz, buzz up, sentiment neutral  
+**RTX** - **-43.6** buzz, buzz fading  
+**AVD** - **-32.4** buzz, buzz fading  
+**ARM** - **-30.2** buzz, buzz fading  
 
 ### Takeaway
 
-The board is split between attention, sentiment quality, and risk. **NVDA** owns raw buzz, with Reddit context around a reported earnings release showed revenue more than doubling as demand for its AI chips accelerated, alongside investor speculation about the stock's direction around that report, while **LLY** has the cleaner sentiment profile. **UAL** had the biggest 7-day buzz jump, but its negative sentiment makes the move look contested, with Reddit context around united Airlines reported a systemwide technology outage that disrupted departures and prevented some aircraft from receiving critical takeoff data, with the airline stating there were no signs of a cyberattack.
+Attention is concentrated in mega-cap tech and a few single-name stories, but sentiment is mostly neutral across the top of the buzz list. AMZN is the exception with a positive tilt, while TU's buzz surge and RTX's fade are attention moves rather than sentiment moves.
 
-Which part matters more here: **LLY's sentiment quality** or the context behind **UAL's buzz spike**?
+Which part matters more here: **AMZN's sentiment quality** or the context behind **TU's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
