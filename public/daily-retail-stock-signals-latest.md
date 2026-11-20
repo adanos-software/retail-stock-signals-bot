@@ -1,49 +1,49 @@
-Title: Daily Retail Stock Signals - November 19, 2026: ANT Buzz Leads, AMZN Sentiment Improves
+Title: Daily Retail Stock Signals - November 20, 2026: NVDA Leads Buzz, TU Moves Most
 
-Today's split: **ANT** led raw buzz, but **AMZN** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, but **APP** had the cleaner sentiment profile.
 
 ### Signal Summary
 
-**Top Buzz: ANT**  
-Buzz **85.3** | Sentiment **neutral** | Bull/Bear **18% / 19%**  
-ANT holds the highest buzz score with sentiment sitting near the middle and bull/bear roughly balanced, while Reddit discussion points to IPO chatter around Anthropic as the driver of attention rather than a directional lean.
+**Top Buzz: NVDA**  
+Buzz **86.1** | Sentiment **negative** | Bull/Bear **18% / 24%**  
+NVDA leads on absolute buzz with a rising trend, but negative sentiment and a bearish tilt in the bull/bear split suggest Reddit discussion is focused on disappointing reaction rather than enthusiasm.
 
-**Best Sentiment Read: AMZN**  
-7D Buzz **+2.9** (79.1 -> 82.0) | Sentiment **positive** (+0.055) | Bull/Bear **33% / 19%**  
-AMZN pairs rising buzz with the most positive sentiment and a clear bullish edge over bearish mentions, and Reddit discussion points to its participation as an investor in a large IPO alongside peers.
+**Best Sentiment Read: APP**  
+7D Buzz **+11.0** (37.3 -> 48.3) | Sentiment **strong positive** (+0.523) | Bull/Bear **67% / 5%**  
+APP pairs rising buzz and a lopsided bullish share, making it the most one-sided constructive profile among the selected names.
 
 **Largest 7-Day Buzz Move: TU**  
-7D Buzz **+54.8** (5.9 -> 60.7) | Sentiment **neutral** (-0.006) | Bull/Bear **20% / 21%**  
-TU shows the largest 7-day buzz expansion from a low base, yet sentiment stays neutral with bulls and bears nearly even, and Reddit discussion points to a reported Quebecor acquisition proposal for Telus as the topic drawing attention.
+7D Buzz **+40.7** (20.0 -> 60.7) | Sentiment **neutral** (-0.003) | Bull/Bear **19% / 20%**  
+TU shows the largest 7-day buzz expansion, yet sentiment is neutral and the bull/bear split is nearly even, so the added attention is not accompanied by a directional lean.
 
-**7-Day Buzz Fade: RTX**  
-7D Buzz **-43.6** (75.2 -> 31.6) | Sentiment **positive** (+0.042) | Bull/Bear **24% / 14%**  
-RTX carries a positive sentiment label and a bullish tilt, but its 7-day buzz has fallen sharply from a much higher starting point, so the fade is in attention rather than in tone.
+**7-Day Buzz Fade: UAL**  
+7D Buzz **-24.2** (24.2 -> 0.0) | Sentiment **negative** (-0.064) | Bull/Bear **2% / 18%**  
+UAL's buzz has fallen to zero over the week alongside negative sentiment and a bearish tilt, leaving little Reddit discussion to support the name.
 
 ### Top Buzz
 
-**1. ANT** - Buzz **85.3**, sentiment **neutral**, rising  
-**2. NVDA** - Buzz **84.4**, sentiment **neutral**, rising  
-**3. AMZN** - Buzz **81.8**, sentiment **positive**, rising  
-**4. META** - Buzz **80.3**, sentiment **neutral**, rising  
-**5. SPCX** - Buzz **80.1**, sentiment **neutral**, stable  
+**1. NVDA** - Buzz **86.1**, sentiment **negative**, rising  
+**2. ANT** - Buzz **83.6**, sentiment **negative**, rising  
+**3. GME** - Buzz **80.8**, sentiment **neutral**, rising  
+**4. AMD** - Buzz **80.3**, sentiment **strong negative**, rising  
+**5. GOOGL** - Buzz **79.9**, sentiment **positive**, rising  
 
 ### 7-Day Movers
 
-**TU** - **+54.8** buzz, buzz up, sentiment neutral  
-**ANT** - **+21.4** buzz, buzz up, sentiment neutral  
-**CAT** - **+10.5** buzz, buzz up, sentiment neutral  
-**NFLX** - **+10.1** buzz, buzz up, sentiment neutral  
-**UBER** - **+8.0** buzz, buzz up, sentiment neutral  
-**RTX** - **-43.6** buzz, buzz fading  
-**AVD** - **-32.4** buzz, buzz fading  
-**ARM** - **-30.2** buzz, buzz fading  
+**TU** - **+40.7** buzz, buzz up, sentiment neutral  
+**MELI** - **+25.2** buzz, buzz up, sentiment neutral  
+**ASML** - **+22.3** buzz, buzz up, sentiment neutral  
+**RDDT** - **+19.9** buzz, buzz up, sentiment negative  
+**PEP** - **+17.9** buzz, buzz up, sentiment neutral  
+**UAL** - **-24.2** buzz, fading with negative sentiment  
+**AVD** - **-22.3** buzz, buzz fading  
+**BAC** - **-12.8** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is concentrated in mega-cap tech and a few single-name stories, but sentiment is mostly neutral across the top of the buzz list. AMZN is the exception with a positive tilt, while TU's buzz surge and RTX's fade are attention moves rather than sentiment moves.
+Attention is concentrated in megacap tech, but the tone there leans negative, so high buzz is not translating into supportive chatter. APP carries the most constructive sentiment among the movers, while TU's buzz expansion arrives with neutral, split discussion. UAL is the clearest attention fade, with sentiment also negative.
 
-Which part matters more here: **AMZN's sentiment quality** or the context behind **TU's buzz spike**?
+Which part matters more here: **APP's sentiment quality** or the context behind **TU's buzz spike**?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
