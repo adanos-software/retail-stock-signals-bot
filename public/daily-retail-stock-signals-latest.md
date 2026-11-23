@@ -1,45 +1,45 @@
-Title: Daily Retail Stock Signals - November 22, 2026: NVDA Leads Buzz, AVGO Attention Jumps
+Title: Daily Retail Stock Signals - November 23, 2026: NVDA Leads Buzz, DJT Attention Jumps
 
-Today's split: **NVDA** led raw buzz, while **AVGO** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
+Today's split: **NVDA** led raw buzz, while **DJT** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **85.5** | Sentiment **negative** | Bull/Bear **18% / 24%**  
-NVDA holds the highest buzz level, yet the negative tilt and falling trend suggest sustained attention is being tied to scrutiny rather than fresh interest, with Reddit discussion pointing to a reported California investor-misleading investigation and mixed re
+Buzz **89.8** | Sentiment **negative** | Bull/Bear **15% / 22%**  
+NVDA carries the heaviest attention load with a slightly negative tilt, and Reddit threads tie the chatter to a reported California investor-misleading probe alongside revenue and leadership news, so the buzz is more scrutiny-driven than supportive.
 
-**Largest 7-Day Buzz Move: AVGO**  
-7D Buzz **+8.7** (65.4 -> 74.1) | Sentiment **neutral** (+0.019) | Bull/Bear **23% / 22%**  
-AVGO had the biggest attention jump, but sentiment stayed muted; Reddit discussion points to investors are debating whether the stock's high valuation multiple is justified by earnings potential beyond AI, alongside broader concerns about a US tech sell-off.
+**Largest 7-Day Buzz Move: DJT**  
+7D Buzz **+19.1** (56.9 -> 76.0) | Sentiment **negative** (-0.055) | Bull/Bear **16% / 31%**  
+DJT's week-over-week buzz expansion is the largest on the board, but sentiment stays negative and Reddit discussion centers on alleged insider trading and market manipulation, meaning rising attention is running against the tone.
 
-**7-Day Buzz Fade: UAL**  
-7D Buzz **-61.4** (74.0 -> 12.6) | Sentiment **negative** (-0.054) | Bull/Bear **4% / 17%**  
-UAL's buzz has dropped sharply from its prior level, and the small remaining discussion is heavily negative, with Reddit discussion pointing to a systemwide outage that blocked takeoff data for some aircraft.
+**7-Day Buzz Fade: CAT**  
+7D Buzz **-58.2** (58.2 -> 0.0) | Sentiment **negative** (-0.048) | Bull/Bear **19% / 25%**  
+CAT's attention has collapsed over the past week, and the remaining discussion skews bearish, so the fade reads as disengagement rather than a shift in view.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **85.5**, sentiment **negative**, falling  
-**2. ANT** - Buzz **82.4**, sentiment **neutral**, stable  
-**3. GOOGL** - Buzz **78.9**, sentiment **positive**, stable  
-**4. AMZN** - Buzz **78.4**, sentiment **positive**, falling  
-**5. META** - Buzz **78.0**, sentiment **negative**, stable  
+**1. NVDA** - Buzz **89.8**, sentiment **negative**, rising  
+**2. ANT** - Buzz **81.0**, sentiment **negative**, falling  
+**3. GOOGL** - Buzz **76.7**, sentiment **positive**, falling  
+**4. DJT** - Buzz **76.2**, sentiment **neutral**, rising  
+**5. MSFT** - Buzz **75.7**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**AVGO** - **+8.7** buzz, buzz up, sentiment neutral  
-**TSM** - **+5.9** buzz, buzz up, sentiment neutral  
-**ASML** - **+4.9** buzz, buzz up, sentiment neutral  
-**MS** - **+4.8** buzz, buzz up, sentiment neutral  
-**CSCO** - **+4.6** buzz, buzz up, sentiment negative  
-**UAL** - **-61.4** buzz, fading with negative sentiment  
-**BAC** - **-49.0** buzz, buzz fading  
-**TU** - **-32.6** buzz, buzz fading  
+**DJT** - **+19.1** buzz, buzz up, sentiment negative  
+**MSTR** - **+11.7** buzz, buzz up, sentiment negative  
+**CRWD** - **+11.6** buzz, positive momentum  
+**BA** - **+4.3** buzz, buzz up, sentiment neutral  
+**GOOGL** - **+1.4** buzz, positive momentum  
+**CAT** - **-58.2** buzz, fading with negative sentiment  
+**GS** - **-33.1** buzz, buzz fading  
+**APP** - **-30.1** buzz, buzz fading  
 
 ### Takeaway
 
-Attention is concentrated in NVDA, but Reddit sentiment around it leans negative, so high buzz is not translating into enthusiasm. AVGO's buzz is expanding while sentiment stays neutral, and UAL's buzz has collapsed from its prior level even as the remaining discussion skews negative.
+Buzz is concentrated in NVDA at the top of the list, but the tone around it leans negative while attention keeps building. DJT is the clearest buzz expander over the past week, though Reddit chatter frames it around insider-trading and manipulation concerns rather than enthusiasm. CAT's attention has largely drained away, leaving a thin, skeptical residue.
 
-Does **AVGO's attention jump** need stronger positive-sentiment confirmation before it matters?
+Does **DJT's attention jump** need stronger positive-sentiment confirmation before it matters?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
