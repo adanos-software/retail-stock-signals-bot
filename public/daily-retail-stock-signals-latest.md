@@ -1,49 +1,45 @@
-Title: Daily Retail Stock Signals - November 24, 2026: NVDA Leads Buzz, AMC Has Stronger Sentiment
+Title: Daily Retail Stock Signals - November 25, 2026: NVDA Leads Buzz, SBUX Attention Jumps
 
-Today's split: **NVDA** led raw buzz, but **AMC** had the cleaner sentiment profile.
+Today's split: **NVDA** led raw buzz, while **SBUX** had the largest 7-day attention increase without meeting the stronger positive-sentiment screen.
 
 ### Signal Summary
 
 **Top Buzz: NVDA**  
-Buzz **87.3** | Sentiment **negative** | Bull/Bear **14% / 23%**  
-NVDA holds the highest buzz, yet the negative sentiment and bear-leaning split suggest Reddit attention is focused on concerns rather than enthusiasm.
+Buzz **86.7** | Sentiment **negative** | Bull/Bear **15% / 22%**  
+NVDA holds the highest buzz score with rising attention, yet the sentiment leans negative and bearish share exceeds bullish, so the crowd is engaged but not warm; Reddit discussion points to succession commentary around Jensen Huang as part of the chatter.
 
-**Best Sentiment Read: AMC**  
-7D Buzz **+18.0** (51.0 -> 69.0) | Sentiment **positive** (+0.051) | Bull/Bear **30% / 24%**  
-AMC pairs a steady positive sentiment with a clear week-over-week buzz expansion, the most coherent attention-and-tone alignment among the movers.
+**Largest 7-Day Buzz Move: SBUX**  
+7D Buzz **+19.8** (54.3 -> 74.1) | Sentiment **neutral** (-0.004) | Bull/Bear **26% / 26%**  
+SBUX posts the largest 7-day buzz expansion with balanced bullish and bearish shares and a near-flat sentiment reading, so the jump in attention is not translating into a directional crowd view.
 
-**Largest 7-Day Buzz Move: AMC**  
-7D Buzz **+18.0** (51.0 -> 69.0) | Sentiment **positive** (+0.051) | Bull/Bear **30% / 24%**  
-AMC's buzz growth is the largest on the board, and the positive tilt in Reddit discussion supports the move rather than contradicting it.
-
-**7-Day Buzz Fade: CAT**  
-7D Buzz **-51.6** (66.7 -> 15.1) | Sentiment **negative** (-0.055) | Bull/Bear **18% / 25%**  
-CAT's buzz has dropped sharply over the week, and the negative sentiment suggests the remaining discussion is not turning constructive.
+**7-Day Buzz Fade: UBER**  
+7D Buzz **-20.5** (73.2 -> 52.7) | Sentiment **neutral** (-0.005) | Bull/Bear **22% / 24%**  
+UBER sheds the most buzz over the week while sentiment stays neutral and bullish and bearish shares sit close together; Reddit discussion points to debate over its long-term role in ride-hailing as robotaxi adoption grows gradually.
 
 ### Top Buzz
 
-**1. NVDA** - Buzz **87.3**, sentiment **negative**, rising  
-**2. ANT** - Buzz **77.9**, sentiment **negative**, falling  
-**3. GME** - Buzz **75.9**, sentiment **positive**, falling  
-**4. AMZN** - Buzz **75.5**, sentiment **positive**, falling  
-**5. INTC** - Buzz **75.3**, sentiment **negative**, stable  
+**1. NVDA** - Buzz **86.7**, sentiment **negative**, rising  
+**2. ANT** - Buzz **78.5**, sentiment **negative**, falling  
+**3. AMD** - Buzz **77.2**, sentiment **negative**, falling  
+**4. GME** - Buzz **76.7**, sentiment **neutral**, falling  
+**5. GOOGL** - Buzz **76.7**, sentiment **neutral**, falling  
 
 ### 7-Day Movers
 
-**AMC** - **+18.0** buzz, positive momentum  
-**DJT** - **+12.9** buzz, buzz up, sentiment negative  
-**BABA** - **+9.3** buzz, buzz up, sentiment negative  
-**MS** - **+8.2** buzz, buzz up, sentiment neutral  
-**RKLB** - **+7.9** buzz, positive momentum  
-**CAT** - **-51.6** buzz, fading with negative sentiment  
-**PEP** - **-39.8** buzz, buzz fading  
-**MELI** - **-30.8** buzz, buzz fading  
+**SBUX** - **+19.8** buzz, buzz up, sentiment neutral  
+**MSTR** - **+9.2** buzz, buzz up, sentiment negative  
+**NKE** - **+6.4** buzz, buzz up, sentiment negative  
+**SNDK** - **+4.1** buzz, buzz up, sentiment negative  
+**RKLB** - **+2.5** buzz, positive momentum  
+**UBER** - **-20.5** buzz, buzz fading  
+**CAT** - **-19.4** buzz, fading with negative sentiment  
+**BABA** - **-18.3** buzz, fading with negative sentiment  
 
 ### Takeaway
 
-Attention is concentrated in NVDA, but the Reddit tone around it is negative, so high buzz is not translating into support. AMC is the outlier where rising discussion and positive sentiment line up, while CAT shows the opposite pattern as chatter collapses and the remaining tone stays negative.
+Attention remains concentrated in NVDA, where the buzz is rising but the tone skews negative. SBUX shows the largest week-over-week buzz expansion while staying sentiment-neutral, and UBER is the clearest fade with attention dropping and no directional tilt.
 
-Would you trust **NVDA's broad attention** or **AMC's cleaner sentiment read** more here?
+Does **SBUX's attention jump** need stronger positive-sentiment confirmation before it matters?
 
 Data: Adanos Reddit stock sentiment - https://adanos.org/reddit-stock-sentiment  
 Data-driven sentiment signal, not financial advice.
